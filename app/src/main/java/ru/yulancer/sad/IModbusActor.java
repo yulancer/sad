@@ -7,8 +7,8 @@ public interface IModbusActor {
     public SadInfo GetSadInfo();
     public void SendSwitchSignal(byte offset);
 
-    public static final byte SadWaterOffset = 0;
+    public static final byte GardenWaterOffset = 0;
     public static final byte SaunaWaterOffset = 1;
     public static final byte PumpOffset = 2;
-    public static final byte PondWaterOffset = 3;
+    public static final byte PondOffset = 3;
 }

@@ -9,10 +9,10 @@ import android.os.Parcelable;
 public class SadInfo implements Parcelable {
     public Exception exception;
 
-    public float SadCurrentTemp;
-    public float SadWaterDrainTempSetpoint;
+    public float CurrentAirTemp;
+    public float GardenWaterDrainTempSetpoint;
     public boolean SaunaWaterOn;
-    public boolean SadWaterOn;
+    public boolean GardenWaterOn;
     public boolean PumpPowerOn;
     public boolean PondPowerOn;
     public boolean SadWaterPressureOK;
@@ -24,11 +24,11 @@ public class SadInfo implements Parcelable {
     }
 
     protected SadInfo(Parcel in) {
-        SadCurrentTemp = in.readFloat();
-        SadWaterDrainTempSetpoint = in.readFloat();
+        CurrentAirTemp = in.readFloat();
+        GardenWaterDrainTempSetpoint = in.readFloat();
 
         SaunaWaterOn = in.readByte() != 0;
-        SadWaterOn = in.readByte() != 0;
+        GardenWaterOn = in.readByte() != 0;
         PumpPowerOn = in.readByte() != 0;
         PondPowerOn = in.readByte() != 0;
         SadWaterPressureOK = in.readByte() != 0;
@@ -55,11 +55,11 @@ public class SadInfo implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeFloat(SadCurrentTemp);
-        dest.writeFloat(SadWaterDrainTempSetpoint);
+        dest.writeFloat(CurrentAirTemp);
+        dest.writeFloat(GardenWaterDrainTempSetpoint);
 
         dest.writeByte((byte) (SaunaWaterOn ? 1 : 0));
-        dest.writeByte((byte) (SadWaterOn ? 1 : 0));
+        dest.writeByte((byte) (GardenWaterOn ? 1 : 0));
         dest.writeByte((byte) (PumpPowerOn ? 1 : 0));
         dest.writeByte((byte) (PondPowerOn ? 1 : 0));
         dest.writeByte((byte) (SadWaterPressureOK ? 1 : 0));
