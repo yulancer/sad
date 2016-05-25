@@ -8,7 +8,7 @@ import android.widget.TabHost;
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
 
-    private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.77", 502);
+    private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

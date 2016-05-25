@@ -24,7 +24,7 @@ public class Modbus4jActor implements IModbusActor {
         mPort = port;
     }
 
-    private ModbusMaster CreateMaster(){
+    private ModbusMaster CreateMaster() {
 
         IpParameters ipParameters = new IpParameters();
         ipParameters.setHost(mHost);
@@ -35,7 +35,7 @@ public class Modbus4jActor implements IModbusActor {
         ModbusMaster master = modbusFactory.createTcpMaster(ipParameters, false);
         master.setTimeout(600);
         master.setRetries(10);
-        return  master;
+        return master;
     }
 
     @Override
@@ -48,7 +48,7 @@ public class Modbus4jActor implements IModbusActor {
         BatchRead<Integer> batch = new BatchRead<>();
         int slaveId = 1;
 
-        batch.addLocator(1, BaseLocator.holdingRegister(slaveId, 0, DataType.TWO_BYTE_INT_UNSIGNED));
+        batch.addLocator(1, BaseLocator.holdingRegister(slaveId, 2, DataType.TWO_BYTE_INT_UNSIGNED));
 
         try {
             master.init();
@@ -61,10 +61,10 @@ public class Modbus4jActor implements IModbusActor {
 
         if (results != null) {
             int flags = results.getIntValue(0);
-            sadInfo.GardenWaterOn = (flags & 2) == 2;
-            sadInfo.SaunaWaterOn = (flags & 4) == 4;
-            sadInfo.PumpPowerOn = (flags & 8) == 8;
-            sadInfo.PondPowerOn = (flags & 16) == 16;
+            sadInfo.GardenWaterOn = (flags & 1) == 1;
+            sadInfo.SaunaWaterOn  = (flags & 2) == 2;
+            sadInfo.PumpPowerOn = (flags & 4) == 4;
+            sadInfo.PondPowerOn =(flags & 8) == 8;
         }
 
 
@@ -78,8 +78,8 @@ public class Modbus4jActor implements IModbusActor {
         int slaveId = 1;
         if (master.testSlaveNode(slaveId))
             try {
-                WriteCoilsRequest request = new WriteCoilsRequest(slaveId, (offset), new boolean[]{true});
-                WriteCoilsResponse response = (WriteCoilsResponse) master.send(request);
+                WriteCoilsRequest request = new WriteCoilsRequest(slaveId, offset, new boolean[]{true});
+                master.send(request);
             } catch (ModbusTransportException e) {
                 e.printStackTrace();
             }
