@@ -60,7 +60,7 @@ public class Modbus4jActor implements IModbusActor {
         }
 
         if (results != null) {
-            int flags = results.getIntValue(0);
+            int flags = results.getIntValue(1);
             sadInfo.GardenWaterOn = (flags & 1) == 1;
             sadInfo.SaunaWaterOn  = (flags & 2) == 2;
             sadInfo.PumpPowerOn = (flags & 4) == 4;

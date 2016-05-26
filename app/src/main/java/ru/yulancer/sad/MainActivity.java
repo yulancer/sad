@@ -21,7 +21,8 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private Timer mTimer;
-    private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
+    //private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
+    private IModbusActor mActivityActor = new Modbus4jActor("10.0.2.2", 502);
     private SadInfo mSadInfo = new SadInfo();
 
     //////////////////////
