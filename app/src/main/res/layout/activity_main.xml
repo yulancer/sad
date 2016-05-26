@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -13,8 +14,7 @@
         android:id="@+id/tabhost"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true">
+        android:layout_weight="1">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,40 +39,40 @@
 
 
                     <Switch
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Насос"
                         android:id="@+id/swPump"
-                        android:layout_alignParentTop="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:checked="false" />
-
-                    <Switch
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Вода в сад"
-                        android:id="@+id/swGardenWater"
-                        android:checked="false"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true" />
+                        android:checked="false"
+                        android:text="Насос" />
 
                     <Switch
+                        android:id="@+id/swGardenWater"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Вода в баню"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:checked="false"
+                        android:text="Вода в сад" />
+
+                    <Switch
                         android:id="@+id/swSaunaWater"
-                        android:checked="false"
-                        android:layout_below="@+id/swGardenWater"
-                        android:layout_alignParentEnd="true" />
-
-                    <Switch
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Пруд"
-                        android:id="@+id/swPond"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/swGardenWater"
                         android:checked="false"
+                        android:text="Вода в баню" />
+
+                    <Switch
+                        android:id="@+id/swPond"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
                         android:layout_below="@+id/swPump"
-                        android:layout_alignParentStart="true" />
+                        android:checked="false"
+                        android:text="Пруд" />
                 </RelativeLayout>
 
                 <LinearLayout
@@ -105,4 +105,64 @@
             </FrameLayout>
         </LinearLayout>
     </TabHost>
-</RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvException"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="10"
+            android:gravity="center_horizontal|right"
+            android:orientation="vertical"
+            android:padding="3dp">
+
+            <TextView
+                android:id="@+id/tvLastSuccessfulQuery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:text="Данные на \??:\??:\??"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+
+            <FrameLayout
+                android:layout_width="40dip"
+                android:layout_height="40dip">
+
+                <ImageView
+                    android:id="@+id/ivConnectStatus"
+                    android:layout_width="32dip"
+                    android:layout_height="32dip"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:contentDescription="connect"
+                    android:src="@drawable/ic_connect" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
