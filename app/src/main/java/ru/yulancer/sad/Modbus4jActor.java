@@ -97,26 +97,25 @@ public class Modbus4jActor implements IModbusActor {
             sadInfo.AirTemperature = results.getFloatValue(2);
             sadInfo.FrostTemperature = results.getFloatValue(3);
 
-            sadInfo.LitersDrained1 = results.getIntValue(10);
-            sadInfo.LitersDrained2 = results.getIntValue(11);
-            sadInfo.LitersDrained3 = results.getIntValue(12);
-            sadInfo.LitersDrained4 = results.getIntValue(13);
-            sadInfo.LitersDrained5 = results.getIntValue(14);
-            sadInfo.LitersDrained6 = results.getIntValue(15);
-            sadInfo.LitersDrained7 = results.getIntValue(16);
-            sadInfo.LitersDrained8 = results.getIntValue(17);
+            sadInfo.LitersDrained1 = results.getIntValue(4);
+            sadInfo.LitersDrained2 = results.getIntValue(5);
+            sadInfo.LitersDrained3 = results.getIntValue(6);
+            sadInfo.LitersDrained4 = results.getIntValue(7);
+            sadInfo.LitersDrained5 = results.getIntValue(8);
+            sadInfo.LitersDrained6 = results.getIntValue(9);
+            sadInfo.LitersDrained7 = results.getIntValue(10);
+            sadInfo.LitersDrained8 = results.getIntValue(11);
 
-            sadInfo.LitersDrained8 = results.getIntValue(18);
-            sadInfo.LitersDrained8 = results.getIntValue(19);
-            sadInfo.LitersDrained8 = results.getIntValue(20);
-            sadInfo.LitersDrained8 = results.getIntValue(21);
-            sadInfo.LitersDrained8 = results.getIntValue(22);
-            sadInfo.LitersDrained8 = results.getIntValue(23);
-            sadInfo.LitersDrained8 = results.getIntValue(24);
-            sadInfo.LitersDrained8 = results.getIntValue(25);
+            sadInfo.LitersNeeded1 = results.getIntValue(12);
+            sadInfo.LitersNeeded2 = results.getIntValue(13);
+            sadInfo.LitersNeeded3 = results.getIntValue(14);
+            sadInfo.LitersNeeded4 = results.getIntValue(15);
+            sadInfo.LitersNeeded5 = results.getIntValue(16);
+            sadInfo.LitersNeeded6 = results.getIntValue(17);
+            sadInfo.LitersNeeded7 = results.getIntValue(18);
+            sadInfo.LitersNeeded8 = results.getIntValue(19);
 
         }
-
 
         return sadInfo;
     }
