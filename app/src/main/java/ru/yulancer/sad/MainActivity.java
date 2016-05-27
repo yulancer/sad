@@ -38,13 +38,14 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
 
         tabs.setup();
 
-        TabHost.TabSpec spec = tabs.newTabSpec("tagWater");
 
-        spec = tabs.newTabSpec("tagDrain");
+        TabHost.TabSpec spec = tabs.newTabSpec("tagDrain");
         spec.setContent(R.id.layoutDrain);
         spec.setIndicator("Полив");
+        tabs.addTab(spec);
 
-        tabs.addTab(spec);       spec.setContent(R.id.layoutWater);
+        spec = tabs.newTabSpec("tagWater");
+        spec.setContent(R.id.layoutWater);
         spec.setIndicator("Вода");
         tabs.addTab(spec);
 
