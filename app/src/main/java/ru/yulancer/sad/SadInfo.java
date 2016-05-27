@@ -18,6 +18,12 @@ public class SadInfo implements Parcelable {
     public boolean SadWaterPressureOK;
     public boolean PhotoSensorDark;
     public boolean RainSensorWet;
+    public boolean Frost;
+
+    public byte ValveOpenStatuses;
+
+    public float AirTemperature;
+    public float FrostTemperature;
 
     public SadInfo() {
 
@@ -34,6 +40,12 @@ public class SadInfo implements Parcelable {
         SadWaterPressureOK = in.readByte() != 0;
         PhotoSensorDark = in.readByte() != 0;
         RainSensorWet = in.readByte() != 0;
+        Frost = in.readByte() != 0;
+
+        ValveOpenStatuses = in.readByte();
+
+        AirTemperature = in.readFloat();
+        FrostTemperature = in.readFloat();
     }
 
     public static final Creator<SadInfo> CREATOR = new Creator<SadInfo>() {
@@ -65,6 +77,11 @@ public class SadInfo implements Parcelable {
         dest.writeByte((byte) (SadWaterPressureOK ? 1 : 0));
         dest.writeByte((byte) (PhotoSensorDark ? 1 : 0));
         dest.writeByte((byte) (RainSensorWet ? 1 : 0));
+        dest.writeByte((byte) (Frost ? 1 : 0));
 
+        dest.writeByte(ValveOpenStatuses);
+
+        dest.writeFloat(AirTemperature);
+        dest.writeFloat(FrostTemperature);
     }
 }

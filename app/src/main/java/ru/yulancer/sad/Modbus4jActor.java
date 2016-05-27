@@ -48,7 +48,9 @@ public class Modbus4jActor implements IModbusActor {
         BatchRead<Integer> batch = new BatchRead<>();
         int slaveId = 1;
 
-        batch.addLocator(1, BaseLocator.holdingRegister(slaveId, 2, DataType.TWO_BYTE_INT_UNSIGNED));
+        batch.addLocator(1, BaseLocator.holdingRegister(slaveId, 1, DataType.TWO_BYTE_INT_UNSIGNED));
+        batch.addLocator(2, BaseLocator.holdingRegister(slaveId, 4, DataType.FOUR_BYTE_FLOAT_SWAPPED));
+        batch.addLocator(3, BaseLocator.holdingRegister(slaveId, 6, DataType.FOUR_BYTE_FLOAT_SWAPPED));
 
         try {
             master.init();
@@ -60,11 +62,21 @@ public class Modbus4jActor implements IModbusActor {
         }
 
         if (results != null) {
+
             int flags = results.getIntValue(1);
             sadInfo.GardenWaterOn = (flags & 1) == 1;
-            sadInfo.SaunaWaterOn  = (flags & 2) == 2;
+            sadInfo.SaunaWaterOn = (flags & 2) == 2;
             sadInfo.PumpPowerOn = (flags & 4) == 4;
-            sadInfo.PondPowerOn =(flags & 8) == 8;
+            sadInfo.PondPowerOn = (flags & 8) == 8;
+            sadInfo.SadWaterPressureOK = (flags & 16) == 16;
+            sadInfo.PhotoSensorDark = (flags & 32) == 32;
+            sadInfo.RainSensorWet = (flags & 64) == 64;
+            sadInfo.Frost = (flags & 128) == 128;
+
+            sadInfo.ValveOpenStatuses =  (byte) (flags >> 8);
+
+            sadInfo.AirTemperature = results.getFloatValue(2);
+            sadInfo.FrostTemperature = results.getFloatValue(3);
         }
 
 
