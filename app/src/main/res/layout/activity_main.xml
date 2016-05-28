@@ -49,8 +49,8 @@
                         android:id="@+id/cbValve1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded1"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 1" />
 
@@ -58,8 +58,8 @@
                         android:id="@+id/cbValve2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded2"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 2" />
 
@@ -67,8 +67,8 @@
                         android:id="@+id/cbValve3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded3"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 3" />
 
@@ -76,8 +76,8 @@
                         android:id="@+id/cbValve4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded4"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 4" />
 
@@ -85,8 +85,8 @@
                         android:id="@+id/cbValve5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded5"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 5" />
 
@@ -94,8 +94,8 @@
                         android:id="@+id/cbValve6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded6"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 6" />
 
@@ -103,8 +103,8 @@
                         android:id="@+id/cbValve7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded7"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 7" />
 
@@ -112,8 +112,8 @@
                         android:id="@+id/cbValve8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded8"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 8" />
 
@@ -202,11 +202,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@id/cbValve1"
-                        android:background="@drawable/progress_background"
                         android:layout_margin="4dp"
+                        android:layout_toEndOf="@id/cbValve1"
+                        android:layout_toStartOf="@+id/etLitersNeeded1"
+                        android:background="@drawable/progress_background"
                         android:gravity="center"
-                        android:layout_toStartOf="@+id/etLitersNeeded1" />
+                        android:visibility="invisible" />
 
                     <ProgressBar
                         android:id="@+id/pbDrain2"
@@ -214,7 +215,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/etLitersNeeded1"
                         android:layout_toEndOf="@id/cbValve2"
-                        android:layout_toStartOf="@+id/etLitersNeeded2" />
+                        android:layout_toStartOf="@+id/etLitersNeeded2"
+                        android:visibility="invisible" />
 
                     <ProgressBar
                         android:id="@+id/pbDrain3"
@@ -222,7 +224,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/etLitersNeeded2"
                         android:layout_toEndOf="@id/cbValve3"
-                        android:layout_toStartOf="@+id/etLitersNeeded3" />
+                        android:layout_toStartOf="@+id/etLitersNeeded3"
+                        android:visibility="invisible" />
 
                     <ProgressBar
                         android:id="@+id/pbDrain4"
@@ -230,7 +233,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/etLitersNeeded3"
                         android:layout_toEndOf="@id/cbValve4"
-                        android:layout_toStartOf="@+id/etLitersNeeded4" />
+                        android:layout_toStartOf="@+id/etLitersNeeded4"
+                        android:visibility="invisible" />
 
 
                     <ProgressBar
@@ -239,7 +243,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/etLitersNeeded4"
                         android:layout_toEndOf="@id/cbValve5"
-                        android:layout_toStartOf="@+id/etLitersNeeded5" />
+                        android:layout_toStartOf="@+id/etLitersNeeded5"
+                        android:visibility="invisible" />
 
                     <ProgressBar
                         android:id="@+id/pbDrain6"
@@ -247,7 +252,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/etLitersNeeded5"
                         android:layout_toEndOf="@id/cbValve6"
-                        android:layout_toStartOf="@+id/etLitersNeeded6" />
+                        android:layout_toStartOf="@+id/etLitersNeeded6"
+                        android:visibility="invisible" />
 
                     <ProgressBar
                         android:id="@+id/pbDrain7"
@@ -255,7 +261,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/etLitersNeeded6"
                         android:layout_toEndOf="@id/cbValve7"
-                        android:layout_toStartOf="@+id/etLitersNeeded7" />
+                        android:layout_toStartOf="@+id/etLitersNeeded7"
+                        android:visibility="invisible" />
 
                     <ProgressBar
                         android:id="@+id/pbDrain8"
@@ -263,7 +270,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@+id/etLitersNeeded7"
                         android:layout_toEndOf="@id/cbValve8"
-                        android:layout_toStartOf="@+id/etLitersNeeded8" />
+                        android:layout_toStartOf="@+id/etLitersNeeded8"
+                        android:visibility="invisible" />
                 </RelativeLayout>
 
                 <RelativeLayout
