@@ -8,6 +8,8 @@ import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.ip.IpParameters;
 import com.serotonin.modbus4j.locator.BaseLocator;
+import com.serotonin.modbus4j.msg.WriteCoilRequest;
+import com.serotonin.modbus4j.msg.WriteCoilResponse;
 import com.serotonin.modbus4j.msg.WriteCoilsRequest;
 import com.serotonin.modbus4j.msg.WriteCoilsResponse;
 
@@ -92,7 +94,7 @@ public class Modbus4jActor implements IModbusActor {
             sadInfo.RainSensorWet = (flags & 64) == 64;
             sadInfo.Frost = (flags & 128) == 128;
 
-            sadInfo.ValveOpenStatuses =  (byte) (flags >> 8);
+            sadInfo.ValveOpenStatuses = (byte) (flags >> 8);
 
             sadInfo.AirTemperature = results.getFloatValue(2);
             sadInfo.FrostTemperature = results.getFloatValue(3);
@@ -127,8 +129,8 @@ public class Modbus4jActor implements IModbusActor {
         int slaveId = 1;
         if (master.testSlaveNode(slaveId))
             try {
-                WriteCoilsRequest request = new WriteCoilsRequest(slaveId, offset, new boolean[]{true});
-                master.send(request);
+                WriteCoilRequest request = new WriteCoilRequest(slaveId, offset, true);
+                WriteCoilResponse response = (WriteCoilResponse) master.send(request);
             } catch (ModbusTransportException e) {
                 e.printStackTrace();
             }

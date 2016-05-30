@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -21,8 +22,8 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
 
     private Timer mTimer;
-    //private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
-    private IModbusActor mActivityActor = new Modbus4jActor("10.0.2.2", 502);
+    private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
+    //private IModbusActor mActivityActor = new Modbus4jActor("10.0.2.2", 502);
     private SadInfo mSadInfo = new SadInfo();
 
     //////////////////////
@@ -73,28 +74,36 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         if (swPond != null) {
             swPond.setOnCheckedChangeListener(this);
         }
+
+        recreateRefreshTimer();
     }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        byte offset;
+        byte offset = -1;
+        boolean switchNeeded = false;
+
         switch (buttonView.getId()) {
             case R.id.swPump:
                 offset = IModbusActor.PumpOffset;
+                switchNeeded = isChecked != mSadInfo.PumpPowerOn;
                 break;
             case R.id.swPond:
                 offset = IModbusActor.PondOffset;
+                switchNeeded = isChecked != mSadInfo.PondPowerOn;
                 break;
             case R.id.swGardenWater:
                 offset = IModbusActor.GardenWaterOffset;
+                switchNeeded = isChecked != mSadInfo.GardenWaterOn;
                 break;
             case R.id.swSaunaWater:
                 offset = IModbusActor.SaunaWaterOffset;
+                switchNeeded = isChecked != mSadInfo.SaunaWaterOn;
                 break;
             default:
-                offset = -1;
+                switchNeeded = false;
         }
-        if (offset > -1) {
+        if (switchNeeded) {
             StartStopSomethingTask task = new StartStopSomethingTask();
             task.execute(offset);
         }
@@ -148,6 +157,24 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             if (swPond != null) {
                 swPond.setChecked(mSadInfo.PondPowerOn);
             }
+
+            CheckBox cbPressure = (CheckBox) findViewById(R.id.cbPressure);
+            if(cbPressure!= null){
+                cbPressure.setChecked(mSadInfo.SadWaterPressureOK);
+            }
+            CheckBox cbIsNight = (CheckBox) findViewById(R.id.cbIsNight);
+            if(cbIsNight!= null){
+                cbIsNight.setChecked(mSadInfo.PhotoSensorDark);
+            }
+            CheckBox cbIsRain = (CheckBox) findViewById(R.id.cbIsRain);
+            if(cbIsRain!= null){
+                cbIsRain.setChecked(mSadInfo.RainSensorWet);
+            }
+            CheckBox cbIsFrost = (CheckBox) findViewById(R.id.cbIsFrost);
+            if(cbIsFrost!= null){
+                cbIsFrost.setChecked(mSadInfo.Frost);
+            }
+
             if (tvException != null && tvException.getVisibility() != View.GONE) {
                 tvException.setVisibility(View.GONE);
                 tvException.setText("");

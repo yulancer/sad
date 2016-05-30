@@ -32,6 +32,90 @@
                 android:layout_height="match_parent">
 
                 <RelativeLayout
+                    android:id="@+id/layoutWater"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+
+                    <Switch
+                        android:id="@+id/swPump"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:checked="false"
+                        android:text="Насос" />
+
+                    <Switch
+                        android:id="@+id/swGardenWater"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentTop="true"
+                        android:checked="false"
+                        android:text="Вода в сад" />
+
+                    <Switch
+                        android:id="@+id/swSaunaWater"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_below="@+id/swGardenWater"
+                        android:checked="false"
+                        android:text="Вода в баню" />
+
+                    <Switch
+                        android:id="@+id/swPond"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/swPump"
+                        android:checked="false"
+                        android:text="Пруд" />
+
+                    <CheckBox
+                        android:id="@+id/cbPressure"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/swPond"
+                        android:checked="false"
+                        android:clickable="false"
+                        android:text="Давление" />
+
+                    <CheckBox
+                        android:id="@+id/cbIsNight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/cbPressure"
+                        android:checked="false"
+                        android:clickable="false"
+                        android:text="Темно" />
+
+                    <CheckBox
+                        android:id="@+id/cbIsRain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/cbIsNight"
+                        android:checked="false"
+                        android:clickable="false"
+                        android:text="Дождь" />
+
+                    <CheckBox
+                        android:id="@+id/cbIsFrost"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_below="@+id/cbIsRain"
+                        android:checked="false"
+                        android:clickable="false"
+                        android:text="Мороз" />
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/layoutDrain"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -49,8 +133,8 @@
                         android:id="@+id/cbValve1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded1"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 1" />
 
@@ -58,8 +142,8 @@
                         android:id="@+id/cbValve2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded2"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 2" />
 
@@ -67,8 +151,8 @@
                         android:id="@+id/cbValve3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded3"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 3" />
 
@@ -76,8 +160,8 @@
                         android:id="@+id/cbValve4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded4"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 4" />
 
@@ -85,8 +169,8 @@
                         android:id="@+id/cbValve5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded5"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 5" />
 
@@ -94,8 +178,8 @@
                         android:id="@+id/cbValve6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded6"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 6" />
 
@@ -103,8 +187,8 @@
                         android:id="@+id/cbValve7"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded7"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 7" />
 
@@ -112,8 +196,8 @@
                         android:id="@+id/cbValve8"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
                         android:layout_alignBaseline="@+id/etLitersNeeded8"
+                        android:layout_alignParentStart="true"
                         android:checked="false"
                         android:text="Линия 8" />
 
@@ -202,11 +286,11 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_toEndOf="@id/cbValve1"
-                        android:background="@drawable/progress_background"
                         android:layout_margin="4dp"
-                        android:gravity="center"
-                        android:layout_toStartOf="@+id/etLitersNeeded1" />
+                        android:layout_toEndOf="@id/cbValve1"
+                        android:layout_toStartOf="@+id/etLitersNeeded1"
+                        android:background="@drawable/progress_background"
+                        android:gravity="center" />
 
                     <ProgressBar
                         android:id="@+id/pbDrain2"
@@ -264,50 +348,6 @@
                         android:layout_below="@+id/etLitersNeeded7"
                         android:layout_toEndOf="@id/cbValve8"
                         android:layout_toStartOf="@+id/etLitersNeeded8" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/layoutWater"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-
-                    <Switch
-                        android:id="@+id/swPump"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:checked="false"
-                        android:text="Насос" />
-
-                    <Switch
-                        android:id="@+id/swGardenWater"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:checked="false"
-                        android:text="Вода в сад" />
-
-                    <Switch
-                        android:id="@+id/swSaunaWater"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@+id/swGardenWater"
-                        android:checked="false"
-                        android:text="Вода в баню" />
-
-                    <Switch
-                        android:id="@+id/swPond"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/swPump"
-                        android:checked="false"
-                        android:text="Пруд" />
                 </RelativeLayout>
 
 
