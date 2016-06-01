@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:yulancer="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -31,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <RelativeLayout
+                <LinearLayout
                     android:id="@+id/layoutDrain"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
@@ -39,11 +40,32 @@
 
 
                     <ru.yulancer.sad.DrainLineControl
+                        android:id="@+id/drain1"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        yulancer:lineNumber="1"
+                        yulancer:lineTitle="Баня" />
 
-                    </ru.yulancer.sad.DrainLineControl>
-                </RelativeLayout>
+                    <ru.yulancer.sad.DrainLineControl
+                        android:id="@+id/drain2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        yulancer:lineNumber="2"
+                        yulancer:lineTitle="Поле" />
+
+                    <ru.yulancer.sad.DrainLineControl
+                        android:id="@+id/drain3"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        yulancer:lineNumber="3"
+                        yulancer:lineTitle="Сад" />
+                    <ru.yulancer.sad.DrainLineControl
+                        android:id="@+id/drain4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        yulancer:lineNumber="4"
+                        yulancer:lineTitle="Клумба" />
+                </LinearLayout>
 
                 <RelativeLayout
                     android:id="@+id/layoutWater"
