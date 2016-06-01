@@ -7,9 +7,12 @@ import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import java.util.Locale;
+
 public class ProgressTextView extends TextView {
     // Максимальное значение шкалы
     private int mMaxValue = 100;
+    private int mValue = 0;
 
     // Конструкторы
     public ProgressTextView(Context context, AttributeSet attrs, int defStyle) {
@@ -29,10 +32,15 @@ public class ProgressTextView extends TextView {
         mMaxValue = maxValue;
     }
 
+    public int getMaxValue() {
+        return mMaxValue;
+    }
+
     // Установка значения
     public synchronized void setValue(int value) {
         // Установка новой надписи
-        this.setText(String.valueOf(value));
+        String newText = String.format(Locale.getDefault(), "%d из %d", value, mMaxValue);
+        this.setText(newText);
 
         // Drawable, отвечающий за фон
         LayerDrawable background = (LayerDrawable) this.getBackground();
@@ -46,5 +54,9 @@ public class ProgressTextView extends TextView {
 
         // Уведомляем об изменении Drawable
         drawableStateChanged();
+    }
+
+    public int getValue(){
+        return  mValue;
     }
 }
