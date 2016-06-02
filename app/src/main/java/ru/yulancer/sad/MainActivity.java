@@ -19,6 +19,7 @@ import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -85,19 +86,6 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         recreateRefreshTimer();
     }
 
-    private ArrayList<DrainLineControl> drainLineControlList(ViewGroup root) {
-        ArrayList<DrainLineControl> drainLineControlList = new ArrayList<>();
-        final int childCount = root.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            final View child = root.getChildAt(i);
-            if (child instanceof DrainLineControl) {
-                drainLineControlList.add((DrainLineControl) child);
-            } else if (child instanceof ViewGroup) {
-                drainLineControlList.addAll(drainLineControlList((ViewGroup) child));
-            }
-        }
-        return drainLineControlList;
-    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -197,6 +185,13 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
 
 
+            for (int i = 1; i <= 8; i++) {
+                DrainLineControl lineControl = findByLineNumber(i);
+                if (lineControl != null) {
+                    updateDrainLineControl(lineControl, mSadInfo.LineStatuses[i - 1]);
+                }
+            }
+
             if (tvException != null && tvException.getVisibility() != View.GONE) {
                 tvException.setVisibility(View.GONE);
                 tvException.setText("");
@@ -221,6 +216,53 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             if (connectIcon != null)
                 connectIcon.setImageResource(R.drawable.ic_disconnect);
         }
+    }
+
+    private void updateDrainLineControl(DrainLineControl lineControl, DrainLineInfo lineStatus) {
+        TextView tvLitersNeeded = (TextView) lineControl.findViewById(R.id.tvLitersNeeded);
+        if (tvLitersNeeded != null)
+            tvLitersNeeded.setText(String.format(Locale.getDefault(), "%d", lineStatus.LitersNeeded));
+        ProgressTextView pbDrainProgress = (ProgressTextView) lineControl.findViewById(R.id.pbDrainProgress);
+        if (pbDrainProgress != null) {
+            if (pbDrainProgress.getMaxValue() != lineStatus.LitersNeeded)
+                pbDrainProgress.setMaxValue(lineStatus.LitersNeeded);
+            if (pbDrainProgress.getValue() != lineStatus.LitersDrained)
+                pbDrainProgress.setValue(lineStatus.LitersDrained);
+
+            if (pbDrainProgress.getVisibility() == View.VISIBLE) {
+                if (!lineStatus.Working)  //спрячем неработающую, но видимую
+                    pbDrainProgress.setVisibility(View.INVISIBLE);
+            } else {
+                if (lineStatus.Working)  //покажем работающую, но невидимую
+                    pbDrainProgress.setVisibility(View.VISIBLE);
+            }
+        }
+
+    }
+
+    private DrainLineControl findByLineNumber(int lineNumber) {
+        DrainLineControl controlFounded = null;
+        for (DrainLineControl drainLineControl : mDrainLineControls
+
+                ) {
+            if (drainLineControl.getLineNumber() == lineNumber)
+                controlFounded = drainLineControl;
+        }
+        return controlFounded;
+    }
+
+    private ArrayList<DrainLineControl> drainLineControlList(ViewGroup root) {
+        ArrayList<DrainLineControl> drainLineControlList = new ArrayList<>();
+        final int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = root.getChildAt(i);
+            if (child instanceof DrainLineControl) {
+                drainLineControlList.add((DrainLineControl) child);
+            } else if (child instanceof ViewGroup) {
+                drainLineControlList.addAll(drainLineControlList((ViewGroup) child));
+            }
+        }
+        return drainLineControlList;
     }
 
     /*  классы тасков */

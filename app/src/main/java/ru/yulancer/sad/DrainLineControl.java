@@ -52,7 +52,7 @@ public class DrainLineControl extends RelativeLayout {
             a.recycle();
         }
 
-        if(mLineNumber < 1 || mLineNumber > 8)
+        if (mLineNumber < 1 || mLineNumber > 8)
             mTitleView.setText("номер линии должен быть от 1 до 8");
 
     }
@@ -64,6 +64,10 @@ public class DrainLineControl extends RelativeLayout {
         LayoutInflater li = (LayoutInflater) getContext().getSystemService(inflatorservice);
         li.inflate(R.layout.drain_line_control_layout, this, true);
         findViews();
+    }
+
+    public int getLineNumber() {
+        return mLineNumber;
     }
 
     private void findViews() {
