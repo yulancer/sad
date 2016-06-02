@@ -65,6 +65,17 @@
                         android:layout_height="wrap_content"
                         yulancer:lineNumber="4"
                         yulancer:lineTitle="Клумба" />
+                    <Switch
+                        android:id="@+id/mainSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_centerInParent="true"
+                        android:showText="true"
+                        android:textOff="Выключено"
+                        android:textOn="Включено"
+                        android:thumb="@drawable/customswitchselector"
+                        android:track="@drawable/custom_track" />
                 </LinearLayout>
 
                 <RelativeLayout
