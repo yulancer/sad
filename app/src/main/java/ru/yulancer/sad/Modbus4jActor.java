@@ -23,6 +23,7 @@ public class Modbus4jActor implements IModbusActor {
     public static final String STATUS_FLAGS = "StatusFlags";
     public static final String AIR_TEMPERATURE = "AirTemperature";
     public static final String FROST_SETPOINT_TEMPERATURE = "FrostSetpointTemperature";
+
     public static final String LITERS_DRAINED1 = "LitersDrained1";
     public static final String LITERS_DRAINED2 = "LitersDrained2";
     public static final String LITERS_DRAINED3 = "LitersDrained3";
@@ -31,6 +32,7 @@ public class Modbus4jActor implements IModbusActor {
     public static final String LITERS_DRAINED6 = "LitersDrained6";
     public static final String LITERS_DRAINED7 = "LitersDrained7";
     public static final String LITERS_DRAINED8 = "LitersDrained8";
+
     public static final String LITERS_NEEDED1 = "LitersNeeded1";
     public static final String LITERS_NEEDED2 = "LitersNeeded2";
     public static final String LITERS_NEEDED3 = "LitersNeeded3";
@@ -39,6 +41,11 @@ public class Modbus4jActor implements IModbusActor {
     public static final String LITERS_NEEDED6 = "LitersNeeded6";
     public static final String LITERS_NEEDED7 = "LitersNeeded7";
     public static final String LITERS_NEEDED8 = "LitersNeeded8";
+
+    public static final String LINE_BIT_STATUS12 = "BitStatusLine12";
+    public static final String LINE_BIT_STATUS34 = "BitStatusLine34";
+    public static final String LINE_BIT_STATUS56 = "BitStatusLine56";
+    public static final String LINE_BIT_STATUS78 = "BitStatusLine78";
 
     public static final ModbusRegisterData[] modbusRegisterData = new ModbusRegisterData[]{
             new ModbusRegisterData(STATUS_FLAGS, 1, DataType.TWO_BYTE_INT_UNSIGNED),
@@ -60,6 +67,10 @@ public class Modbus4jActor implements IModbusActor {
             new ModbusRegisterData(LITERS_NEEDED6, 23, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(LITERS_NEEDED7, 24, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(LITERS_NEEDED8, 25, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LINE_BIT_STATUS12, 26, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LINE_BIT_STATUS34, 27, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LINE_BIT_STATUS56, 28, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LINE_BIT_STATUS78, 29, DataType.TWO_BYTE_INT_UNSIGNED),
     };
 
     public Modbus4jActor(String host, int port) {
@@ -139,9 +150,27 @@ public class Modbus4jActor implements IModbusActor {
             sadInfo.LineStatuses[6].LitersNeeded = results.getIntValue(LITERS_NEEDED7);
             sadInfo.LineStatuses[7].LitersNeeded = results.getIntValue(LITERS_NEEDED8);
 
+            int lineBitStatus12 = results.getIntValue(LINE_BIT_STATUS12);
+            updateLineInfo(lineBitStatus12, sadInfo.LineStatuses[0], sadInfo.LineStatuses[1]);
+            int lineBitStatus34 = results.getIntValue(LINE_BIT_STATUS34);
+            updateLineInfo(lineBitStatus34, sadInfo.LineStatuses[2], sadInfo.LineStatuses[3]);
+            int lineBitStatus56 = results.getIntValue(LINE_BIT_STATUS56);
+            updateLineInfo(lineBitStatus56, sadInfo.LineStatuses[4], sadInfo.LineStatuses[5]);
+            int lineBitStatus78 = results.getIntValue(LINE_BIT_STATUS78);
+            updateLineInfo(lineBitStatus78, sadInfo.LineStatuses[6], sadInfo.LineStatuses[7]);
+
         }
 
         return sadInfo;
+    }
+
+    private void updateLineInfo(int lineBitStatus, DrainLineInfo lineInfo1, DrainLineInfo lineInfo2) {
+        byte lineBitStatus1 = (byte) lineBitStatus;
+        byte lineBitStatus2 = (byte) (lineBitStatus >> 8);
+        DrainLineBitStatus status1 = new DrainLineBitStatus(lineBitStatus1);
+        status1.UpdateDrainLineInfo(lineInfo1);
+        DrainLineBitStatus status2 = new DrainLineBitStatus(lineBitStatus2);
+        status2.UpdateDrainLineInfo(lineInfo2);
     }
 
     @Override
