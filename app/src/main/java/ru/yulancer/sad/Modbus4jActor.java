@@ -10,8 +10,6 @@ import com.serotonin.modbus4j.ip.IpParameters;
 import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.msg.WriteCoilRequest;
 import com.serotonin.modbus4j.msg.WriteCoilResponse;
-import com.serotonin.modbus4j.msg.WriteCoilsRequest;
-import com.serotonin.modbus4j.msg.WriteCoilsResponse;
 
 /**
  * Created by matveev_yuri on 10.03.2016.
@@ -20,6 +18,49 @@ public class Modbus4jActor implements IModbusActor {
 
     public String mHost;
     public int mPort;
+
+
+    public static final String STATUS_FLAGS = "StatusFlags";
+    public static final String AIR_TEMPERATURE = "AirTemperature";
+    public static final String FROST_SETPOINT_TEMPERATURE = "FrostSetpointTemperature";
+    public static final String LITERS_DRAINED1 = "LitersDrained1";
+    public static final String LITERS_DRAINED2 = "LitersDrained2";
+    public static final String LITERS_DRAINED3 = "LitersDrained3";
+    public static final String LITERS_DRAINED4 = "LitersDrained4";
+    public static final String LITERS_DRAINED5 = "LitersDrained5";
+    public static final String LITERS_DRAINED6 = "LitersDrained6";
+    public static final String LITERS_DRAINED7 = "LitersDrained7";
+    public static final String LITERS_DRAINED8 = "LitersDrained8";
+    public static final String LITERS_NEEDED1 = "LitersNeeded1";
+    public static final String LITERS_NEEDED2 = "LitersNeeded2";
+    public static final String LITERS_NEEDED3 = "LitersNeeded3";
+    public static final String LITERS_NEEDED4 = "LitersNeeded4";
+    public static final String LITERS_NEEDED5 = "LitersNeeded5";
+    public static final String LITERS_NEEDED6 = "LitersNeeded6";
+    public static final String LITERS_NEEDED7 = "LitersNeeded7";
+    public static final String LITERS_NEEDED8 = "LitersNeeded8";
+
+    public static final ModbusRegisterData[] modbusRegisterData = new ModbusRegisterData[]{
+            new ModbusRegisterData(STATUS_FLAGS, 1, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(AIR_TEMPERATURE, 4, DataType.FOUR_BYTE_FLOAT_SWAPPED),
+            new ModbusRegisterData(FROST_SETPOINT_TEMPERATURE, 6, DataType.FOUR_BYTE_FLOAT_SWAPPED),
+            new ModbusRegisterData(LITERS_DRAINED1, 10, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_DRAINED2, 11, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_DRAINED3, 12, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_DRAINED4, 13, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_DRAINED5, 14, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_DRAINED6, 15, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_DRAINED7, 16, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_DRAINED8, 17, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_NEEDED1, 18, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_NEEDED2, 19, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_NEEDED3, 20, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_NEEDED4, 21, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_NEEDED5, 22, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_NEEDED6, 23, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_NEEDED7, 24, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(LITERS_NEEDED8, 25, DataType.TWO_BYTE_INT_UNSIGNED),
+    };
 
     public Modbus4jActor(String host, int port) {
         mHost = host;
@@ -46,32 +87,12 @@ public class Modbus4jActor implements IModbusActor {
 
         ModbusMaster master = CreateMaster();
 
-        BatchResults<Integer> results = null;
-        BatchRead<Integer> batch = new BatchRead<>();
+        BatchResults<String> results = null;
+        BatchRead<String> batch = new BatchRead<>();
         int slaveId = 1;
 
-        batch.addLocator(1, BaseLocator.holdingRegister(slaveId, 1, DataType.TWO_BYTE_INT_UNSIGNED));
-        // температуры
-        batch.addLocator(2, BaseLocator.holdingRegister(slaveId, 4, DataType.FOUR_BYTE_FLOAT_SWAPPED));
-        batch.addLocator(3, BaseLocator.holdingRegister(slaveId, 6, DataType.FOUR_BYTE_FLOAT_SWAPPED));
-        // Литры вылитые
-        batch.addLocator(4, BaseLocator.holdingRegister(slaveId, 10, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(5, BaseLocator.holdingRegister(slaveId, 11, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(6, BaseLocator.holdingRegister(slaveId, 12, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(7, BaseLocator.holdingRegister(slaveId, 13, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(8, BaseLocator.holdingRegister(slaveId, 14, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(9, BaseLocator.holdingRegister(slaveId, 15, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(10, BaseLocator.holdingRegister(slaveId, 16, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(11, BaseLocator.holdingRegister(slaveId, 17, DataType.TWO_BYTE_INT_UNSIGNED));
-        // Литры требуемые
-        batch.addLocator(12, BaseLocator.holdingRegister(slaveId, 18, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(13, BaseLocator.holdingRegister(slaveId, 19, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(14, BaseLocator.holdingRegister(slaveId, 20, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(15, BaseLocator.holdingRegister(slaveId, 21, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(16, BaseLocator.holdingRegister(slaveId, 22, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(17, BaseLocator.holdingRegister(slaveId, 23, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(18, BaseLocator.holdingRegister(slaveId, 24, DataType.TWO_BYTE_INT_UNSIGNED));
-        batch.addLocator(19, BaseLocator.holdingRegister(slaveId, 25, DataType.TWO_BYTE_INT_UNSIGNED));
+        for (ModbusRegisterData registerData : modbusRegisterData)
+            batch.addLocator(registerData.RegisterId, BaseLocator.holdingRegister(slaveId, registerData.RegisterNumber, registerData.RegisterType));
 
         try {
             master.init();
@@ -84,7 +105,7 @@ public class Modbus4jActor implements IModbusActor {
 
         if (results != null) {
 
-            int flags = results.getIntValue(1);
+            int flags = results.getIntValue(STATUS_FLAGS);
             sadInfo.GardenWaterOn = (flags & 1) == 1;
             sadInfo.SaunaWaterOn = (flags & 2) == 2;
             sadInfo.PumpPowerOn = (flags & 4) == 4;
@@ -96,26 +117,27 @@ public class Modbus4jActor implements IModbusActor {
 
             sadInfo.ValveOpenStatuses = (byte) (flags >> 8);
 
-            sadInfo.AirTemperature = results.getFloatValue(2);
-            sadInfo.FrostTemperature = results.getFloatValue(3);
+            sadInfo.AirTemperature = results.getFloatValue(AIR_TEMPERATURE);
+            sadInfo.FrostTemperature = results.getFloatValue(FROST_SETPOINT_TEMPERATURE);
 
-            sadInfo.LitersDrained1 = results.getIntValue(4);
-            sadInfo.LitersDrained2 = results.getIntValue(5);
-            sadInfo.LitersDrained3 = results.getIntValue(6);
-            sadInfo.LitersDrained4 = results.getIntValue(7);
-            sadInfo.LitersDrained5 = results.getIntValue(8);
-            sadInfo.LitersDrained6 = results.getIntValue(9);
-            sadInfo.LitersDrained7 = results.getIntValue(10);
-            sadInfo.LitersDrained8 = results.getIntValue(11);
+            sadInfo.LineStatuses[0].LitersDrained = results.getIntValue(LITERS_DRAINED1);
+            sadInfo.LineStatuses[1].LitersDrained = results.getIntValue(LITERS_DRAINED2);
+            sadInfo.LineStatuses[2].LitersDrained = results.getIntValue(LITERS_DRAINED3);
+            sadInfo.LineStatuses[3].LitersDrained = results.getIntValue(LITERS_DRAINED4);
+            sadInfo.LineStatuses[4].LitersDrained = results.getIntValue(LITERS_DRAINED5);
+            sadInfo.LineStatuses[5].LitersDrained = results.getIntValue(LITERS_DRAINED6);
+            sadInfo.LineStatuses[6].LitersDrained = results.getIntValue(LITERS_DRAINED7);
+            sadInfo.LineStatuses[7].LitersDrained = results.getIntValue(LITERS_DRAINED8);
 
-            sadInfo.LitersNeeded1 = results.getIntValue(12);
-            sadInfo.LitersNeeded2 = results.getIntValue(13);
-            sadInfo.LitersNeeded3 = results.getIntValue(14);
-            sadInfo.LitersNeeded4 = results.getIntValue(15);
-            sadInfo.LitersNeeded5 = results.getIntValue(16);
-            sadInfo.LitersNeeded6 = results.getIntValue(17);
-            sadInfo.LitersNeeded7 = results.getIntValue(18);
-            sadInfo.LitersNeeded8 = results.getIntValue(19);
+
+            sadInfo.LineStatuses[0].LitersNeeded = results.getIntValue(LITERS_NEEDED1);
+            sadInfo.LineStatuses[1].LitersNeeded = results.getIntValue(LITERS_NEEDED2);
+            sadInfo.LineStatuses[2].LitersNeeded = results.getIntValue(LITERS_NEEDED3);
+            sadInfo.LineStatuses[3].LitersNeeded = results.getIntValue(LITERS_NEEDED4);
+            sadInfo.LineStatuses[4].LitersNeeded = results.getIntValue(LITERS_NEEDED5);
+            sadInfo.LineStatuses[5].LitersNeeded = results.getIntValue(LITERS_NEEDED6);
+            sadInfo.LineStatuses[6].LitersNeeded = results.getIntValue(LITERS_NEEDED7);
+            sadInfo.LineStatuses[7].LitersNeeded = results.getIntValue(LITERS_NEEDED8);
 
         }
 

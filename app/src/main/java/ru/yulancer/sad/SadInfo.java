@@ -2,6 +2,12 @@ package ru.yulancer.sad;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * Created by matveev_yuri on 10.03.2016.
@@ -25,27 +31,12 @@ public class SadInfo implements Parcelable {
     public float AirTemperature;
     public float FrostTemperature;
 
-    public int LitersDrained1;
-    public int LitersDrained2;
-    public int LitersDrained3;
-    public int LitersDrained4;
-    public int LitersDrained5;
-    public int LitersDrained6;
-    public int LitersDrained7;
-    public int LitersDrained8;
-
-    public int LitersNeeded1;
-    public int LitersNeeded2;
-    public int LitersNeeded3;
-    public int LitersNeeded4;
-    public int LitersNeeded5;
-    public int LitersNeeded6;
-    public int LitersNeeded7;
-    public int LitersNeeded8;
-
+    public DrainLineInfo[] LineStatuses = new  DrainLineInfo[8];
 
     public SadInfo() {
-
+        for (int i = 0; i < LineStatuses.length; i++        ){
+            LineStatuses[i] = new DrainLineInfo();
+        }
     }
 
     protected SadInfo(Parcel in) {
@@ -66,35 +57,18 @@ public class SadInfo implements Parcelable {
         AirTemperature = in.readFloat();
         FrostTemperature = in.readFloat();
 
-        LitersDrained1 = in.readInt();
-        LitersDrained2 = in.readInt();
-        LitersDrained3 = in.readInt();
-        LitersDrained4 = in.readInt();
-        LitersDrained5 = in.readInt();
-        LitersDrained6 = in.readInt();
-        LitersDrained7 = in.readInt();
-        LitersDrained8 = in.readInt();
-
-        LitersNeeded1 = in.readInt();
-        LitersNeeded2 = in.readInt();
-        LitersNeeded3 = in.readInt();
-        LitersNeeded4 = in.readInt();
-        LitersNeeded5 = in.readInt();
-        LitersNeeded6 = in.readInt();
-        LitersNeeded7 = in.readInt();
-        LitersNeeded8 = in.readInt();
-
+        LineStatuses = in.createTypedArray(CREATOR);
     }
 
-    public static final Creator<SadInfo> CREATOR = new Creator<SadInfo>() {
+    public static final Creator<DrainLineInfo> CREATOR = new Creator<DrainLineInfo>() {
         @Override
-        public SadInfo createFromParcel(Parcel in) {
-            return new SadInfo(in);
+        public DrainLineInfo createFromParcel(Parcel in) {
+            return new DrainLineInfo(in);
         }
 
         @Override
-        public SadInfo[] newArray(int size) {
-            return new SadInfo[size];
+        public DrainLineInfo[] newArray(int size) {
+            return new DrainLineInfo[size];
         }
     };
 
@@ -121,5 +95,8 @@ public class SadInfo implements Parcelable {
 
         dest.writeFloat(AirTemperature);
         dest.writeFloat(FrostTemperature);
+
+        dest.writeTypedArray(LineStatuses, 0);
+
     }
 }
