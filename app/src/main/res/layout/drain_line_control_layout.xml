@@ -10,26 +10,45 @@
         android:layout_width="70dip"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:gravity="right"
+        android:gravity="end"
+        android:layout_marginRight="4dp"
         android:text="Line" />
 
-    <ru.yulancer.sad.ProgressTextView
-        android:id="@+id/pbDrainProgress"
-        style="?android:attr/progressBarStyleHorizontal"
+    <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="4dp"
-        android:layout_weight="1"
-        android:background="@drawable/progress_background"
-        android:gravity="center" />
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1">
+
+        <ru.yulancer.sad.ProgressTextView
+            android:id="@+id/pbDrainProgress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:background="@drawable/progress_background"
+            android:gravity="center"
+            android:visibility="invisible" />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tvLitersNeeded"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:text="1000"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageButton
         android:id="@+id/btn_EditNeeded"
         style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:drawable/ic_menu_edit"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:background="@drawable/ic_action_edit"
         android:contentDescription="Edit"
         android:text="Edit" />
 

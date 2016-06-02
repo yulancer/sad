@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -16,6 +17,8 @@ import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -25,6 +28,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
     //private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
     private IModbusActor mActivityActor = new Modbus4jActor("10.0.2.2", 502);
     private SadInfo mSadInfo = new SadInfo();
+
+    private ArrayList<DrainLineControl> mDrainLineControls;
 
     //////////////////////
     ///@Overridden methods
@@ -75,7 +80,23 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             swPond.setOnCheckedChangeListener(this);
         }
 
+        ViewGroup root = (ViewGroup) findViewById(R.id.layoutDrain);
+        mDrainLineControls = drainLineControlList(root);
         recreateRefreshTimer();
+    }
+
+    private ArrayList<DrainLineControl> drainLineControlList(ViewGroup root) {
+        ArrayList<DrainLineControl> drainLineControlList = new ArrayList<>();
+        final int childCount = root.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            final View child = root.getChildAt(i);
+            if (child instanceof DrainLineControl) {
+                drainLineControlList.add((DrainLineControl) child);
+            } else if (child instanceof ViewGroup) {
+                drainLineControlList.addAll(drainLineControlList((ViewGroup) child));
+            }
+        }
+        return drainLineControlList;
     }
 
     @Override
@@ -159,21 +180,22 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             }
 
             CheckBox cbPressure = (CheckBox) findViewById(R.id.cbPressure);
-            if(cbPressure!= null){
+            if (cbPressure != null) {
                 cbPressure.setChecked(mSadInfo.SadWaterPressureOK);
             }
             CheckBox cbIsNight = (CheckBox) findViewById(R.id.cbIsNight);
-            if(cbIsNight!= null){
+            if (cbIsNight != null) {
                 cbIsNight.setChecked(mSadInfo.PhotoSensorDark);
             }
             CheckBox cbIsRain = (CheckBox) findViewById(R.id.cbIsRain);
-            if(cbIsRain!= null){
+            if (cbIsRain != null) {
                 cbIsRain.setChecked(mSadInfo.RainSensorWet);
             }
             CheckBox cbIsFrost = (CheckBox) findViewById(R.id.cbIsFrost);
-            if(cbIsFrost!= null){
+            if (cbIsFrost != null) {
                 cbIsFrost.setChecked(mSadInfo.Frost);
             }
+
 
             if (tvException != null && tvException.getVisibility() != View.GONE) {
                 tvException.setVisibility(View.GONE);
