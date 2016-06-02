@@ -7,11 +7,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -23,7 +25,8 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class MainActivity extends AppCompatActivity implements CompoundButton.OnCheckedChangeListener {
+public class MainActivity extends AppCompatActivity
+        implements CompoundButton.OnCheckedChangeListener {
 
     private Timer mTimer;
     //private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
@@ -116,6 +119,15 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
             StartStopSomethingTask task = new StartStopSomethingTask();
             task.execute(offset);
         }
+    }
+
+
+    //////////////////
+    ///public
+    /////////////////
+    public void ShowNeededLitersDialog(int lineNumber){
+        int litersNeeded = mSadInfo.LineStatuses[lineNumber-1].LitersNeeded;
+        Toast.makeText(this, String.format("LitersNeeded for line %d is now %d", lineNumber, litersNeeded), Toast.LENGTH_SHORT).show();
     }
 
 
@@ -264,6 +276,8 @@ public class MainActivity extends AppCompatActivity implements CompoundButton.On
         }
         return drainLineControlList;
     }
+
+
 
     /*  классы тасков */
     class SaunaQueryTask extends TimerTask {

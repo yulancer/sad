@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -14,7 +15,7 @@ import static ru.yulancer.sad.R.id.swPump;
 /**
  * Created by matveev_yuri on 01.06.2016.
  */
-public class DrainLineControl extends RelativeLayout {
+public class DrainLineControl extends RelativeLayout implements View.OnClickListener {
 
     private TextView mTitleView;
     private ProgressTextView mProgressBar;
@@ -70,9 +71,21 @@ public class DrainLineControl extends RelativeLayout {
         return mLineNumber;
     }
 
+    public void onClick(View v) {
+        ImageButton ib = (ImageButton) v;
+        if (ib != null) {
+            MainActivity mainActivity = (MainActivity) getContext();
+            if (mainActivity != null) {
+                mainActivity.ShowNeededLitersDialog(mLineNumber);
+            }
+        }
+    }
+
     private void findViews() {
         mTitleView = (TextView) findViewById(R.id.tv_LineTitle);
         mProgressBar = (ProgressTextView) findViewById(R.id.pbDrainProgress);
         mEditButton = (ImageButton) findViewById(R.id.btn_EditNeeded);
+        if (mEditButton != null)
+            mEditButton.setOnClickListener(this);
     }
 }
