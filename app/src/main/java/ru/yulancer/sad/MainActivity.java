@@ -24,6 +24,8 @@ import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static ru.yulancer.sad.MainActivity.SetNeededLitersTask.*;
+
 public class MainActivity extends AppCompatActivity
         implements CompoundButton.OnCheckedChangeListener, LitersNeededInputDialog.OnLitersNeededChangedListener {
 
@@ -294,8 +296,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLitersNeededChanged(byte lineNumber, int litersNeeded) {
-        String msg = String.format(Locale.getDefault(), "для линии %d надо %d", lineNumber, litersNeeded);
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+//        String msg = String.format(Locale.getDefault(), "для линии %d надо %d", lineNumber, litersNeeded);
+//        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        SetNeededLitersTaskParams taskParams = new SetNeededLitersTaskParams(lineNumber, litersNeeded);
+        SetNeededLitersTask task = new SetNeededLitersTask();
+        task.execute(taskParams);
     }
 
 
@@ -360,6 +365,24 @@ public class MainActivity extends AppCompatActivity
         protected Void doInBackground(Object... params) {
             byte offset = (byte) params[0];
             mActivityActor.SendSwitchSignal(offset);
+            return null;
+        }
+    }
+     class SetNeededLitersTaskParams{
+        public byte mLineNumber;
+        public int mNeededLiters;
+
+        public SetNeededLitersTaskParams(byte lineNumber, int neededLiters){
+            mLineNumber = lineNumber;
+            mNeededLiters = neededLiters;
+        }
+    }
+     class SetNeededLitersTask extends BaseCommunicationTask {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            SetNeededLitersTaskParams param = (SetNeededLitersTaskParams) params[0];
+            mActivityActor.SetNeededLiters(param.mLineNumber, param.mNeededLiters);
             return null;
         }
     }

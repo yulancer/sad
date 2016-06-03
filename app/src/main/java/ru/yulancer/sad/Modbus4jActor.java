@@ -10,6 +10,8 @@ import com.serotonin.modbus4j.ip.IpParameters;
 import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.msg.WriteCoilRequest;
 import com.serotonin.modbus4j.msg.WriteCoilResponse;
+import com.serotonin.modbus4j.msg.WriteRegisterRequest;
+import com.serotonin.modbus4j.msg.WriteRegisterResponse;
 
 /**
  * Created by matveev_yuri on 10.03.2016.
@@ -193,5 +195,24 @@ public class Modbus4jActor implements IModbusActor {
                 e.printStackTrace();
             }
         master.destroy();
+    }
+
+    @Override
+    public void SetNeededLiters(byte lineNumber, int neededLiters) {
+        final int firstNeededLitersRegister = 30;
+        int lineRegister = firstNeededLitersRegister + lineNumber - 1;
+
+        ModbusMaster master = CreateMaster();
+
+        int slaveId = 1;
+        if (master.testSlaveNode(slaveId))
+            try {
+                WriteRegisterRequest request = new WriteRegisterRequest(slaveId, lineRegister, neededLiters);
+                WriteRegisterResponse response = (WriteRegisterResponse) master.send(request);
+            } catch (ModbusTransportException e) {
+                e.printStackTrace();
+            }
+        master.destroy();
+
     }
 }

@@ -6,6 +6,7 @@ package ru.yulancer.sad;
 public interface IModbusActor {
     public SadInfo GetSadInfo();
     public void SendSwitchSignal(byte offset);
+    public void SetNeededLiters(byte lineNumber, int neededLiters);
 
     public static final byte ManualDrainOffset = 0;
     public static final byte GardenWaterOffset = 1;
