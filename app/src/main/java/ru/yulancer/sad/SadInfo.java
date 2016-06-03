@@ -28,6 +28,9 @@ public class SadInfo implements Parcelable {
 
     public byte ValveOpenStatuses;
 
+    public boolean ErrorNoPressureWhenDrain;
+    public boolean AutoDrainOn;
+
     public float AirTemperature;
     public float FrostTemperature;
 

@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LitersNeededInputDialog">
+
+    <EditText
+        android:layout_width="50dip"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/etNeededLitersDialog"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:text="0000"
+        android:maxLength="4" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="литров для линии 0 надо"
+        android:id="@+id/tvNeededLitersDialogLabel"
+        android:layout_alignParentTop="true"
+        android:layout_alignBaseline="@id/etNeededLitersDialog" />
+
+</RelativeLayout>

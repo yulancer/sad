@@ -21,6 +21,7 @@ public class Modbus4jActor implements IModbusActor {
 
 
     public static final String STATUS_FLAGS = "StatusFlags";
+    public static final String STATUS_FLAGS2 = "StatusFlags2";
     public static final String AIR_TEMPERATURE = "AirTemperature";
     public static final String FROST_SETPOINT_TEMPERATURE = "FrostSetpointTemperature";
 
@@ -49,6 +50,7 @@ public class Modbus4jActor implements IModbusActor {
 
     public static final ModbusRegisterData[] modbusRegisterData = new ModbusRegisterData[]{
             new ModbusRegisterData(STATUS_FLAGS, 1, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(STATUS_FLAGS2, 3, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(AIR_TEMPERATURE, 4, DataType.FOUR_BYTE_FLOAT_SWAPPED),
             new ModbusRegisterData(FROST_SETPOINT_TEMPERATURE, 6, DataType.FOUR_BYTE_FLOAT_SWAPPED),
             new ModbusRegisterData(LITERS_DRAINED1, 10, DataType.TWO_BYTE_INT_UNSIGNED),
@@ -127,6 +129,11 @@ public class Modbus4jActor implements IModbusActor {
             sadInfo.Frost = (flags & 128) == 128;
 
             sadInfo.ValveOpenStatuses = (byte) (flags >> 8);
+
+
+            int flags2 = results.getIntValue(STATUS_FLAGS2);
+            sadInfo.ErrorNoPressureWhenDrain = (flags2 & 1) == 1;//первый бит
+            sadInfo.AutoDrainOn = (flags2 & 256) == 256;      //девятый бит
 
             sadInfo.AirTemperature = results.getFloatValue(AIR_TEMPERATURE);
             sadInfo.FrostTemperature = results.getFloatValue(FROST_SETPOINT_TEMPERATURE);

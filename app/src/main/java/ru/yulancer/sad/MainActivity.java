@@ -1,13 +1,13 @@
 package ru.yulancer.sad;
 
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -20,13 +20,12 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity
-        implements CompoundButton.OnCheckedChangeListener {
+        implements CompoundButton.OnCheckedChangeListener, LitersNeededInputDialog.OnLitersNeededChangedListener {
 
     private Timer mTimer;
     //private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
@@ -84,6 +83,11 @@ public class MainActivity extends AppCompatActivity
             swPond.setOnCheckedChangeListener(this);
         }
 
+        Switch swAutoDrain = (Switch) findViewById(R.id.swAutoDrain);
+        if (swAutoDrain != null) {
+            swAutoDrain.setOnCheckedChangeListener(this);
+        }
+
         ViewGroup root = (ViewGroup) findViewById(R.id.layoutDrain);
         mDrainLineControls = drainLineControlList(root);
         recreateRefreshTimer();
@@ -112,6 +116,10 @@ public class MainActivity extends AppCompatActivity
                 offset = IModbusActor.SaunaWaterOffset;
                 switchNeeded = isChecked != mSadInfo.SaunaWaterOn;
                 break;
+            case R.id.swAutoDrain:
+                offset = IModbusActor.ManualDrainOffset;
+                switchNeeded = isChecked != mSadInfo.AutoDrainOn;
+                break;
             default:
                 switchNeeded = false;
         }
@@ -125,10 +133,13 @@ public class MainActivity extends AppCompatActivity
     //////////////////
     ///public
     /////////////////
-    public void ShowNeededLitersDialog(int lineNumber){
-        int litersNeeded = mSadInfo.LineStatuses[lineNumber-1].LitersNeeded;
-        Toast.makeText(this, String.format("LitersNeeded for line %d is now %d", lineNumber, litersNeeded), Toast.LENGTH_SHORT).show();
-    }
+    public void ShowNeededLitersDialog(int lineNumber) {
+        int litersNeeded = mSadInfo.LineStatuses[lineNumber - 1].LitersNeeded;
+        mTimer.cancel();
+        FragmentManager fm = getSupportFragmentManager();
+        LitersNeededInputDialog dialog = LitersNeededInputDialog.newInstance((byte) lineNumber, litersNeeded);
+        dialog.show(fm, "start");
+     }
 
 
     //////////////////
@@ -196,6 +207,10 @@ public class MainActivity extends AppCompatActivity
                 cbIsFrost.setChecked(mSadInfo.Frost);
             }
 
+            Switch swAutoDrain = (Switch) findViewById(R.id.swAutoDrain);
+            if (swAutoDrain != null) {
+                swAutoDrain.setChecked(mSadInfo.AutoDrainOn);
+            }
 
             for (int i = 1; i <= 8; i++) {
                 DrainLineControl lineControl = findByLineNumber(i);
@@ -277,9 +292,16 @@ public class MainActivity extends AppCompatActivity
         return drainLineControlList;
     }
 
+    @Override
+    public void onLitersNeededChanged(byte lineNumber, int LitersNeeded) {
+        Toast.makeText(this, "qq", Toast.LENGTH_SHORT);
+    }
 
 
+    /******************/
     /*  классы тасков */
+
+    /*****************/
     class SaunaQueryTask extends TimerTask {
 
         private void switchProgress(boolean on) {
