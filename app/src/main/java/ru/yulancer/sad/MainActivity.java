@@ -13,7 +13,6 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -23,8 +22,6 @@ import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
-
-import static ru.yulancer.sad.MainActivity.SetNeededLitersTask.*;
 
 public class MainActivity extends AppCompatActivity
         implements CompoundButton.OnCheckedChangeListener, LitersNeededInputDialog.OnLitersNeededChangedListener {
@@ -141,7 +138,17 @@ public class MainActivity extends AppCompatActivity
         FragmentManager fm = getSupportFragmentManager();
         LitersNeededInputDialog dialog = LitersNeededInputDialog.newInstance((byte) lineNumber, litersNeeded);
         dialog.show(fm, "start");
-     }
+    }
+
+    public void StartDrainLine(byte lineNumber, boolean isChecked) {
+        boolean isValveOpen = mSadInfo.LineStatuses[lineNumber].ValveOpen;
+        boolean switchNeeded = isChecked != isValveOpen;
+        if (switchNeeded) {
+            byte offset = (byte) (lineNumber + 7);
+            StartStopSomethingTask task = new StartStopSomethingTask();
+            task.execute(offset);
+        }
+    }
 
 
     //////////////////
@@ -166,8 +173,8 @@ public class MainActivity extends AppCompatActivity
         if (mTimer != null)
             mTimer.cancel();
         mTimer = new Timer();
-        SaunaQueryTask saunaQueryTask = new SaunaQueryTask();
-        mTimer.schedule(saunaQueryTask, 1000, 30000);
+        SadQueryTask sadQueryTask = new SadQueryTask();
+        mTimer.schedule(sadQueryTask, 1000, 30000);
     }
 
     private void RefreshSadInfo() {
@@ -251,6 +258,14 @@ public class MainActivity extends AppCompatActivity
         TextView tvLitersNeeded = (TextView) lineControl.findViewById(R.id.tvLitersNeeded);
         if (tvLitersNeeded != null)
             tvLitersNeeded.setText(String.format(Locale.getDefault(), "%d", lineStatus.LitersNeeded));
+
+        CheckBox cbStart = (CheckBox) lineControl.findViewById(R.id.cbStart);
+        if (cbStart != null) {
+            boolean isValveOpen = cbStart.isChecked();
+            if (isValveOpen != lineStatus.ValveOpen)
+                cbStart.setChecked(lineStatus.ValveOpen);
+        }
+
         ProgressTextView pbDrainProgress = (ProgressTextView) lineControl.findViewById(R.id.pbDrainProgress);
         if (pbDrainProgress != null) {
             if (pbDrainProgress.getMaxValue() != lineStatus.LitersNeeded)
@@ -308,7 +323,7 @@ public class MainActivity extends AppCompatActivity
     /*  классы тасков */
 
     /*****************/
-    class SaunaQueryTask extends TimerTask {
+    class SadQueryTask extends TimerTask {
 
         private void switchProgress(boolean on) {
             ProgressBar bar = (ProgressBar) findViewById(R.id.progressBar);
@@ -368,16 +383,18 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
     }
-     class SetNeededLitersTaskParams{
+
+    class SetNeededLitersTaskParams {
         public byte mLineNumber;
         public int mNeededLiters;
 
-        public SetNeededLitersTaskParams(byte lineNumber, int neededLiters){
+        public SetNeededLitersTaskParams(byte lineNumber, int neededLiters) {
             mLineNumber = lineNumber;
             mNeededLiters = neededLiters;
         }
     }
-     class SetNeededLitersTask extends BaseCommunicationTask {
+
+    class SetNeededLitersTask extends BaseCommunicationTask {
 
         @Override
         protected Void doInBackground(Object... params) {

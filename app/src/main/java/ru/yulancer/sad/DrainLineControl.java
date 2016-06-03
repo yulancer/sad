@@ -5,12 +5,10 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import static ru.yulancer.sad.R.id.swPump;
 
 /**
  * Created by matveev_yuri on 01.06.2016.
@@ -20,7 +18,9 @@ public class DrainLineControl extends RelativeLayout implements View.OnClickList
     private TextView mTitleView;
     private ProgressTextView mProgressBar;
     private ImageButton mEditButton;
-    private int mLineNumber;
+    private CheckBox mStartCheckBox;
+
+    private byte mLineNumber;
 
     public DrainLineControl(Context context) {
         super(context);
@@ -48,7 +48,7 @@ public class DrainLineControl extends RelativeLayout implements View.OnClickList
 
         try {
             mTitleView.setText(a.getString(R.styleable.DrainLineControl_lineTitle));
-            mLineNumber = a.getInt(R.styleable.DrainLineControl_lineNumber, 0);
+            mLineNumber = (byte) a.getInt(R.styleable.DrainLineControl_lineNumber, 0);
         } finally {
             a.recycle();
         }
@@ -72,11 +72,21 @@ public class DrainLineControl extends RelativeLayout implements View.OnClickList
     }
 
     public void onClick(View v) {
-        ImageButton ib = (ImageButton) v;
-        if (ib != null) {
-            MainActivity mainActivity = (MainActivity) getContext();
-            if (mainActivity != null) {
-                mainActivity.ShowNeededLitersDialog(mLineNumber);
+        MainActivity mainActivity = (MainActivity) getContext();
+        if (mainActivity != null) {
+            /// если это кнопка редактирования литров
+            if (v instanceof ImageButton) {
+                ImageButton ib = (ImageButton) v;
+                if (ib != null) {
+                    mainActivity.ShowNeededLitersDialog(mLineNumber);
+                }
+            }
+            /// если это кнопка ручного включения линии
+            if (v instanceof CheckBox) {
+                CheckBox cb = (CheckBox) v;
+                if (cb != null) {
+                    mainActivity.StartDrainLine(mLineNumber, cb.isChecked());
+                }
             }
         }
     }
@@ -87,5 +97,8 @@ public class DrainLineControl extends RelativeLayout implements View.OnClickList
         mEditButton = (ImageButton) findViewById(R.id.btn_EditNeeded);
         if (mEditButton != null)
             mEditButton.setOnClickListener(this);
+        mStartCheckBox = (CheckBox) findViewById(R.id.cbStart);
+        if (mStartCheckBox != null)
+            mStartCheckBox.setOnClickListener(this);
     }
 }

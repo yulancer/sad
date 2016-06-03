@@ -14,6 +14,12 @@
         android:layout_marginRight="4dp"
         android:text="Line" />
 
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/cbStart"
+        android:checked="false" />
+
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
