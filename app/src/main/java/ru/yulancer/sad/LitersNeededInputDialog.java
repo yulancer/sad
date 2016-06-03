@@ -1,13 +1,25 @@
 package ru.yulancer.sad;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
+import android.opengl.ETC1Util;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v7.app.AlertDialog;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TimePicker;
+
+import org.joda.time.LocalTime;
+
+import java.util.Locale;
 
 
 /**
@@ -18,7 +30,7 @@ import android.widget.TextView;
  * Use the {@link LitersNeededInputDialog#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LitersNeededInputDialog extends DialogFragment {
+public class LitersNeededInputDialog extends DialogFragment implements DialogInterface.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_LineNumber = "LineNumber";
@@ -30,6 +42,8 @@ public class LitersNeededInputDialog extends DialogFragment {
 
     private OnLitersNeededChangedListener mListener;
 
+    private EditText mLitersEditor;
+
     public LitersNeededInputDialog() {
         // Required empty public constructor
     }
@@ -38,7 +52,7 @@ public class LitersNeededInputDialog extends DialogFragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param lineNumber номер линии орошения.
+     * @param lineNumber   номер линии орошения.
      * @param LitersNeeded необходимое количество литров.
      * @return A new instance of fragment LitersNeededInputDialog.
      */
@@ -62,25 +76,18 @@ public class LitersNeededInputDialog extends DialogFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_needed_liters_input_dialog, container, false);
-
-        TextView tvNeededLitersDialogLabel = (TextView) v.findViewById(R.id.tvNeededLitersDialogLabel);
-        if (tvNeededLitersDialogLabel != null){
-            String newText = String.format("литров для линии %d надо", mLineNumber);
-            tvNeededLitersDialogLabel.setText(newText);
-        }
-
-        return v;
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed() {
-        if (mListener != null) {
-            mListener.onLitersNeededChanged(mLineNumber, mLitersNeeded);
-        }
+        View form = getActivity().getLayoutInflater().inflate(R.layout.fragment_needed_liters_input_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        String newText = String.format("литров для линии %d надо", mLineNumber);
+        Dialog dialog = builder.setTitle(newText).setView(form)
+                .setPositiveButton(android.R.string.ok, this)
+                .setNegativeButton(android.R.string.cancel, null).create();
+        mLitersEditor = (EditText) form.findViewById(R.id.etNeededLitersDialog);
+        if (mLitersEditor != null)
+            mLitersEditor.setText(String.format(Locale.getDefault(), "%d", mLitersNeeded));
+        return dialog;
     }
 
     @Override
@@ -98,6 +105,13 @@ public class LitersNeededInputDialog extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        String newText = String.valueOf(mLitersEditor.getText());
+        mLitersNeeded = Integer.parseInt(newText);
+        mListener.onLitersNeededChanged(mLineNumber, mLitersNeeded);
     }
 
     /**

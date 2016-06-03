@@ -293,8 +293,9 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onLitersNeededChanged(byte lineNumber, int LitersNeeded) {
-        Toast.makeText(this, "qq", Toast.LENGTH_SHORT);
+    public void onLitersNeededChanged(byte lineNumber, int litersNeeded) {
+        String msg = String.format(Locale.getDefault(), "для линии %d надо %d", lineNumber, litersNeeded);
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
 
