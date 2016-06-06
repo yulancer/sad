@@ -228,6 +228,12 @@ public class MainActivity extends AppCompatActivity
                 }
             }
 
+            TextView tvAirTemp = (TextView) findViewById(R.id.tvAirTemp);
+            if (tvAirTemp != null){
+                String temperatureText = String.format(Locale.getDefault(), "%.1f °C", mSadInfo.AirTemperature);
+                tvAirTemp.setText(temperatureText);
+            }
+
             if (tvException != null && tvException.getVisibility() != View.GONE) {
                 tvException.setVisibility(View.GONE);
                 tvException.setText("");
