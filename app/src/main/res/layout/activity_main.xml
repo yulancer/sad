@@ -218,7 +218,9 @@
                 android:text="\??.? С"
                 android:id="@+id/tvAirTemp"
                 android:textSize="30dp"
-                android:textIsSelectable="true" />
+                android:textIsSelectable="true"
+                android:textColor="@color/abc_input_method_navigation_guard"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
