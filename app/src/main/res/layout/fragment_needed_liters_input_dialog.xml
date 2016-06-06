@@ -7,7 +7,7 @@
     <EditText
         android:layout_width="50dip"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:inputType="numberSigned"
         android:ems="10"
         android:id="@+id/etNeededLitersDialog"
         android:text="0000"

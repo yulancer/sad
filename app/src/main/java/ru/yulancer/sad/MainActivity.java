@@ -311,8 +311,16 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onLitersNeededChanged(byte lineNumber, int litersNeeded) {
-//        String msg = String.format(Locale.getDefault(), "для линии %d надо %d", lineNumber, litersNeeded);
-//        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+
+        // сразу обновим показания на экране в расчете на передачу без ошибок
+        DrainLineControl lineControl = mDrainLineControls.get(lineNumber - 1);
+        if (lineControl != null) {
+            int newLiters = litersNeeded > 0 ? litersNeeded : 0;
+            TextView tvLitersNeeded = (TextView) lineControl.findViewById(R.id.tvLitersNeeded);
+            if (tvLitersNeeded != null)
+                tvLitersNeeded.setText(newLiters + "");
+        }
+
         SetNeededLitersTaskParams taskParams = new SetNeededLitersTaskParams(lineNumber, litersNeeded);
         SetNeededLitersTask task = new SetNeededLitersTask();
         task.execute(taskParams);
