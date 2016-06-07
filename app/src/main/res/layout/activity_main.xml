@@ -162,19 +162,28 @@
                         android:text="Мороз" />
                 </RelativeLayout>
 
-                <RelativeLayout
-                    android:id="@+id/layoutSettings"
+                <LinearLayout
+                    android:id="@+id/layoutSchedule"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textView3"
+                        android:id="@+id/tvCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Medium Text 3"
                         android:textAppearance="?android:attr/textAppearanceMedium" />
-                </RelativeLayout>
+
+                    <Button
+                        style="?android:attr/buttonStyleSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Get Count"
+                        android:id="@+id/btnGetCount" />
+
+
+                </LinearLayout>
             </FrameLayout>
         </LinearLayout>
     </TabHost>

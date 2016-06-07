@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -24,7 +25,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity
-        implements CompoundButton.OnCheckedChangeListener, LitersNeededInputDialog.OnLitersNeededChangedListener {
+        implements CompoundButton.OnCheckedChangeListener,
+        View.OnClickListener,
+        LitersNeededInputDialog.OnLitersNeededChangedListener {
 
     private Timer mTimer;
     private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
@@ -32,6 +35,8 @@ public class MainActivity extends AppCompatActivity
     private SadInfo mSadInfo = new SadInfo();
 
     private ArrayList<DrainLineControl> mDrainLineControls;
+
+    private int mScheduleCount;
 
     //////////////////////
     ///@Overridden methods
@@ -58,7 +63,7 @@ public class MainActivity extends AppCompatActivity
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tagSettings");
-        spec.setContent(R.id.layoutSettings);
+        spec.setContent(R.id.layoutSchedule);
         spec.setIndicator("Настройки");
         tabs.addTab(spec);
 
@@ -89,6 +94,11 @@ public class MainActivity extends AppCompatActivity
 
         ViewGroup root = (ViewGroup) findViewById(R.id.layoutDrain);
         mDrainLineControls = drainLineControlList(root);
+
+        Button btnCount = (Button) findViewById(R.id.btnGetCount);
+        if (btnCount != null)
+            btnCount.setOnClickListener(this);
+
         recreateRefreshTimer();
     }
 
@@ -332,6 +342,23 @@ public class MainActivity extends AppCompatActivity
         task.execute(taskParams);
     }
 
+    @Override
+    public void onClick(View v) {
+        boolean switchNeeded;
+
+        switch (v.getId()) {
+            case R.id.btnGetCount:
+                switchNeeded = true;
+                break;
+            default:
+                switchNeeded = false;
+        }
+        if (switchNeeded) {
+            GetSchedulesCount task = new GetSchedulesCount();
+            task.execute();
+        }
+    }
+
 
     /******************/
     /*  классы тасков */
@@ -395,6 +422,23 @@ public class MainActivity extends AppCompatActivity
             byte offset = (byte) params[0];
             mActivityActor.SendSwitchSignal(offset);
             return null;
+        }
+    }
+
+    class GetSchedulesCount extends BaseCommunicationTask {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            mScheduleCount = mActivityActor.GetSchedulesCount();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void params) {
+            super.onPostExecute(params);
+            TextView tvCount = (TextView) findViewById(R.id.tvCount);
+            if (tvCount != null)
+                tvCount.setText(mScheduleCount+"");
         }
     }
 

@@ -5,13 +5,18 @@ import com.serotonin.modbus4j.BatchResults;
 import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.code.DataType;
+import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.ip.IpParameters;
 import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.msg.WriteCoilRequest;
 import com.serotonin.modbus4j.msg.WriteCoilResponse;
+import com.serotonin.modbus4j.msg.WriteCoilsRequest;
+import com.serotonin.modbus4j.msg.WriteCoilsResponse;
 import com.serotonin.modbus4j.msg.WriteRegisterRequest;
 import com.serotonin.modbus4j.msg.WriteRegisterResponse;
+
+import java.util.ArrayList;
 
 /**
  * Created by matveev_yuri on 10.03.2016.
@@ -76,6 +81,9 @@ public class Modbus4jActor implements IModbusActor {
             new ModbusRegisterData(LINE_BIT_STATUS56, 28, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(LINE_BIT_STATUS78, 29, DataType.TWO_BYTE_INT_UNSIGNED),
     };
+
+    public static final String SCHEDULE_INDEX = "SheduleIndex";
+    public static final ModbusRegisterData mSheduleIndex = new ModbusRegisterData(SCHEDULE_INDEX, 47, DataType.TWO_BYTE_INT_UNSIGNED);
 
     public Modbus4jActor(String host, int port) {
         mHost = host;
@@ -204,6 +212,7 @@ public class Modbus4jActor implements IModbusActor {
 
         ModbusMaster master = CreateMaster();
 
+
         int slaveId = 1;
         if (master.testSlaveNode(slaveId))
             try {
@@ -213,6 +222,48 @@ public class Modbus4jActor implements IModbusActor {
                 e.printStackTrace();
             }
         master.destroy();
+
+    }
+
+    @Override
+    public int GetSchedulesCount() {
+        ModbusMaster master = CreateMaster();
+
+        int slaveId = 1;
+
+
+        BatchResults<String> results = null;
+        BatchRead<String> batch = new BatchRead<>();
+
+        batch.addLocator(mSheduleIndex.RegisterId, BaseLocator.holdingRegister(slaveId, mSheduleIndex.RegisterNumber, mSheduleIndex.RegisterType));
+
+        if (master.testSlaveNode(slaveId))
+            try {
+                WriteCoilsRequest request = new WriteCoilsRequest(slaveId, COMMAND_OFFSET_GET_SCHEDULES_COUNT, new boolean[]{true});
+                WriteCoilsResponse response = (WriteCoilsResponse) master.send(request);
+
+                master.init();
+                results = master.send(batch);
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                master.destroy();
+            }
+
+        if (results != null) {
+            byte data = results.getIntValue(mSheduleIndex.RegisterId).byteValue();
+            return data;
+        }
+        return 0;
+    }
+
+    @Override
+    public DrainSchedule LoadDrainSchedule(int index) {
+        return new DrainSchedule();
+    }
+
+    @Override
+    public void UpdateDrainSchedule(DrainSchedule schedule) {
 
     }
 }
