@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity
     private ArrayList<DrainLineControl> mDrainLineControls;
 
     private int mScheduleCount;
+    private DrainSchedule mSchedule;
 
     //////////////////////
     ///@Overridden methods
@@ -354,23 +355,25 @@ public class MainActivity extends AppCompatActivity
                 switchNeeded = false;
         }
         if (switchNeeded) {
-            DrainSchedule ds = new DrainSchedule();
-            ds.Index = 1;
-            ds.Hour = 23;
-            ds.Minute = 59;
-            ds.Enabled = true;
-            ds.WeekDaysBitFlags = 15;
-            ds.LitersNeeded.add(100);
-            ds.LitersNeeded.add(200);
-            ds.LitersNeeded.add(300);
-            ds.LitersNeeded.add(400);
-            ds.LitersNeeded.add(555);
-            ds.LitersNeeded.add(666);
-            ds.LitersNeeded.add(777);
-            ds.LitersNeeded.add(888);
-
-            SetScheduleTask task = new SetScheduleTask();
-            task.execute(ds);
+//            DrainSchedule ds = new DrainSchedule();
+//            ds.Index = 1;
+//            ds.Hour = 23;
+//            ds.Minute = 59;
+//            ds.Enabled = true;
+//            ds.WeekDaysBitFlags = 15;
+//            ds.LitersNeeded.add(100);
+//            ds.LitersNeeded.add(200);
+//            ds.LitersNeeded.add(300);
+//            ds.LitersNeeded.add(400);
+//            ds.LitersNeeded.add(555);
+//            ds.LitersNeeded.add(666);
+//            ds.LitersNeeded.add(777);
+//            ds.LitersNeeded.add(888);
+//
+//            SetScheduleTask task = new SetScheduleTask();
+//            task.execute(ds);
+            GetScheduleTask task = new GetScheduleTask();
+            task.execute(1);
         }
     }
 
@@ -440,6 +443,24 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    class GetScheduleTask extends BaseCommunicationTask {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            int index = (int) params[0];
+            mSchedule = mActivityActor.GetDrainSchedule(index);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void params) {
+            super.onPostExecute(params);
+            TextView tvCount = (TextView) findViewById(R.id.tvCount);
+            if (tvCount != null)
+                tvCount.setText("получил");
+        }
+    }
+
     class GetSchedulesCountTask extends BaseCommunicationTask {
 
         @Override
@@ -453,7 +474,7 @@ public class MainActivity extends AppCompatActivity
             super.onPostExecute(params);
             TextView tvCount = (TextView) findViewById(R.id.tvCount);
             if (tvCount != null)
-                tvCount.setText(mScheduleCount + "");
+                tvCount.setText(0);
         }
     }
 
@@ -472,7 +493,7 @@ public class MainActivity extends AppCompatActivity
             super.onPostExecute(params);
             TextView tvCount = (TextView) findViewById(R.id.tvCount);
             if (tvCount != null)
-                tvCount.setText(mScheduleCount + "");
+                tvCount.setText("отправил");
         }
     }
 

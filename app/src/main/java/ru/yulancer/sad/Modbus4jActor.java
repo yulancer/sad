@@ -278,7 +278,7 @@ public class Modbus4jActor implements IModbusActor {
     }
 
     @Override
-    public DrainSchedule LoadDrainSchedule(int index) {
+    public DrainSchedule GetDrainSchedule(int index) {
         DrainSchedule schedule = new DrainSchedule();
         schedule.Index = (byte) index;
 
@@ -323,14 +323,15 @@ public class Modbus4jActor implements IModbusActor {
                     schedule.Minute = (byte) (hm >> 8);
                     schedule.Hour = hm.byteValue();
 
-                    schedule.LitersNeeded.set(0, results.getIntValue(SCHEDULE_LITERS1));
-                    schedule.LitersNeeded.set(1, results.getIntValue(SCHEDULE_LITERS2));
-                    schedule.LitersNeeded.set(2, results.getIntValue(SCHEDULE_LITERS3));
-                    schedule.LitersNeeded.set(3, results.getIntValue(SCHEDULE_LITERS4));
-                    schedule.LitersNeeded.set(4, results.getIntValue(SCHEDULE_LITERS5));
-                    schedule.LitersNeeded.set(5, results.getIntValue(SCHEDULE_LITERS6));
-                    schedule.LitersNeeded.set(6, results.getIntValue(SCHEDULE_LITERS7));
-                    schedule.LitersNeeded.set(7, results.getIntValue(SCHEDULE_LITERS8));
+                    schedule.LitersNeeded.clear();
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS1));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS2));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS3));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS4));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS5));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS6));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS7));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS8));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -14,7 +14,7 @@ public interface IModbusActor {
 
     int GetSchedulesCount();
 
-    DrainSchedule LoadDrainSchedule(int index);
+    DrainSchedule GetDrainSchedule(int index);
 
     void UpdateDrainSchedule(DrainSchedule schedule);
 
