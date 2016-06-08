@@ -239,9 +239,10 @@ public class Modbus4jActor implements IModbusActor {
 
         if (master.testSlaveNode(slaveId))
             try {
-                WriteCoilsRequest request = new WriteCoilsRequest(slaveId, COMMAND_OFFSET_GET_SCHEDULES_COUNT, new boolean[]{true});
-                WriteCoilsResponse response = (WriteCoilsResponse) master.send(request);
-
+                //WriteCoilsRequest request = new WriteCoilsRequest(slaveId, COMMAND_OFFSET_GET_SCHEDULES_COUNT, new boolean[]{true});
+                //WriteCoilsResponse response = (WriteCoilsResponse) master.send(request);
+                WriteCoilRequest request = new WriteCoilRequest(slaveId, COMMAND_OFFSET_GET_SCHEDULES_COUNT, true);
+                WriteCoilResponse response = (WriteCoilResponse) master.send(request);
                 master.init();
                 results = master.send(batch);
             } catch (Exception e) {
