@@ -5,18 +5,13 @@ import com.serotonin.modbus4j.BatchResults;
 import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.code.DataType;
-import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.ip.IpParameters;
 import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.msg.WriteCoilRequest;
 import com.serotonin.modbus4j.msg.WriteCoilResponse;
-import com.serotonin.modbus4j.msg.WriteCoilsRequest;
-import com.serotonin.modbus4j.msg.WriteCoilsResponse;
 import com.serotonin.modbus4j.msg.WriteRegisterRequest;
 import com.serotonin.modbus4j.msg.WriteRegisterResponse;
-
-import java.util.ArrayList;
 
 /**
  * Created by matveev_yuri on 10.03.2016.
@@ -82,8 +77,33 @@ public class Modbus4jActor implements IModbusActor {
             new ModbusRegisterData(LINE_BIT_STATUS78, 29, DataType.TWO_BYTE_INT_UNSIGNED),
     };
 
-    public static final String SCHEDULE_INDEX = "SheduleIndex";
-    public static final ModbusRegisterData mSheduleIndex = new ModbusRegisterData(SCHEDULE_INDEX, 47, DataType.TWO_BYTE_INT_UNSIGNED);
+    public static final String SCHEDULE_INDEX_AND_FLAGS = "ScheduleIndexAndFlags";
+    public static final ModbusRegisterData mScheduleIndexAndFlags = new ModbusRegisterData(SCHEDULE_INDEX_AND_FLAGS, 47, DataType.TWO_BYTE_INT_UNSIGNED);
+
+    public static final String SCHEDULE_WEEK_DAYS = "ScheduleWeekDays";
+    public static final ModbusRegisterData mScheduleWeekDays = new ModbusRegisterData(SCHEDULE_WEEK_DAYS, 48, DataType.TWO_BYTE_INT_UNSIGNED);
+
+
+    public static final String SCHEDULE_HOUR_MINUTE = "ScheduleHourMinute";
+    public static final ModbusRegisterData mScheduleHourMinute = new ModbusRegisterData(SCHEDULE_HOUR_MINUTE, 38, DataType.TWO_BYTE_INT_UNSIGNED);
+
+    public static final String SCHEDULE_LITERS1 = "ScheduleLiters1";
+    public static final ModbusRegisterData mScheduleLiters1 = new ModbusRegisterData(SCHEDULE_LITERS1, 39, DataType.TWO_BYTE_INT_UNSIGNED);
+    public static final String SCHEDULE_LITERS2 = "ScheduleLiters2";
+    public static final ModbusRegisterData mScheduleLiters2 = new ModbusRegisterData(SCHEDULE_LITERS2, 40, DataType.TWO_BYTE_INT_UNSIGNED);
+    public static final String SCHEDULE_LITERS3 = "ScheduleLiters3";
+    public static final ModbusRegisterData mScheduleLiters3 = new ModbusRegisterData(SCHEDULE_LITERS3, 41, DataType.TWO_BYTE_INT_UNSIGNED);
+    public static final String SCHEDULE_LITERS4 = "ScheduleLiters4";
+    public static final ModbusRegisterData mScheduleLiters4 = new ModbusRegisterData(SCHEDULE_LITERS4, 42, DataType.TWO_BYTE_INT_UNSIGNED);
+    public static final String SCHEDULE_LITERS5 = "ScheduleLiters5";
+    public static final ModbusRegisterData mScheduleLiters5 = new ModbusRegisterData(SCHEDULE_LITERS5, 43, DataType.TWO_BYTE_INT_UNSIGNED);
+    public static final String SCHEDULE_LITERS6 = "ScheduleLiters6";
+    public static final ModbusRegisterData mScheduleLiters6 = new ModbusRegisterData(SCHEDULE_LITERS6, 44, DataType.TWO_BYTE_INT_UNSIGNED);
+    public static final String SCHEDULE_LITERS7 = "ScheduleLiters7";
+    public static final ModbusRegisterData mScheduleLiters7 = new ModbusRegisterData(SCHEDULE_LITERS7, 45, DataType.TWO_BYTE_INT_UNSIGNED);
+    public static final String SCHEDULE_LITERS8 = "ScheduleLiters8";
+    public static final ModbusRegisterData mScheduleLiters8 = new ModbusRegisterData(SCHEDULE_LITERS8, 46, DataType.TWO_BYTE_INT_UNSIGNED);
+
 
     public Modbus4jActor(String host, int port) {
         mHost = host;
@@ -231,17 +251,16 @@ public class Modbus4jActor implements IModbusActor {
 
         int slaveId = 1;
 
-
         BatchResults<String> results = null;
         BatchRead<String> batch = new BatchRead<>();
 
-        batch.addLocator(mSheduleIndex.RegisterId, BaseLocator.holdingRegister(slaveId, mSheduleIndex.RegisterNumber, mSheduleIndex.RegisterType));
+        batch.addLocator(mScheduleIndexAndFlags.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleIndexAndFlags.RegisterNumber, mScheduleIndexAndFlags.RegisterType));
 
         if (master.testSlaveNode(slaveId))
             try {
                 //WriteCoilsRequest request = new WriteCoilsRequest(slaveId, COMMAND_OFFSET_GET_SCHEDULES_COUNT, new boolean[]{true});
                 //WriteCoilsResponse response = (WriteCoilsResponse) master.send(request);
-                WriteCoilRequest request = new WriteCoilRequest(slaveId, COMMAND_OFFSET_GET_SCHEDULES_COUNT, true);
+                WriteCoilRequest request = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_GET_COUNT, true);
                 WriteCoilResponse response = (WriteCoilResponse) master.send(request);
                 master.init();
                 results = master.send(batch);
@@ -252,7 +271,7 @@ public class Modbus4jActor implements IModbusActor {
             }
 
         if (results != null) {
-            byte data = results.getIntValue(mSheduleIndex.RegisterId).byteValue();
+            byte data = results.getIntValue(mScheduleIndexAndFlags.RegisterId).byteValue();
             return data;
         }
         return 0;
@@ -260,11 +279,120 @@ public class Modbus4jActor implements IModbusActor {
 
     @Override
     public DrainSchedule LoadDrainSchedule(int index) {
-        return new DrainSchedule();
+        DrainSchedule schedule = new DrainSchedule();
+        schedule.Index = (byte) index;
+
+        ModbusMaster master = CreateMaster();
+        int slaveId = 1;
+
+
+        if (master.testSlaveNode(slaveId))
+            try {
+                /// пишем номер нужного регистра
+                WriteRegisterRequest writeRegisterRequest = new WriteRegisterRequest(slaveId, mScheduleIndexAndFlags.RegisterNumber, index);
+                WriteRegisterResponse writeRegisterResponse = (WriteRegisterResponse) master.send(writeRegisterRequest);
+
+                /// посылаем команту на запись занных
+                WriteCoilRequest coilRequest = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_GET, true);
+                WriteCoilResponse coilResponse = (WriteCoilResponse) master.send(coilRequest);
+
+                /// читаем результаты
+                BatchResults<String> results = null;
+                BatchRead<String> batch = new BatchRead<>();
+
+                batch.addLocator(mScheduleIndexAndFlags.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleIndexAndFlags.RegisterNumber, mScheduleIndexAndFlags.RegisterType));
+                batch.addLocator(mScheduleHourMinute.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleHourMinute.RegisterNumber, mScheduleHourMinute.RegisterType));
+                batch.addLocator(mScheduleWeekDays.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleHourMinute.RegisterNumber, mScheduleHourMinute.RegisterType));
+
+                batch.addLocator(mScheduleLiters1.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters1.RegisterNumber, mScheduleLiters1.RegisterType));
+                batch.addLocator(mScheduleLiters2.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters2.RegisterNumber, mScheduleLiters2.RegisterType));
+                batch.addLocator(mScheduleLiters3.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters3.RegisterNumber, mScheduleLiters3.RegisterType));
+                batch.addLocator(mScheduleLiters4.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters4.RegisterNumber, mScheduleLiters4.RegisterType));
+                batch.addLocator(mScheduleLiters5.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters5.RegisterNumber, mScheduleLiters5.RegisterType));
+                batch.addLocator(mScheduleLiters6.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters6.RegisterNumber, mScheduleLiters6.RegisterType));
+                batch.addLocator(mScheduleLiters7.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters7.RegisterNumber, mScheduleLiters7.RegisterType));
+                batch.addLocator(mScheduleLiters8.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters8.RegisterNumber, mScheduleLiters8.RegisterType));
+
+                master.init();
+                results = master.send(batch);
+
+                if (results != null) {
+                    schedule.Enabled = ((results.getIntValue(SCHEDULE_INDEX_AND_FLAGS) >> 8) & 1) == 1;
+                    schedule.WeekDaysBitFlags = results.getIntValue(SCHEDULE_WEEK_DAYS).byteValue();
+                    Integer hm = results.getIntValue(SCHEDULE_HOUR_MINUTE);
+                    schedule.Minute = (byte) (hm >> 8);
+                    schedule.Hour = hm.byteValue();
+
+                    schedule.LitersNeeded.set(0, results.getIntValue(SCHEDULE_LITERS1));
+                    schedule.LitersNeeded.set(1, results.getIntValue(SCHEDULE_LITERS2));
+                    schedule.LitersNeeded.set(2, results.getIntValue(SCHEDULE_LITERS3));
+                    schedule.LitersNeeded.set(3, results.getIntValue(SCHEDULE_LITERS4));
+                    schedule.LitersNeeded.set(4, results.getIntValue(SCHEDULE_LITERS5));
+                    schedule.LitersNeeded.set(5, results.getIntValue(SCHEDULE_LITERS6));
+                    schedule.LitersNeeded.set(6, results.getIntValue(SCHEDULE_LITERS7));
+                    schedule.LitersNeeded.set(7, results.getIntValue(SCHEDULE_LITERS8));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                schedule = null;
+            }
+
+
+        return schedule;
     }
 
     @Override
     public void UpdateDrainSchedule(DrainSchedule schedule) {
+        ModbusMaster master = CreateMaster();
+        int slaveId = 1;
+
+        if (master.testSlaveNode(slaveId))
+            try {
+
+                /// пишем данные в регистры Modbus
+                /// пишем номер нужного расписания и флаги
+                int indexAndFlags = schedule.Index;
+                if (schedule.Enabled)
+                    indexAndFlags = indexAndFlags | 256;
+                WriteRegisterRequest writeRegisterRequestIndex = new WriteRegisterRequest(slaveId, mScheduleIndexAndFlags.RegisterNumber, indexAndFlags);
+                WriteRegisterResponse writeRegisterResponseIndex = (WriteRegisterResponse) master.send(writeRegisterRequestIndex);
+
+                //пишем часы и минуты
+                int HourMinute = (schedule.Minute << 8) + schedule.Hour;
+                WriteRegisterRequest writeRegisterRequestHourMinute = new WriteRegisterRequest(slaveId, mScheduleHourMinute.RegisterNumber, HourMinute);
+                WriteRegisterResponse writeRegisterResponseHourMinute = (WriteRegisterResponse) master.send(writeRegisterRequestHourMinute);
+
+                //пишем флаги дней недели
+                int weekDayFlags = schedule.WeekDaysBitFlags;
+                WriteRegisterRequest writeRegisterRequestWeekDays = new WriteRegisterRequest(slaveId, mScheduleWeekDays.RegisterNumber, weekDayFlags);
+                WriteRegisterResponse writeRegisterResponseWeekDays = (WriteRegisterResponse) master.send(writeRegisterRequestWeekDays);
+
+                /// пишем литры
+                WriteRegisterRequest writeRegisterRequestLiters1 = new WriteRegisterRequest(slaveId, mScheduleLiters1.RegisterNumber, schedule.LitersNeeded.get(0));
+                WriteRegisterResponse writeRegisterResponseLiters1 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters1);
+                WriteRegisterRequest writeRegisterRequestLiters2 = new WriteRegisterRequest(slaveId, mScheduleLiters2.RegisterNumber, schedule.LitersNeeded.get(1));
+                WriteRegisterResponse writeRegisterResponseLiters2 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters2);
+                WriteRegisterRequest writeRegisterRequestLiters3 = new WriteRegisterRequest(slaveId, mScheduleLiters3.RegisterNumber, schedule.LitersNeeded.get(2));
+                WriteRegisterResponse writeRegisterResponseLiters3 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters3);
+                WriteRegisterRequest writeRegisterRequestLiters4 = new WriteRegisterRequest(slaveId, mScheduleLiters4.RegisterNumber, schedule.LitersNeeded.get(3));
+                WriteRegisterResponse writeRegisterResponseLiters4 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters4);
+                WriteRegisterRequest writeRegisterRequestLiters5 = new WriteRegisterRequest(slaveId, mScheduleLiters5.RegisterNumber, schedule.LitersNeeded.get(4));
+                WriteRegisterResponse writeRegisterResponseLiters5 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters5);
+                WriteRegisterRequest writeRegisterRequestLiters6 = new WriteRegisterRequest(slaveId, mScheduleLiters6.RegisterNumber, schedule.LitersNeeded.get(5));
+                WriteRegisterResponse writeRegisterResponseLiters6 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters6);
+                WriteRegisterRequest writeRegisterRequestLiters7 = new WriteRegisterRequest(slaveId, mScheduleLiters7.RegisterNumber, schedule.LitersNeeded.get(6));
+                WriteRegisterResponse writeRegisterResponseLiters7 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters7);
+                WriteRegisterRequest writeRegisterRequestLiters8 = new WriteRegisterRequest(slaveId, mScheduleLiters8.RegisterNumber, schedule.LitersNeeded.get(7));
+                WriteRegisterResponse writeRegisterResponseLiters8 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters8);
+
+                /// посылаем команту на чтение данных в память контроллера
+                WriteCoilRequest coilRequest = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_SET, true);
+                WriteCoilResponse coilResponse = (WriteCoilResponse) master.send(coilRequest);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                schedule = null;
+            }
 
     }
 }

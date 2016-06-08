@@ -23,6 +23,9 @@ public interface IModbusActor {
     public static final byte SaunaWaterOffset = 2;
     public static final byte PumpOffset = 3;
     public static final byte PondOffset = 4;
-    public static final int COMMAND_OFFSET_GET_SCHEDULES_COUNT = 779;
+    public static final int COMMAND_OFFSET_SCHEDULES_SET = 776;
+    public static final int COMMAND_OFFSET_SCHEDULES_GET = 777;
+    public static final int COMMAND_OFFSET_SCHEDULES_CLEAR = 778;
+    public static final int COMMAND_OFFSET_SCHEDULES_GET_COUNT = 779;
 
 }

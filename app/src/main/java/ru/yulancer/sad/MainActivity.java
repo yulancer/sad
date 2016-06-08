@@ -239,7 +239,7 @@ public class MainActivity extends AppCompatActivity
             }
 
             TextView tvAirTemp = (TextView) findViewById(R.id.tvAirTemp);
-            if (tvAirTemp != null){
+            if (tvAirTemp != null) {
                 String temperatureText = String.format(Locale.getDefault(), "%.1f °C", mSadInfo.AirTemperature);
                 tvAirTemp.setText(temperatureText);
             }
@@ -354,8 +354,23 @@ public class MainActivity extends AppCompatActivity
                 switchNeeded = false;
         }
         if (switchNeeded) {
-            GetSchedulesCount task = new GetSchedulesCount();
-            task.execute();
+            DrainSchedule ds = new DrainSchedule();
+            ds.Index = 1;
+            ds.Hour = 23;
+            ds.Minute = 59;
+            ds.Enabled = true;
+            ds.WeekDaysBitFlags = 15;
+            ds.LitersNeeded.add(100);
+            ds.LitersNeeded.add(200);
+            ds.LitersNeeded.add(300);
+            ds.LitersNeeded.add(400);
+            ds.LitersNeeded.add(555);
+            ds.LitersNeeded.add(666);
+            ds.LitersNeeded.add(777);
+            ds.LitersNeeded.add(888);
+
+            SetScheduleTask task = new SetScheduleTask();
+            task.execute(ds);
         }
     }
 
@@ -425,7 +440,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    class GetSchedulesCount extends BaseCommunicationTask {
+    class GetSchedulesCountTask extends BaseCommunicationTask {
 
         @Override
         protected Void doInBackground(Object... params) {
@@ -438,7 +453,26 @@ public class MainActivity extends AppCompatActivity
             super.onPostExecute(params);
             TextView tvCount = (TextView) findViewById(R.id.tvCount);
             if (tvCount != null)
-                tvCount.setText(mScheduleCount+"");
+                tvCount.setText(mScheduleCount + "");
+        }
+    }
+
+
+    class SetScheduleTask extends BaseCommunicationTask {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            DrainSchedule schedule = (DrainSchedule) params[0];
+            mActivityActor.UpdateDrainSchedule(schedule);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void params) {
+            super.onPostExecute(params);
+            TextView tvCount = (TextView) findViewById(R.id.tvCount);
+            if (tvCount != null)
+                tvCount.setText(mScheduleCount + "");
         }
     }
 
