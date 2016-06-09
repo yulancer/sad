@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity
 
     private int mScheduleCount;
     private DrainSchedule mSchedule;
-
+    private ArrayList<DrainSchedule> mScheduleArray = new ArrayList<>();
     //////////////////////
     ///@Overridden methods
     //////////////////////
@@ -99,6 +100,10 @@ public class MainActivity extends AppCompatActivity
         Button btnCount = (Button) findViewById(R.id.btnGetCount);
         if (btnCount != null)
             btnCount.setOnClickListener(this);
+
+        ImageButton ibScheduleRefresh = (ImageButton) findViewById(R.id.ibScheduleRefresh);
+        if (ibScheduleRefresh != null)
+            ibScheduleRefresh.setOnClickListener(this);
 
         recreateRefreshTimer();
     }
@@ -351,6 +356,10 @@ public class MainActivity extends AppCompatActivity
             case R.id.btnGetCount:
                 switchNeeded = true;
                 break;
+            case  R.id.ibScheduleRefresh:
+                loadSchedules();
+                switchNeeded = false;
+                break;
             default:
                 switchNeeded = false;
         }
@@ -378,6 +387,12 @@ public class MainActivity extends AppCompatActivity
             //GetScheduleTask task = new GetScheduleTask();
             //task.execute(1);
         }
+
+
+    }
+
+    private void loadSchedules() {
+
     }
 
 
@@ -480,7 +495,6 @@ public class MainActivity extends AppCompatActivity
                 tvCount.setText(0);
         }
     }
-
 
     class SetScheduleTask extends BaseCommunicationTask {
 

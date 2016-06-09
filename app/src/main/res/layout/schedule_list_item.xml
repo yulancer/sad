@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <CheckBox
+        android:id="@+id/cbScheduleOn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="false" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvScheduleTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00 в пн, ср, пт"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/tvScheduleLiters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1-1500,2-1000,3-1900"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/btnScheduleEdit"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="32dip"
+        android:layout_height="32dip"
+        android:background="@drawable/ic_action_edit"
+        android:contentDescription="Edit"
+        android:text="Edit" />
+</LinearLayout>
