@@ -355,25 +355,28 @@ public class MainActivity extends AppCompatActivity
                 switchNeeded = false;
         }
         if (switchNeeded) {
-//            DrainSchedule ds = new DrainSchedule();
-//            ds.Index = 1;
-//            ds.Hour = 23;
-//            ds.Minute = 59;
-//            ds.Enabled = true;
-//            ds.WeekDaysBitFlags = 15;
-//            ds.LitersNeeded.add(100);
-//            ds.LitersNeeded.add(200);
-//            ds.LitersNeeded.add(300);
-//            ds.LitersNeeded.add(400);
-//            ds.LitersNeeded.add(555);
-//            ds.LitersNeeded.add(666);
-//            ds.LitersNeeded.add(777);
-//            ds.LitersNeeded.add(888);
-//
-//            SetScheduleTask task = new SetScheduleTask();
-//            task.execute(ds);
-            GetScheduleTask task = new GetScheduleTask();
-            task.execute(1);
+            DrainSchedule ds = new DrainSchedule();
+            ds.Index = 1;
+            ds.Hour = 23;
+            ds.Minute = 59;
+            ds.Enabled = true;
+            ds.WeekDaysBitFlags = 15;
+            ds.LitersNeeded.add(100);
+            ds.LitersNeeded.add(200);
+            ds.LitersNeeded.add(300);
+            ds.LitersNeeded.add(400);
+            ds.LitersNeeded.add(0);
+            ds.LitersNeeded.add(666);
+            ds.LitersNeeded.add(777);
+            ds.LitersNeeded.add(888);
+
+            TextView tvCount = (TextView) findViewById(R.id.tvCount);
+            if (tvCount != null)
+                tvCount.setText(ds.getDisplayTime());
+            //SetScheduleTask task = new SetScheduleTask();
+            //task.execute(ds);
+            //GetScheduleTask task = new GetScheduleTask();
+            //task.execute(1);
         }
     }
 
