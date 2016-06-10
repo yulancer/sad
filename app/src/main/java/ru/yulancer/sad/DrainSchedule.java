@@ -62,7 +62,7 @@ public class DrainSchedule implements Parcelable {
         for(int i = 0; i < 8; i++){
             boolean dayIsSet = (WeekDaysBitFlags & (1 << i)) == (1 << i);
             if (dayIsSet)
-                result = result + (i == 0 ? "" : ",") + dayNames[i];
+                result = result + (result.length()  < 2 ? "" : ",") + dayNames[i];
         }
         return result;
     }
@@ -74,7 +74,7 @@ public class DrainSchedule implements Parcelable {
         for (int i = 0; i < LitersNeeded.size(); i++) {
             int liters = LitersNeeded.get(i);
             if (liters > 0)
-                result = result + (i == 0 ? "" : ",") + String.format(Locale.getDefault(), "%d - %d", i + 1, liters);
+                result = result + (result.length() < 2 ? "" : ", ") + String.format(Locale.getDefault(), "%d - %d", i + 1, liters);
         }
         return result;
     }

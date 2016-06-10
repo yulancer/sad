@@ -7,9 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
-
-import java.util.Locale;
 
 
 /**
@@ -32,7 +31,7 @@ public class ScheduleEditDialog extends DialogFragment implements DialogInterfac
 
     private OnScheduleChangedListener mListener;
 
-    private EditText mLitersEditor;
+    private View mView;
 
     public ScheduleEditDialog() {
         // Required empty public constructor
@@ -68,10 +67,10 @@ public class ScheduleEditDialog extends DialogFragment implements DialogInterfac
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View form = getActivity().getLayoutInflater().inflate(R.layout.fragment_schedule_edit_input_dialog, null);
+        mView = getActivity().getLayoutInflater().inflate(R.layout.fragment_schedule_edit_input_dialog, null);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         String newText = String.format("Расписание номер %d", mScheduleIndex);
-        Dialog dialog = builder.setTitle(newText).setView(form)
+        Dialog dialog = builder.setTitle(newText).setView(mView)
                 .setPositiveButton(android.R.string.ok, this)
                 .setNegativeButton(android.R.string.cancel, null).create();
 
@@ -103,11 +102,138 @@ public class ScheduleEditDialog extends DialogFragment implements DialogInterfac
     }
 
     private void updateControls() {
+        CheckBox cbScheduleOn = (CheckBox) mView.findViewById(R.id.cbScheduleEditEnabled);
+        if (cbScheduleOn != null)
+            cbScheduleOn.setChecked(mDrainSchedule.Enabled);
 
+        EditText etScheduleEditHour = (EditText) mView.findViewById(R.id.etScheduleEditHour);
+        if (etScheduleEditHour != null)
+            etScheduleEditHour.setText(mDrainSchedule.Hour + "");
+
+        EditText etScheduleEditMinute = (EditText) mView.findViewById(R.id.etScheduleEditMinute);
+        if (etScheduleEditMinute != null)
+            etScheduleEditMinute.setText(mDrainSchedule.Minute + "");
+
+
+        EditText etScheduleEditLiters1 = (EditText) mView.findViewById(R.id.etScheduleEditLiters1);
+        if (etScheduleEditLiters1 != null)
+            etScheduleEditLiters1.setText(mDrainSchedule.LitersNeeded.get(0) + "");
+        EditText etScheduleEditLiters2 = (EditText) mView.findViewById(R.id.etScheduleEditLiters2);
+        if (etScheduleEditLiters2 != null)
+            etScheduleEditLiters2.setText(mDrainSchedule.LitersNeeded.get(1) + "");
+        EditText etScheduleEditLiters3 = (EditText) mView.findViewById(R.id.etScheduleEditLiters3);
+        if (etScheduleEditLiters3 != null)
+            etScheduleEditLiters3.setText(mDrainSchedule.LitersNeeded.get(2) + "");
+        EditText etScheduleEditLiters4 = (EditText) mView.findViewById(R.id.etScheduleEditLiters4);
+        if (etScheduleEditLiters4 != null)
+            etScheduleEditLiters4.setText(mDrainSchedule.LitersNeeded.get(3) + "");
+        EditText etScheduleEditLiters5 = (EditText) mView.findViewById(R.id.etScheduleEditLiters5);
+        if (etScheduleEditLiters5 != null)
+            etScheduleEditLiters5.setText(mDrainSchedule.LitersNeeded.get(4) + "");
+        EditText etScheduleEditLiters6 = (EditText) mView.findViewById(R.id.etScheduleEditLiters6);
+        if (etScheduleEditLiters6 != null)
+            etScheduleEditLiters6.setText(mDrainSchedule.LitersNeeded.get(5) + "");
+        EditText etScheduleEditLiters7 = (EditText) mView.findViewById(R.id.etScheduleEditLiters7);
+        if (etScheduleEditLiters7 != null)
+            etScheduleEditLiters7.setText(mDrainSchedule.LitersNeeded.get(6) + "");
+        EditText etScheduleEditLiters8 = (EditText) mView.findViewById(R.id.etScheduleEditLiters8);
+        if (etScheduleEditLiters8 != null)
+            etScheduleEditLiters8.setText(mDrainSchedule.LitersNeeded.get(7) + "");
+
+        CheckBox cbScheduleEditMonday = (CheckBox) mView.findViewById(R.id.cbScheduleEditMonday);
+        if (cbScheduleEditMonday != null)
+            cbScheduleEditMonday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 0));
+        CheckBox cbScheduleEditTuesday = (CheckBox) mView.findViewById(R.id.cbScheduleEditTuesday);
+        if (cbScheduleEditTuesday != null)
+            cbScheduleEditTuesday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 1));
+        CheckBox cbScheduleEditWednesday = (CheckBox) mView.findViewById(R.id.cbScheduleEditWednesday);
+        if (cbScheduleEditWednesday != null)
+            cbScheduleEditWednesday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 2));
+        CheckBox cbScheduleEditThursday = (CheckBox) mView.findViewById(R.id.cbScheduleEditThursday);
+        if (cbScheduleEditThursday != null)
+            cbScheduleEditThursday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 3));
+        CheckBox cbScheduleEdiFriday = (CheckBox) mView.findViewById(R.id.cbScheduleEditFriday);
+        if (cbScheduleEdiFriday != null)
+            cbScheduleEdiFriday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 4));
+        CheckBox cbScheduleEditSaturday = (CheckBox) mView.findViewById(R.id.cbScheduleEditSaturday);
+        if (cbScheduleEditSaturday != null)
+            cbScheduleEditSaturday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 5));
+        CheckBox cbScheduleEditSunday = (CheckBox) mView.findViewById(R.id.cbScheduleEditSunday);
+        if (cbScheduleEditSunday != null)
+            cbScheduleEditSunday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 6));
+    }
+
+    private boolean isBitSet(byte flags, int i) {
+        return ((flags >> i) & 1) == 1;
     }
 
     private void updateSchedule() {
+        CheckBox cbScheduleOn = (CheckBox) getDialog().getWindow().findViewById(R.id.cbScheduleEditEnabled);
+        if (cbScheduleOn != null)
+            mDrainSchedule.Enabled = cbScheduleOn.isChecked();
 
+        EditText etScheduleEditHour = (EditText) mView.findViewById(R.id.etScheduleEditHour);
+        if (etScheduleEditHour != null)
+            mDrainSchedule.Hour = (byte) Integer.parseInt(etScheduleEditHour.getText().toString());
+
+        EditText etScheduleEditMinute = (EditText) mView.findViewById(R.id.etScheduleEditMinute);
+        if (etScheduleEditMinute != null)
+            mDrainSchedule.Minute = (byte) Integer.parseInt(etScheduleEditMinute.getText().toString());
+
+        EditText etScheduleEditLiters1 = (EditText) mView.findViewById(R.id.etScheduleEditLiters1);
+        if (etScheduleEditLiters1 != null)
+            mDrainSchedule.LitersNeeded.set(0, Integer.parseInt(etScheduleEditLiters1.getText().toString()));
+        EditText etScheduleEditLiters2 = (EditText) mView.findViewById(R.id.etScheduleEditLiters2);
+        if (etScheduleEditLiters2 != null)
+            mDrainSchedule.LitersNeeded.set(1, Integer.parseInt(etScheduleEditLiters2.getText().toString()));
+        EditText etScheduleEditLiters3 = (EditText) mView.findViewById(R.id.etScheduleEditLiters3);
+        if (etScheduleEditLiters3 != null)
+            mDrainSchedule.LitersNeeded.set(2, Integer.parseInt(etScheduleEditLiters3.getText().toString()));
+        EditText etScheduleEditLiters4 = (EditText) mView.findViewById(R.id.etScheduleEditLiters4);
+        if (etScheduleEditLiters4 != null)
+            mDrainSchedule.LitersNeeded.set(3, Integer.parseInt(etScheduleEditLiters4.getText().toString()));
+        EditText etScheduleEditLiters5 = (EditText) mView.findViewById(R.id.etScheduleEditLiters5);
+        if (etScheduleEditLiters5 != null)
+            mDrainSchedule.LitersNeeded.set(4, Integer.parseInt(etScheduleEditLiters5.getText().toString()));
+        EditText etScheduleEditLiters6 = (EditText) mView.findViewById(R.id.etScheduleEditLiters6);
+        if (etScheduleEditLiters6 != null)
+            mDrainSchedule.LitersNeeded.set(5, Integer.parseInt(etScheduleEditLiters6.getText().toString()));
+        EditText etScheduleEditLiters7 = (EditText) mView.findViewById(R.id.etScheduleEditLiters7);
+        if (etScheduleEditLiters7 != null)
+            mDrainSchedule.LitersNeeded.set(6, Integer.parseInt(etScheduleEditLiters7.getText().toString()));
+        EditText etScheduleEditLiters8 = (EditText) mView.findViewById(R.id.etScheduleEditLiters8);
+        if (etScheduleEditLiters8 != null)
+            mDrainSchedule.LitersNeeded.set(7, Integer.parseInt(etScheduleEditLiters8.getText().toString()));
+
+        CheckBox cbScheduleEditMonday = (CheckBox) mView.findViewById(R.id.cbScheduleEditMonday);
+        if (cbScheduleEditMonday != null)
+            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 0, cbScheduleEditMonday.isChecked());
+        CheckBox cbScheduleEditTuesday = (CheckBox) mView.findViewById(R.id.cbScheduleEditTuesday);
+        if (cbScheduleEditTuesday != null)
+            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 1, cbScheduleEditTuesday.isChecked());
+        CheckBox cbScheduleEditWednesday = (CheckBox) mView.findViewById(R.id.cbScheduleEditWednesday);
+        if (cbScheduleEditWednesday != null)
+            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 2, cbScheduleEditWednesday.isChecked());
+        CheckBox cbScheduleEditThursday = (CheckBox) mView.findViewById(R.id.cbScheduleEditThursday);
+        if (cbScheduleEditThursday != null)
+            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 3, cbScheduleEditThursday.isChecked());
+        CheckBox cbScheduleEditFriday = (CheckBox) mView.findViewById(R.id.cbScheduleEditFriday);
+        if (cbScheduleEditFriday != null)
+            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 4, cbScheduleEditFriday.isChecked());
+        CheckBox cbScheduleEditSaturday = (CheckBox) mView.findViewById(R.id.cbScheduleEditSaturday);
+        if (cbScheduleEditSaturday != null)
+            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 5, cbScheduleEditSaturday.isChecked());
+        CheckBox cbScheduleEditSunday = (CheckBox) mView.findViewById(R.id.cbScheduleEditSunday);
+        if (cbScheduleEditSunday != null)
+            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 6, cbScheduleEditSunday.isChecked());
+
+    }
+
+    private byte setBit(byte flags, int number, boolean checked) {
+        if (checked)
+            return (byte) (flags | (1 << number));
+        else
+            return (byte) (flags & ~(1 << number));
     }
 
     /**
