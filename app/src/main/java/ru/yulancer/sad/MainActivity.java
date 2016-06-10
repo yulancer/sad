@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity
 
         spec = tabs.newTabSpec("tagSettings");
         spec.setContent(R.id.layoutSchedule);
-        spec.setIndicator("Настройки");
+        spec.setIndicator("Расписание");
         tabs.addTab(spec);
 
         tabs.setCurrentTab(0);
@@ -354,6 +354,8 @@ public class MainActivity extends AppCompatActivity
     public void onScheduleChanged(int index, DrainSchedule schedule) {
         mScheduleArray.set(index - 1, schedule);
         refreshListView();
+        SetScheduleTask task = new SetScheduleTask();
+        task.execute(schedule);
     }
 
     @Override
@@ -515,34 +517,50 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Object... params) {
-            mScheduleArray.clear();
-            DrainSchedule ds = new DrainSchedule();
-            ds.Index = 1;
-            ds.Hour = 23;
-            ds.Minute = 59;
-            ds.Enabled = true;
-            ds.WeekDaysBitFlags = 15;
-            ds.LitersNeeded.add(100);
-            ds.LitersNeeded.add(200);
-            ds.LitersNeeded.add(300);
-            ds.LitersNeeded.add(400);
-            ds.LitersNeeded.add(0);
-            ds.LitersNeeded.add(666);
-            ds.LitersNeeded.add(777);
-            ds.LitersNeeded.add(888);
-            mScheduleArray.add(ds);
-//            mScheduleCount = mActivityActor.GetSchedulesCount();
+//            mScheduleCount = 2;
 //            mScheduleArray.clear();
-//            for (int index = 1; index <= mScheduleCount; index++) {
-//                DrainSchedule schedule;
-//                int retryCount = 0;
-//                do {
-//                    schedule = mActivityActor.GetDrainSchedule(index);
-//                    retryCount++;
-//                } while (!schedule.ReceivedSuccessfully && retryCount < 3);
-//                if (schedule.ReceivedSuccessfully)
-//                    mScheduleArray.add(schedule);
-//            }
+//            DrainSchedule ds = new DrainSchedule();
+//            ds.Index = 1;
+//            ds.Hour = 23;
+//            ds.Minute = 59;
+//            ds.Enabled = true;
+//            ds.WeekDaysBitFlags = 15;
+//            ds.LitersNeeded.add(100);
+//            ds.LitersNeeded.add(200);
+//            ds.LitersNeeded.add(300);
+//            ds.LitersNeeded.add(400);
+//            ds.LitersNeeded.add(0);
+//            ds.LitersNeeded.add(666);
+//            ds.LitersNeeded.add(777);
+//            ds.LitersNeeded.add(888);
+//            mScheduleArray.add(ds);
+//            ds = new DrainSchedule();
+//            ds.Index = 2;
+//            ds.Hour = 19;
+//            ds.Minute = 04;
+//            ds.Enabled = true;
+//            ds.WeekDaysBitFlags = 7;
+//            ds.LitersNeeded.add(101);
+//            ds.LitersNeeded.add(202);
+//            ds.LitersNeeded.add(303);
+//            ds.LitersNeeded.add(404);
+//            ds.LitersNeeded.add(505);
+//            ds.LitersNeeded.add(606);
+//            ds.LitersNeeded.add(707);
+//            ds.LitersNeeded.add(808);
+//            mScheduleArray.add(ds);
+            mScheduleCount = mActivityActor.GetSchedulesCount();
+            mScheduleArray.clear();
+            for (int index = 1; index <= mScheduleCount; index++) {
+                DrainSchedule schedule;
+                int retryCount = 0;
+                do {
+                    schedule = mActivityActor.GetDrainSchedule(index);
+                    retryCount++;
+                } while (!schedule.ReceivedSuccessfully && retryCount < 3);
+                if (schedule.ReceivedSuccessfully)
+                    mScheduleArray.add(schedule);
+            }
             return null;
         }
 
