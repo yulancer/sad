@@ -32,7 +32,8 @@ import java.util.TimerTask;
 public class MainActivity extends AppCompatActivity
         implements CompoundButton.OnCheckedChangeListener,
         View.OnClickListener,
-        LitersNeededInputDialog.OnLitersNeededChangedListener {
+        LitersNeededInputDialog.OnLitersNeededChangedListener,
+        ScheduleEditDialog.OnScheduleChangedListener {
 
     private Timer mTimer;
     private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
@@ -350,13 +351,23 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
+    public void onScheduleChanged(int index, DrainSchedule schedule) {
+        mScheduleArray.set(index - 1, schedule);
+        refreshListView();
+    }
+
+    @Override
     public void onClick(View v) {
-        boolean switchNeeded;
+        boolean switchNeeded = false;
 
         switch (v.getId()) {
             case R.id.ibScheduleRefresh:
                 loadSchedules();
                 switchNeeded = false;
+                break;
+            case R.id.btnScheduleEdit:
+                int index = (int) v.getTag();
+                editSchedule(index);
                 break;
             default:
                 switchNeeded = false;
@@ -386,9 +397,52 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    private void editSchedule(int index) {
+        mTimer.cancel();
+        FragmentManager fm = getSupportFragmentManager();
+        ScheduleEditDialog dialog = ScheduleEditDialog.newInstance(index, mScheduleArray.get(index - 1));
+        dialog.show(fm, "edit");
+    }
+
     private void loadSchedules() {
         RefreshSchedulesTask task = new RefreshSchedulesTask();
         task.execute();
+    }
+
+    private void refreshListView() {
+        // имена атрибутов для Map
+        final String ATTRIBUTE_NAME_ENABLED = "scheduleEnabled";
+        final String ATTRIBUTE_NAME_TIME = "scheduleTime";
+        final String ATTRIBUTE_NAME_LITERS = "scheduleLiters";
+        final String ATTRIBUTE_NAME_INDEX = "scheduleIndex";
+        final String ATTRIBUTE_NAME_TITLE = "scheduleTitle";
+
+        // упаковываем данные в понятную для адаптера структуру
+        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(
+                mScheduleArray.size());
+        Map<String, Object> m;
+        for (int i = 0; i < mScheduleArray.size(); i++) {
+            m = new HashMap<String, Object>();
+            m.put(ATTRIBUTE_NAME_ENABLED, mScheduleArray.get(i).Enabled);
+            m.put(ATTRIBUTE_NAME_TIME, mScheduleArray.get(i).getDisplayTime() + " в " + mScheduleArray.get(i).getDisplayDays());
+            m.put(ATTRIBUTE_NAME_LITERS, mScheduleArray.get(i).getDisplayLiters());
+            m.put(ATTRIBUTE_NAME_TITLE, "Расписание " + (i + 1));
+            m.put(ATTRIBUTE_NAME_INDEX, i + 1);
+            data.add(m);
+        }
+        String[] from = {ATTRIBUTE_NAME_ENABLED, ATTRIBUTE_NAME_TIME,
+                ATTRIBUTE_NAME_LITERS, ATTRIBUTE_NAME_TITLE, ATTRIBUTE_NAME_INDEX};
+        // массив ID View-компонентов, в которые будут вставлять данные
+        int[] to = {R.id.cbScheduleOn, R.id.tvScheduleTime, R.id.tvScheduleLiters, R.id.tvScheduleTitle, R.id.btnScheduleEdit};
+
+        // создаем адаптер
+        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.schedule_list_item,
+                from, to);
+        // Указываем адаптеру свой биндер
+        sAdapter.setViewBinder(new IndexViewBinder());
+        // определяем список и присваиваем ему адаптер
+        ListView lvSchedule = (ListView) findViewById(R.id.lvSchedule);
+        lvSchedule.setAdapter(sAdapter);
     }
 
 
@@ -461,18 +515,34 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Object... params) {
-            mScheduleCount = mActivityActor.GetSchedulesCount();
             mScheduleArray.clear();
-            for (int index = 1; index <= mScheduleCount; index++) {
-                DrainSchedule schedule;
-                int retryCount = 0;
-                do {
-                    schedule = mActivityActor.GetDrainSchedule(index);
-                    retryCount++;
-                } while (!schedule.ReceivedSuccessfully && retryCount < 3);
-                if (schedule.ReceivedSuccessfully)
-                    mScheduleArray.add(schedule);
-            }
+            DrainSchedule ds = new DrainSchedule();
+            ds.Index = 1;
+            ds.Hour = 23;
+            ds.Minute = 59;
+            ds.Enabled = true;
+            ds.WeekDaysBitFlags = 15;
+            ds.LitersNeeded.add(100);
+            ds.LitersNeeded.add(200);
+            ds.LitersNeeded.add(300);
+            ds.LitersNeeded.add(400);
+            ds.LitersNeeded.add(0);
+            ds.LitersNeeded.add(666);
+            ds.LitersNeeded.add(777);
+            ds.LitersNeeded.add(888);
+            mScheduleArray.add(ds);
+//            mScheduleCount = mActivityActor.GetSchedulesCount();
+//            mScheduleArray.clear();
+//            for (int index = 1; index <= mScheduleCount; index++) {
+//                DrainSchedule schedule;
+//                int retryCount = 0;
+//                do {
+//                    schedule = mActivityActor.GetDrainSchedule(index);
+//                    retryCount++;
+//                } while (!schedule.ReceivedSuccessfully && retryCount < 3);
+//                if (schedule.ReceivedSuccessfully)
+//                    mScheduleArray.add(schedule);
+//            }
             return null;
         }
 
@@ -483,41 +553,18 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void refreshListView() {
-        // имена атрибутов для Map
-        final String ATTRIBUTE_NAME_ENABLED = "scheduleEnabled";
-        final String ATTRIBUTE_NAME_TIME = "scheduleTime";
-        final String ATTRIBUTE_NAME_LITERS = "scheduleLiters";
-        final String ATTRIBUTE_NAME_INDEX = "scheduleIndex";
-        final String ATTRIBUTE_NAME_TITLE = "scheduleTitle";
 
-        // упаковываем данные в понятную для адаптера структуру
-        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(
-                mScheduleArray.size());
-        Map<String, Object> m;
-        for (int i = 0; i < mScheduleArray.size(); i++) {
-            m = new HashMap<String, Object>();
-            m.put(ATTRIBUTE_NAME_ENABLED, mScheduleArray.get(i).Enabled);
-            m.put(ATTRIBUTE_NAME_TIME,  mScheduleArray.get(i).getDisplayTime() + " в " +  mScheduleArray.get(i).getDisplayDays());
-            m.put(ATTRIBUTE_NAME_LITERS,  mScheduleArray.get(i).getDisplayLiters());
-            m.put(ATTRIBUTE_NAME_TITLE, "Расписание " +  (i+1));
-            m.put(ATTRIBUTE_NAME_INDEX, i+1);
-            data.add(m);
+    class IndexViewBinder implements SimpleAdapter.ViewBinder {
+
+        @Override
+        public boolean setViewValue(View view, Object data, String textRepresentation) {
+            if (view.getId() == R.id.btnScheduleEdit) {
+                view.setTag(data);
+                return true;
+            }
+            return false;
         }
-        String[] from = { ATTRIBUTE_NAME_ENABLED, ATTRIBUTE_NAME_TIME,
-                ATTRIBUTE_NAME_LITERS, ATTRIBUTE_NAME_TITLE };
-        // массив ID View-компонентов, в которые будут вставлять данные
-        int[] to = { R.id.cbScheduleOn, R.id.tvScheduleTime, R.id.tvScheduleLiters, R.id.tvScheduleTitle };
-
-        // создаем адаптер
-        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.schedule_list_item,
-                from, to);
-
-        // определяем список и присваиваем ему адаптер
-        ListView lvSchedule = (ListView) findViewById(R.id.lvSchedule);
-        lvSchedule.setAdapter(sAdapter);
     }
-
 
     class GetScheduleTask extends BaseCommunicationTask {
 

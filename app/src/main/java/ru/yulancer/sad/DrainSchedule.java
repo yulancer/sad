@@ -1,5 +1,8 @@
 package ru.yulancer.sad;
 
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import java.text.DateFormatSymbols;
@@ -9,8 +12,8 @@ import java.util.Locale;
 /**
  * Created by matveev_yuri on 07.06.2016.
  */
-public class DrainSchedule {
-    public static String[] dayNames = {"пн", "вт", "ср", "чт", "пт", "сб", "вс"};
+public class DrainSchedule implements Parcelable {
+    public static final String[] dayNames = {"пн", "вт", "ср", "чт", "пт", "сб", "вс"};
 
     public static final byte WD_MONDAY = 1;
     public static final byte WD_TUESDAY = 2;
@@ -31,6 +34,28 @@ public class DrainSchedule {
 
     public boolean ReceivedSuccessfully;
     public Exception ReceiveException;
+
+    protected DrainSchedule(Parcel in) {
+        Enabled = in.readByte() != 0;
+        Index = in.readByte();
+        Name = in.readString();
+        WeekDaysBitFlags = in.readByte();
+        Hour = in.readByte();
+        Minute = in.readByte();
+        ReceivedSuccessfully = in.readByte() != 0;
+    }
+
+    public static final Creator<DrainSchedule> CREATOR = new Creator<DrainSchedule>() {
+        @Override
+        public DrainSchedule createFromParcel(Parcel in) {
+            return new DrainSchedule(in);
+        }
+
+        @Override
+        public DrainSchedule[] newArray(int size) {
+            return new DrainSchedule[size];
+        }
+    };
 
     public String getDisplayDays() {
         String result = "";
@@ -56,5 +81,21 @@ public class DrainSchedule {
 
 
     public DrainSchedule() {
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeByte((byte) (Enabled ? 1 : 0));
+        dest.writeByte(Index);
+        dest.writeString(Name);
+        dest.writeByte(WeekDaysBitFlags);
+        dest.writeByte(Hour);
+        dest.writeByte(Minute);
+        dest.writeByte((byte) (ReceivedSuccessfully ? 1 : 0));
     }
 }

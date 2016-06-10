@@ -52,7 +52,8 @@
             android:layout_height="32dip"
             android:background="@drawable/ic_action_edit"
             android:contentDescription="Edit"
-            android:text="Edit" />
+            android:text="Edit"
+            android:onClick="onClick"/>
     </LinearLayout>
 
 
