@@ -11,7 +11,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SimpleAdapter;
 import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
@@ -21,7 +23,9 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -471,7 +475,49 @@ public class MainActivity extends AppCompatActivity
             }
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void params) {
+            super.onPostExecute(params);
+            refreshListView();
+        }
     }
+
+    private void refreshListView() {
+        // имена атрибутов для Map
+        final String ATTRIBUTE_NAME_ENABLED = "scheduleEnabled";
+        final String ATTRIBUTE_NAME_TIME = "scheduleTime";
+        final String ATTRIBUTE_NAME_LITERS = "scheduleLiters";
+        final String ATTRIBUTE_NAME_INDEX = "scheduleIndex";
+        final String ATTRIBUTE_NAME_TITLE = "scheduleTitle";
+
+        // упаковываем данные в понятную для адаптера структуру
+        ArrayList<Map<String, Object>> data = new ArrayList<Map<String, Object>>(
+                mScheduleArray.size());
+        Map<String, Object> m;
+        for (int i = 0; i < mScheduleArray.size(); i++) {
+            m = new HashMap<String, Object>();
+            m.put(ATTRIBUTE_NAME_ENABLED, mScheduleArray.get(i).Enabled);
+            m.put(ATTRIBUTE_NAME_TIME,  mScheduleArray.get(i).getDisplayTime() + " в " +  mScheduleArray.get(i).getDisplayDays());
+            m.put(ATTRIBUTE_NAME_LITERS,  mScheduleArray.get(i).getDisplayLiters());
+            m.put(ATTRIBUTE_NAME_TITLE, "Расписание " +  (i+1));
+            m.put(ATTRIBUTE_NAME_INDEX, i+1);
+            data.add(m);
+        }
+        String[] from = { ATTRIBUTE_NAME_ENABLED, ATTRIBUTE_NAME_TIME,
+                ATTRIBUTE_NAME_LITERS, ATTRIBUTE_NAME_TITLE };
+        // массив ID View-компонентов, в которые будут вставлять данные
+        int[] to = { R.id.cbScheduleOn, R.id.tvScheduleTime, R.id.tvScheduleLiters, R.id.tvScheduleTitle };
+
+        // создаем адаптер
+        SimpleAdapter sAdapter = new SimpleAdapter(this, data, R.layout.schedule_list_item,
+                from, to);
+
+        // определяем список и присваиваем ему адаптер
+        ListView lvSchedule = (ListView) findViewById(R.id.lvSchedule);
+        lvSchedule.setAdapter(sAdapter);
+    }
+
 
     class GetScheduleTask extends BaseCommunicationTask {
 
@@ -490,6 +536,7 @@ public class MainActivity extends AppCompatActivity
             mScheduleCount = mActivityActor.GetSchedulesCount();
             return null;
         }
+
     }
 
     class SetScheduleTask extends BaseCommunicationTask {
