@@ -27,6 +27,10 @@ public class DrainSchedule {
     public byte WeekDaysBitFlags;
     public byte Hour;
     public byte Minute;
+    public ArrayList<Integer> LitersNeeded = new ArrayList<>(8);
+
+    public boolean ReceivedSuccessfully;
+    public Exception ReceiveException;
 
     public String getDisplayDays() {
         String result = "";
@@ -37,11 +41,9 @@ public class DrainSchedule {
         }
         return result;
     }
-
     public String getDisplayTime() {
         return String.format(Locale.getDefault(), "%d:%d", Hour, Minute);
     }
-
     public String getDisplayLiters() {
         String result = "";
         for (int i = 0; i < LitersNeeded.size(); i++) {
@@ -52,7 +54,6 @@ public class DrainSchedule {
         return result;
     }
 
-    public ArrayList<Integer> LitersNeeded = new ArrayList<>(8);
 
     public DrainSchedule() {
     }

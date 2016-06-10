@@ -97,9 +97,6 @@ public class MainActivity extends AppCompatActivity
         ViewGroup root = (ViewGroup) findViewById(R.id.layoutDrain);
         mDrainLineControls = drainLineControlList(root);
 
-        Button btnCount = (Button) findViewById(R.id.btnGetCount);
-        if (btnCount != null)
-            btnCount.setOnClickListener(this);
 
         ImageButton ibScheduleRefresh = (ImageButton) findViewById(R.id.ibScheduleRefresh);
         if (ibScheduleRefresh != null)
@@ -353,10 +350,7 @@ public class MainActivity extends AppCompatActivity
         boolean switchNeeded;
 
         switch (v.getId()) {
-            case R.id.btnGetCount:
-                switchNeeded = true;
-                break;
-            case  R.id.ibScheduleRefresh:
+            case R.id.ibScheduleRefresh:
                 loadSchedules();
                 switchNeeded = false;
                 break;
@@ -379,9 +373,6 @@ public class MainActivity extends AppCompatActivity
             ds.LitersNeeded.add(777);
             ds.LitersNeeded.add(888);
 
-            TextView tvCount = (TextView) findViewById(R.id.tvCount);
-            if (tvCount != null)
-                tvCount.setText(ds.getDisplayTime());
             //SetScheduleTask task = new SetScheduleTask();
             //task.execute(ds);
             //GetScheduleTask task = new GetScheduleTask();
@@ -392,7 +383,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void loadSchedules() {
-
+        RefreshSchedulesTask task = new RefreshSchedulesTask();
+        task.execute();
     }
 
 
@@ -461,6 +453,26 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    class RefreshSchedulesTask extends BaseCommunicationTask {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            mScheduleCount = mActivityActor.GetSchedulesCount();
+            mScheduleArray.clear();
+            for (int index = 1; index <= mScheduleCount; index++) {
+                DrainSchedule schedule;
+                int retryCount = 0;
+                do {
+                    schedule = mActivityActor.GetDrainSchedule(index);
+                    retryCount++;
+                } while (!schedule.ReceivedSuccessfully && retryCount < 3);
+                if (schedule.ReceivedSuccessfully)
+                    mScheduleArray.add(schedule);
+            }
+            return null;
+        }
+    }
+
     class GetScheduleTask extends BaseCommunicationTask {
 
         @Override
@@ -468,14 +480,6 @@ public class MainActivity extends AppCompatActivity
             int index = (int) params[0];
             mSchedule = mActivityActor.GetDrainSchedule(index);
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void params) {
-            super.onPostExecute(params);
-            TextView tvCount = (TextView) findViewById(R.id.tvCount);
-            if (tvCount != null)
-                tvCount.setText("получил");
         }
     }
 
@@ -485,14 +489,6 @@ public class MainActivity extends AppCompatActivity
         protected Void doInBackground(Object... params) {
             mScheduleCount = mActivityActor.GetSchedulesCount();
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void params) {
-            super.onPostExecute(params);
-            TextView tvCount = (TextView) findViewById(R.id.tvCount);
-            if (tvCount != null)
-                tvCount.setText(0);
         }
     }
 
@@ -505,13 +501,6 @@ public class MainActivity extends AppCompatActivity
             return null;
         }
 
-        @Override
-        protected void onPostExecute(Void params) {
-            super.onPostExecute(params);
-            TextView tvCount = (TextView) findViewById(R.id.tvCount);
-            if (tvCount != null)
-                tvCount.setText("отправил");
-        }
     }
 
     class SetNeededLitersTaskParams {

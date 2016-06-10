@@ -332,10 +332,12 @@ public class Modbus4jActor implements IModbusActor {
                     schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS6));
                     schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS7));
                     schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS8));
+
+                    schedule.ReceivedSuccessfully = true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-                schedule = null;
+                schedule.ReceiveException = e;
             }
 
 
