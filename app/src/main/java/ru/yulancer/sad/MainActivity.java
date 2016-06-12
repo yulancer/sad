@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -517,38 +516,6 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Object... params) {
-//            mScheduleCount = 2;
-//            mScheduleArray.clear();
-//            DrainSchedule ds = new DrainSchedule();
-//            ds.Index = 1;
-//            ds.Hour = 23;
-//            ds.Minute = 59;
-//            ds.Enabled = true;
-//            ds.WeekDaysBitFlags = 15;
-//            ds.LitersNeeded.add(100);
-//            ds.LitersNeeded.add(200);
-//            ds.LitersNeeded.add(300);
-//            ds.LitersNeeded.add(400);
-//            ds.LitersNeeded.add(0);
-//            ds.LitersNeeded.add(666);
-//            ds.LitersNeeded.add(777);
-//            ds.LitersNeeded.add(888);
-//            mScheduleArray.add(ds);
-//            ds = new DrainSchedule();
-//            ds.Index = 2;
-//            ds.Hour = 19;
-//            ds.Minute = 04;
-//            ds.Enabled = true;
-//            ds.WeekDaysBitFlags = 7;
-//            ds.LitersNeeded.add(101);
-//            ds.LitersNeeded.add(202);
-//            ds.LitersNeeded.add(303);
-//            ds.LitersNeeded.add(404);
-//            ds.LitersNeeded.add(505);
-//            ds.LitersNeeded.add(606);
-//            ds.LitersNeeded.add(707);
-//            ds.LitersNeeded.add(808);
-//            mScheduleArray.add(ds);
             mScheduleCount = mActivityActor.GetSchedulesCount();
             mScheduleArray.clear();
             for (int index = 1; index <= mScheduleCount; index++) {
@@ -557,8 +524,8 @@ public class MainActivity extends AppCompatActivity
                 do {
                     schedule = mActivityActor.GetDrainSchedule(index);
                     retryCount++;
-                } while (!schedule.ReceivedSuccessfully && retryCount < 3);
-                if (schedule.ReceivedSuccessfully)
+                } while (!schedule.IOSuccess && retryCount < 3);
+                if (schedule.IOSuccess)
                     mScheduleArray.add(schedule);
             }
             return null;

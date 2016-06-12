@@ -1,11 +1,8 @@
 package ru.yulancer.sad;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.text.TextUtils;
 
-import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -32,7 +29,7 @@ public class DrainSchedule implements Parcelable {
     public byte Minute;
     public ArrayList<Integer> LitersNeeded = new ArrayList<>(8);
 
-    public boolean ReceivedSuccessfully;
+    public boolean IOSuccess;
     public Exception ReceiveException;
 
     protected DrainSchedule(Parcel in) {
@@ -42,7 +39,7 @@ public class DrainSchedule implements Parcelable {
         WeekDaysBitFlags = in.readByte();
         Hour = in.readByte();
         Minute = in.readByte();
-        ReceivedSuccessfully = in.readByte() != 0;
+        IOSuccess = in.readByte() != 0;
     }
 
     public static final Creator<DrainSchedule> CREATOR = new Creator<DrainSchedule>() {
@@ -96,6 +93,6 @@ public class DrainSchedule implements Parcelable {
         dest.writeByte(WeekDaysBitFlags);
         dest.writeByte(Hour);
         dest.writeByte(Minute);
-        dest.writeByte((byte) (ReceivedSuccessfully ? 1 : 0));
+        dest.writeByte((byte) (IOSuccess ? 1 : 0));
     }
 }

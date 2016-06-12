@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="modbus4j-3.0.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.infiniteautomation/modbus4j/3.0.0/1bcf8f48f176f4d4dac656ef330beb457f3d2740/modbus4j-3.0.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.infiniteautomation/modbus4j/3.0.0/5c691669c36571ac413d6d65193622fd77842712/modbus4j-3.0.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
