@@ -38,6 +38,7 @@ public class MainActivity extends AppCompatActivity
     private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
     //private IModbusActor mActivityActor = new Modbus4jActor("10.0.2.2", 502);
     private SadInfo mSadInfo = new SadInfo();
+    private PondAutoOnSettings mPondAutoOnSettings = new PondAutoOnSettings();
 
     private ArrayList<DrainLineControl> mDrainLineControls;
 

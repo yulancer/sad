@@ -70,7 +70,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:checked="false"
-                            android:text="Включить пруд когда:"
+                            android:text="Включить пруд когда темно, если:"
                             android:textAppearance="?android:attr/textAppearanceLarge" />
 
                         <LinearLayout
@@ -78,13 +78,6 @@
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:padding="10dp">
-
-                            <CheckBox
-                                android:id="@+id/cbTurnOnPondIfDark"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:checked="false"
-                                android:text="Стемнеет" />
 
                             <CheckBox
                                 android:id="@+id/cbTurnOnPondIfNoRain"
