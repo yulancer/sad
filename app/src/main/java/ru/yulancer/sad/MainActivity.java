@@ -58,7 +58,12 @@ public class MainActivity extends AppCompatActivity
         tabs.setup();
 
 
-        TabHost.TabSpec spec = tabs.newTabSpec("tagDrain");
+        TabHost.TabSpec spec = tabs.newTabSpec("tagPond");
+        spec.setContent(R.id.layoutPond);
+        spec.setIndicator("Пруд");
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tagDrain");
         spec.setContent(R.id.layoutDrain);
         spec.setIndicator("Полив");
         tabs.addTab(spec);

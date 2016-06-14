@@ -32,6 +32,165 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <LinearLayout
+                    android:id="@+id/layoutPond"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dip"
+                        android:gravity="center_horizontal"
+                        android:orientation="horizontal">
+
+                        <Switch
+                            android:id="@+id/swPond"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="center_horizontal"
+                            android:showText="true"
+                            android:textOff="Выключено"
+                            android:textOn="Включено"
+                            android:thumb="@drawable/customswitchselector"
+                            android:track="@drawable/custom_track" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+
+                        <CheckBox
+                            android:id="@+id/cbTurnOnPondAuto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="false"
+                            android:text="Включить пруд когда:"
+                            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <CheckBox
+                                android:id="@+id/cbTurnOnPondIfDark"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="false"
+                                android:text="Стемнеет" />
+
+                            <CheckBox
+                                android:id="@+id/cbTurnOnPondIfNoRain"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:checked="false"
+                                android:text="Нет дождя" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/cbTurnOnPondIfWarm"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:checked="false"
+                                    android:text="Температура выше" />
+
+                                <EditText
+                                    android:id="@+id/etcbTurnOnPondIfWarm"
+                                    android:layout_width="50dip"
+                                    android:layout_height="wrap_content"
+                                    android:ems="10"
+                                    android:inputType="number"
+                                    android:maxLength="2"
+                                    android:text="15" />
+
+                                <TextView
+                                    android:id="@+id/textView"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="°C" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/cbTurnOnPondIfWeekdays"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="5dp"
+                                    android:checked="false"
+                                    android:text="Только в" />
+
+                                <TextView
+                                    android:id="@+id/tvTurnOnPondIfWeekdays"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="пт,сб,вс"
+                                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                                <ImageButton
+                                    android:id="@+id/ibTurnOnPondIfWeekdays"
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:src="@drawable/ic_action_edit" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal">
+
+                                <CheckBox
+                                    android:id="@+id/cbTurnOnPondIfTimeLessThan"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Время не позднее" />
+
+                                <EditText
+                                    android:id="@+id/etTurnOnPondIfTimeLessThanHour"
+                                    android:layout_width="40dip"
+                                    android:layout_height="wrap_content"
+                                    android:ems="10"
+                                    android:inputType="number"
+                                    android:maxLength="2"
+                                    android:text="23" />
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text=":"
+                                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                                <EditText
+                                    android:id="@+id/etTurnOnPondIfTimeLessThanMinute"
+                                    android:layout_width="40dip"
+                                    android:layout_height="wrap_content"
+                                    android:ems="10"
+                                    android:inputType="number"
+                                    android:maxLength="2"
+                                    android:text="59" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/layoutSchedule"
@@ -40,21 +199,21 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:orientation="horizontal"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
 
                         <ImageButton
+                            android:id="@+id/ibScheduleRefresh"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:id="@+id/ibScheduleRefresh"
                             android:src="@drawable/ic_refresh" />
                     </LinearLayout>
 
                     <ListView
                         android:id="@+id/lvSchedule"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content" />
 
                 </LinearLayout>
 
@@ -140,21 +299,13 @@
                         android:checked="false"
                         android:text="Вода в баню" />
 
-                    <Switch
-                        android:id="@+id/swPond"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/swPump"
-                        android:checked="false"
-                        android:text="Пруд" />
 
                     <CheckBox
                         android:id="@+id/cbPressure"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_below="@+id/swPond"
+                        android:layout_below="@id/swSaunaWater"
                         android:checked="false"
                         android:clickable="false"
                         android:text="Давление" />
