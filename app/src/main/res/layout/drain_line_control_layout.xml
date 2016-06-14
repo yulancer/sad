@@ -23,20 +23,27 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center"
         android:layout_weight="1">
 
         <ru.yulancer.sad.ProgressTextView
             android:id="@+id/pbDrainProgress"
             style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_margin="4dp"
             android:layout_weight="1"
             android:background="@drawable/progress_background"
             android:gravity="center"
-            android:visibility="invisible" />
+            android:visibility="gone" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Вылито ???"
+            android:id="@+id/tvLitersDrained" />
 
     </LinearLayout>
 
@@ -46,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="1000"
+        android:text="\????"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <ImageButton

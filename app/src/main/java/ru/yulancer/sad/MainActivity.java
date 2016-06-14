@@ -329,11 +329,23 @@ public class MainActivity extends AppCompatActivity
                 pbDrainProgress.setValue(lineStatus.LitersDrained);
 
             if (pbDrainProgress.getVisibility() == View.VISIBLE) {
-                if (!lineStatus.Working)  //спрячем неработающую, но видимую
-                    pbDrainProgress.setVisibility(View.INVISIBLE);
+                if (!lineStatus.ValveOpen)  //спрячем неработающую, но видимую
+                    pbDrainProgress.setVisibility(View.GONE);
             } else {
-                if (lineStatus.Working)  //покажем работающую, но невидимую
+                if (lineStatus.ValveOpen)  //покажем работающую, но невидимую
                     pbDrainProgress.setVisibility(View.VISIBLE);
+            }
+        }
+
+        TextView tvLitersDrained = (TextView) lineControl.findViewById(R.id.tvLitersDrained);
+        if (tvLitersDrained != null){
+            tvLitersDrained.setText(String.format(Locale.getDefault(), "Вылито %d", lineStatus.LitersDrained));
+            if (tvLitersDrained.getVisibility() == View.VISIBLE) {
+                if (lineStatus.ValveOpen)  //спрячем работающую, но видимую
+                    tvLitersDrained.setVisibility(View.GONE);
+            } else {
+                if (!lineStatus.ValveOpen)  //покажем неработающую, но невидимую
+                    tvLitersDrained.setVisibility(View.VISIBLE);
             }
         }
 
