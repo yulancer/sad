@@ -1,6 +1,8 @@
 package ru.yulancer.sad;
 
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.support.annotation.DrawableRes;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,22 +63,46 @@ public class MainActivity extends AppCompatActivity
 
         TabHost.TabSpec spec = tabs.newTabSpec("tagPond");
         spec.setContent(R.id.layoutPond);
-        spec.setIndicator("Пруд");
+        Drawable pondDrawable;
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            pondDrawable = this.getDrawable(R.drawable.ic_action_pond);
+        } else {
+            pondDrawable = this.getResources().getDrawable(R.drawable.ic_action_pond);
+        }
+        spec.setIndicator("", pondDrawable);
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tagDrain");
         spec.setContent(R.id.layoutDrain);
-        spec.setIndicator("Полив");
+        Drawable drainDrawable;
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            drainDrawable = this.getDrawable(R.drawable.ic_action_drain);
+        } else {
+            drainDrawable = this.getResources().getDrawable(R.drawable.ic_action_drain);
+        }
+        spec.setIndicator("", drainDrawable);
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tagWater");
         spec.setContent(R.id.layoutWater);
-        spec.setIndicator("Вода");
+        Drawable waterDrawable;
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            waterDrawable = this.getDrawable(R.drawable.ic_action_water);
+        } else {
+            waterDrawable = this.getResources().getDrawable(R.drawable.ic_action_water);
+        }
+        spec.setIndicator("", waterDrawable);
         tabs.addTab(spec);
 
         spec = tabs.newTabSpec("tagSettings");
         spec.setContent(R.id.layoutSchedule);
-        spec.setIndicator("Таймер");
+        Drawable timerDrawable;
+        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+            timerDrawable = this.getDrawable(R.drawable.ic_action_timer);
+        } else {
+            timerDrawable = this.getResources().getDrawable(R.drawable.ic_action_timer);
+        }
+        spec.setIndicator("", timerDrawable);
         tabs.addTab(spec);
 
         tabs.setCurrentTab(0);
