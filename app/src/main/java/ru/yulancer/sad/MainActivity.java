@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
 
         spec = tabs.newTabSpec("tagSettings");
         spec.setContent(R.id.layoutSchedule);
-        spec.setIndicator("Расписание");
+        spec.setIndicator("Таймер");
         tabs.addTab(spec);
 
         tabs.setCurrentTab(0);
