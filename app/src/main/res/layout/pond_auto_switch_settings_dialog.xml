@@ -20,18 +20,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:clickable="false"
                 android:text="Включить пруд когда темно, если:"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 
-            <ImageButton
-                android:id="@+id/btn_EditNeeded"
-                style="?android:attr/buttonStyleSmall"
-                android:layout_width="32dip"
-                android:layout_height="32dip"
-                android:background="@drawable/ic_action_edit"
-                android:contentDescription="Edit"
-                android:text="Edit" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -44,8 +36,8 @@
                 android:id="@+id/cbTurnOnPondIfNoRain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:clickable="false"
-                android:text="Нет дождя" />
+                android:text="Нет дождя"
+                android:textAppearance="?android:attr/textAppearanceListItem" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -57,14 +49,23 @@
                     android:id="@+id/cbTurnOnPondIfWarm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
-                    android:text="Температура выше" />
+                    android:text="Температура выше"
+                    android:textAppearance="?android:attr/textAppearanceListItem" />
+                <EditText
+                    android:id="@+id/etTurnOnPondIfWarm"
+                    android:layout_width="40dip"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:ems="10"
+                    android:inputType="number"
+                    android:maxLength="2"
+                    android:text="5" />
 
                 <TextView
                     android:id="@+id/tvTurnOnPondIfWarm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" 15 °C"
+                    android:text=" °C"
                     android:textAppearance="?android:attr/textAppearanceLarge" />
 
             </LinearLayout>
@@ -72,23 +73,89 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
 
                 <CheckBox
                     android:id="@+id/cbTurnOnPondIfWeekdays"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:clickable="false"
-                    android:text="Только в" />
+                    android:text="Только по дням недели:"
+                    android:textAppearance="?android:attr/textAppearanceListItem" />
 
-                <TextView
-                    android:id="@+id/tvTurnOnPondIfWeekdays"
-                    android:layout_width="0dp"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="пт,сб,вс"
-                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                    android:orientation="horizontal"
+                    android:layout_marginStart="15dp">
+
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/cbTurnOnPondOnMonday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Понедельник"
+                            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+                        <CheckBox
+                            android:id="@+id/cbTurnOnPondOnTuesday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Вторник"
+                            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+                        <CheckBox
+                            android:id="@+id/cbTurnOnPondOnWednesday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Среда"
+                            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+                        <CheckBox
+                            android:id="@+id/cbTurnOnPondOnThursday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Четверг"
+                            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <CheckBox
+                            android:id="@+id/cbTurnOnPondOnFriday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Пятница"
+                            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+                        <CheckBox
+                            android:id="@+id/cbTurnOnPondOnSaturday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Суббота"
+                            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+                        <CheckBox
+                            android:id="@+id/cbTurnOnPondOnSunday"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Воскресенье"
+                            android:textAppearance="?android:attr/textAppearanceListItemSmall" />
+
+                                   </LinearLayout>
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
@@ -101,13 +168,13 @@
                     android:id="@+id/cbTurnOnPondIfTimeLessThan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:clickable="false"
                     android:text="Время не позднее" />
 
                 <EditText
                     android:id="@+id/etTurnOnPondIfTimeLessThanHour"
                     android:layout_width="40dip"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:ems="10"
                     android:inputType="number"
                     android:maxLength="2"
@@ -123,6 +190,7 @@
                     android:id="@+id/etTurnOnPondIfTimeLessThanMinute"
                     android:layout_width="40dip"
                     android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
                     android:ems="10"
                     android:inputType="number"
                     android:maxLength="2"

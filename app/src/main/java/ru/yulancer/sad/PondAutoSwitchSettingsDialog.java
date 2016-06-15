@@ -10,6 +10,8 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.EditText;
 
+import java.util.Locale;
+
 
 /**
  * A simple {@link DialogFragment } subclass.
@@ -19,7 +21,7 @@ import android.widget.EditText;
  * Use the {@link PondAutoSwitchSettingsDialog#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PondAutoSwitchSettingsDialog extends DialogFragment implements DialogInterface.OnClickListener {
+public class PondAutoSwitchSettingsDialog extends DialogFragment implements DialogInterface.OnClickListener, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_POND_AUTO_SWITCH_SETTINGS = "PondAutoSwitchSettings";
@@ -46,7 +48,7 @@ public class PondAutoSwitchSettingsDialog extends DialogFragment implements Dial
     public static PondAutoSwitchSettingsDialog newInstance(PondAutoOnSettings settings) {
         PondAutoSwitchSettingsDialog fragment = new PondAutoSwitchSettingsDialog();
         Bundle args = new Bundle();
-         args.putParcelable(ARG_POND_AUTO_SWITCH_SETTINGS, settings);
+        args.putParcelable(ARG_POND_AUTO_SWITCH_SETTINGS, settings);
         fragment.setArguments(args);
         return fragment;
     }
@@ -68,7 +70,22 @@ public class PondAutoSwitchSettingsDialog extends DialogFragment implements Dial
                 .setPositiveButton(android.R.string.ok, this)
                 .setNegativeButton(android.R.string.cancel, null).create();
 
+        CheckBox cbTurnOnPondAuto = (CheckBox) mView.findViewById(R.id.cbTurnOnPondAuto);
+        if (cbTurnOnPondAuto != null)
+            cbTurnOnPondAuto.setOnClickListener(this);
+        CheckBox cbTurnOnPondIfWarm = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfWarm);
+        if (cbTurnOnPondIfWarm != null)
+            cbTurnOnPondIfWarm.setOnClickListener(this);
+        CheckBox cbTurnOnPondIfWeekdays = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfWeekdays);
+        if (cbTurnOnPondIfWeekdays != null)
+            cbTurnOnPondIfWeekdays.setOnClickListener(this);
+        CheckBox cbTurnOnPondIfTimeLessThan = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfTimeLessThan);
+        if (cbTurnOnPondIfTimeLessThan != null)
+            cbTurnOnPondIfTimeLessThan.setOnClickListener(this);
+
         updateControls();
+        enableControls();
+
         return dialog;
     }
 
@@ -96,66 +113,55 @@ public class PondAutoSwitchSettingsDialog extends DialogFragment implements Dial
     }
 
     private void updateControls() {
-//        CheckBox cbScheduleOn = (CheckBox) mView.findViewById(R.id.cbScheduleEditEnabled);
-//        if (cbScheduleOn != null)
-//            cbScheduleOn.setChecked(mDrainSchedule.Enabled);
-//
-//        EditText etScheduleEditHour = (EditText) mView.findViewById(R.id.etScheduleEditHour);
-//        if (etScheduleEditHour != null)
-//            etScheduleEditHour.setText(mDrainSchedule.Hour + "");
-//
-//        EditText etScheduleEditMinute = (EditText) mView.findViewById(R.id.etScheduleEditMinute);
-//        if (etScheduleEditMinute != null)
-//            etScheduleEditMinute.setText(mDrainSchedule.Minute + "");
-//
-//
-//        EditText etScheduleEditLiters1 = (EditText) mView.findViewById(R.id.etScheduleEditLiters1);
-//        if (etScheduleEditLiters1 != null)
-//            etScheduleEditLiters1.setText(mDrainSchedule.LitersNeeded.get(0) + "");
-//        EditText etScheduleEditLiters2 = (EditText) mView.findViewById(R.id.etScheduleEditLiters2);
-//        if (etScheduleEditLiters2 != null)
-//            etScheduleEditLiters2.setText(mDrainSchedule.LitersNeeded.get(1) + "");
-//        EditText etScheduleEditLiters3 = (EditText) mView.findViewById(R.id.etScheduleEditLiters3);
-//        if (etScheduleEditLiters3 != null)
-//            etScheduleEditLiters3.setText(mDrainSchedule.LitersNeeded.get(2) + "");
-//        EditText etScheduleEditLiters4 = (EditText) mView.findViewById(R.id.etScheduleEditLiters4);
-//        if (etScheduleEditLiters4 != null)
-//            etScheduleEditLiters4.setText(mDrainSchedule.LitersNeeded.get(3) + "");
-//        EditText etScheduleEditLiters5 = (EditText) mView.findViewById(R.id.etScheduleEditLiters5);
-//        if (etScheduleEditLiters5 != null)
-//            etScheduleEditLiters5.setText(mDrainSchedule.LitersNeeded.get(4) + "");
-//        EditText etScheduleEditLiters6 = (EditText) mView.findViewById(R.id.etScheduleEditLiters6);
-//        if (etScheduleEditLiters6 != null)
-//            etScheduleEditLiters6.setText(mDrainSchedule.LitersNeeded.get(5) + "");
-//        EditText etScheduleEditLiters7 = (EditText) mView.findViewById(R.id.etScheduleEditLiters7);
-//        if (etScheduleEditLiters7 != null)
-//            etScheduleEditLiters7.setText(mDrainSchedule.LitersNeeded.get(6) + "");
-//        EditText etScheduleEditLiters8 = (EditText) mView.findViewById(R.id.etScheduleEditLiters8);
-//        if (etScheduleEditLiters8 != null)
-//            etScheduleEditLiters8.setText(mDrainSchedule.LitersNeeded.get(7) + "");
-//
-//        CheckBox cbScheduleEditSunday = (CheckBox) mView.findViewById(R.id.cbScheduleEditSunday);
-//        if (cbScheduleEditSunday != null)
-//            cbScheduleEditSunday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 0));
-//        CheckBox cbScheduleEditMonday = (CheckBox) mView.findViewById(R.id.cbScheduleEditMonday);
-//        if (cbScheduleEditMonday != null)
-//            cbScheduleEditMonday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 1));
-//        CheckBox cbScheduleEditTuesday = (CheckBox) mView.findViewById(R.id.cbScheduleEditTuesday);
-//        if (cbScheduleEditTuesday != null)
-//            cbScheduleEditTuesday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 2));
-//        CheckBox cbScheduleEditWednesday = (CheckBox) mView.findViewById(R.id.cbScheduleEditWednesday);
-//        if (cbScheduleEditWednesday != null)
-//            cbScheduleEditWednesday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 3));
-//        CheckBox cbScheduleEditThursday = (CheckBox) mView.findViewById(R.id.cbScheduleEditThursday);
-//        if (cbScheduleEditThursday != null)
-//            cbScheduleEditThursday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 4));
-//        CheckBox cbScheduleEdiFriday = (CheckBox) mView.findViewById(R.id.cbScheduleEditFriday);
-//        if (cbScheduleEdiFriday != null)
-//            cbScheduleEdiFriday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 5));
-//        CheckBox cbScheduleEditSaturday = (CheckBox) mView.findViewById(R.id.cbScheduleEditSaturday);
-//        if (cbScheduleEditSaturday != null)
-//            cbScheduleEditSaturday.setChecked(isBitSet(mDrainSchedule.WeekDaysBitFlags, 6));
+        CheckBox cbTurnOnPondAuto = (CheckBox) mView.findViewById(R.id.cbTurnOnPondAuto);
+        if (cbTurnOnPondAuto != null)
+            cbTurnOnPondAuto.setChecked(mAutoOnSettings.AutoOnWhenDark);
 
+        CheckBox cbTurnOnPondIfNoRain = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfNoRain);
+        if (cbTurnOnPondIfNoRain != null)
+            cbTurnOnPondIfNoRain.setChecked(mAutoOnSettings.OnlyWhenNoRain);
+
+        CheckBox cbTurnOnPondIfWarm = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfWarm);
+        if (cbTurnOnPondIfWarm != null)
+            cbTurnOnPondIfWarm.setChecked(mAutoOnSettings.OnlyWhenWarm);
+        EditText etTurnOnPondIfWarm = (EditText) mView.findViewById(R.id.etTurnOnPondIfWarm);
+        if (etTurnOnPondIfWarm != null)
+            etTurnOnPondIfWarm.setText(String.format(Locale.getDefault(), "%.0f", mAutoOnSettings.MinTemperature));
+
+        CheckBox cbTurnOnPondIfTimeLessThan = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfTimeLessThan);
+        if (cbTurnOnPondIfTimeLessThan != null)
+            cbTurnOnPondIfTimeLessThan.setChecked(mAutoOnSettings.OnlyWhenEarly);
+        EditText etTurnOnPondIfTimeLessThanHour = (EditText) mView.findViewById(R.id.etTurnOnPondIfTimeLessThanHour);
+        if (etTurnOnPondIfTimeLessThanHour != null)
+            etTurnOnPondIfTimeLessThanHour.setText(String.format("%d", mAutoOnSettings.Hour));
+        EditText etTurnOnPondIfTimeLessThanMinute = (EditText) mView.findViewById(R.id.etTurnOnPondIfTimeLessThanMinute);
+        if (etTurnOnPondIfTimeLessThanMinute != null)
+            etTurnOnPondIfTimeLessThanMinute.setText(String.format("%d", mAutoOnSettings.Minute));
+
+        CheckBox cbTurnOnPondIfWeekdays = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfWeekdays);
+        if (cbTurnOnPondIfWeekdays != null)
+            cbTurnOnPondIfWeekdays.setChecked(mAutoOnSettings.OnlyCertainWeekdays);
+        CheckBox cbTurnOnPondOnSunday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnSunday);
+        if (cbTurnOnPondOnSunday != null)
+            cbTurnOnPondOnSunday.setChecked(isBitSet(mAutoOnSettings.WeekdayFlags, 0));
+        CheckBox cbTurnOnPondOnMonday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnMonday);
+        if (cbTurnOnPondOnMonday != null)
+            cbTurnOnPondOnMonday.setChecked(isBitSet(mAutoOnSettings.WeekdayFlags, 1));
+        CheckBox cbTurnOnPondOnTuesday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnTuesday);
+        if (cbTurnOnPondOnTuesday != null)
+            cbTurnOnPondOnTuesday.setChecked(isBitSet(mAutoOnSettings.WeekdayFlags, 2));
+        CheckBox cbTurnOnPondOnWednesday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnWednesday);
+        if (cbTurnOnPondOnWednesday != null)
+            cbTurnOnPondOnWednesday.setChecked(isBitSet(mAutoOnSettings.WeekdayFlags, 3));
+        CheckBox cbTurnOnPondOnThursday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnThursday);
+        if (cbTurnOnPondOnThursday != null)
+            cbTurnOnPondOnThursday.setChecked(isBitSet(mAutoOnSettings.WeekdayFlags, 4));
+        CheckBox cbTurnOnPondOnFriday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnFriday);
+        if (cbTurnOnPondOnFriday != null)
+            cbTurnOnPondOnFriday.setChecked(isBitSet(mAutoOnSettings.WeekdayFlags, 5));
+        CheckBox cbTurnOnPondOnSaturday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnSaturday);
+        if (cbTurnOnPondOnSaturday != null)
+            cbTurnOnPondOnSaturday.setChecked(isBitSet(mAutoOnSettings.WeekdayFlags, 6));
     }
 
     private boolean isBitSet(byte flags, int i) {
@@ -163,66 +169,56 @@ public class PondAutoSwitchSettingsDialog extends DialogFragment implements Dial
     }
 
     private void updateSettings() {
-//        CheckBox cbScheduleOn = (CheckBox) getDialog().getWindow().findViewById(R.id.cbScheduleEditEnabled);
-//        if (cbScheduleOn != null)
-//            mDrainSchedule.Enabled = cbScheduleOn.isChecked();
-//
-//        EditText etScheduleEditHour = (EditText) mView.findViewById(R.id.etScheduleEditHour);
-//        if (etScheduleEditHour != null)
-//            mDrainSchedule.Hour = (byte) Integer.parseInt(etScheduleEditHour.getText().toString());
-//
-//        EditText etScheduleEditMinute = (EditText) mView.findViewById(R.id.etScheduleEditMinute);
-//        if (etScheduleEditMinute != null)
-//            mDrainSchedule.Minute = (byte) Integer.parseInt(etScheduleEditMinute.getText().toString());
-//
-//        EditText etScheduleEditLiters1 = (EditText) mView.findViewById(R.id.etScheduleEditLiters1);
-//        if (etScheduleEditLiters1 != null)
-//            mDrainSchedule.LitersNeeded.set(0, Integer.parseInt(etScheduleEditLiters1.getText().toString()));
-//        EditText etScheduleEditLiters2 = (EditText) mView.findViewById(R.id.etScheduleEditLiters2);
-//        if (etScheduleEditLiters2 != null)
-//            mDrainSchedule.LitersNeeded.set(1, Integer.parseInt(etScheduleEditLiters2.getText().toString()));
-//        EditText etScheduleEditLiters3 = (EditText) mView.findViewById(R.id.etScheduleEditLiters3);
-//        if (etScheduleEditLiters3 != null)
-//            mDrainSchedule.LitersNeeded.set(2, Integer.parseInt(etScheduleEditLiters3.getText().toString()));
-//        EditText etScheduleEditLiters4 = (EditText) mView.findViewById(R.id.etScheduleEditLiters4);
-//        if (etScheduleEditLiters4 != null)
-//            mDrainSchedule.LitersNeeded.set(3, Integer.parseInt(etScheduleEditLiters4.getText().toString()));
-//        EditText etScheduleEditLiters5 = (EditText) mView.findViewById(R.id.etScheduleEditLiters5);
-//        if (etScheduleEditLiters5 != null)
-//            mDrainSchedule.LitersNeeded.set(4, Integer.parseInt(etScheduleEditLiters5.getText().toString()));
-//        EditText etScheduleEditLiters6 = (EditText) mView.findViewById(R.id.etScheduleEditLiters6);
-//        if (etScheduleEditLiters6 != null)
-//            mDrainSchedule.LitersNeeded.set(5, Integer.parseInt(etScheduleEditLiters6.getText().toString()));
-//        EditText etScheduleEditLiters7 = (EditText) mView.findViewById(R.id.etScheduleEditLiters7);
-//        if (etScheduleEditLiters7 != null)
-//            mDrainSchedule.LitersNeeded.set(6, Integer.parseInt(etScheduleEditLiters7.getText().toString()));
-//        EditText etScheduleEditLiters8 = (EditText) mView.findViewById(R.id.etScheduleEditLiters8);
-//        if (etScheduleEditLiters8 != null)
-//            mDrainSchedule.LitersNeeded.set(7, Integer.parseInt(etScheduleEditLiters8.getText().toString()));
-//
-//        CheckBox cbScheduleEditSunday = (CheckBox) mView.findViewById(R.id.cbScheduleEditSunday);
-//        if (cbScheduleEditSunday != null)
-//            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 0, cbScheduleEditSunday.isChecked());
-//        CheckBox cbScheduleEditMonday = (CheckBox) mView.findViewById(R.id.cbScheduleEditMonday);
-//        if (cbScheduleEditMonday != null)
-//            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 1, cbScheduleEditMonday.isChecked());
-//        CheckBox cbScheduleEditTuesday = (CheckBox) mView.findViewById(R.id.cbScheduleEditTuesday);
-//        if (cbScheduleEditTuesday != null)
-//            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 2, cbScheduleEditTuesday.isChecked());
-//        CheckBox cbScheduleEditWednesday = (CheckBox) mView.findViewById(R.id.cbScheduleEditWednesday);
-//        if (cbScheduleEditWednesday != null)
-//            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 3, cbScheduleEditWednesday.isChecked());
-//        CheckBox cbScheduleEditThursday = (CheckBox) mView.findViewById(R.id.cbScheduleEditThursday);
-//        if (cbScheduleEditThursday != null)
-//            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 4, cbScheduleEditThursday.isChecked());
-//        CheckBox cbScheduleEditFriday = (CheckBox) mView.findViewById(R.id.cbScheduleEditFriday);
-//        if (cbScheduleEditFriday != null)
-//            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 5, cbScheduleEditFriday.isChecked());
-//        CheckBox cbScheduleEditSaturday = (CheckBox) mView.findViewById(R.id.cbScheduleEditSaturday);
-//        if (cbScheduleEditSaturday != null)
-//            mDrainSchedule.WeekDaysBitFlags = setBit(mDrainSchedule.WeekDaysBitFlags, 6, cbScheduleEditSaturday.isChecked());
 
+        CheckBox cbTurnOnPondAuto = (CheckBox) mView.findViewById(R.id.cbTurnOnPondAuto);
+        if (cbTurnOnPondAuto != null)
+            mAutoOnSettings.AutoOnWhenDark = cbTurnOnPondAuto.isChecked();
 
+        CheckBox cbTurnOnPondIfNoRain = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfNoRain);
+        if (cbTurnOnPondIfNoRain != null)
+            mAutoOnSettings.OnlyWhenNoRain = cbTurnOnPondIfNoRain.isChecked();
+
+        CheckBox cbTurnOnPondIfWarm = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfWarm);
+        if (cbTurnOnPondIfWarm != null)
+            mAutoOnSettings.OnlyWhenWarm = cbTurnOnPondIfWarm.isChecked();
+        EditText etTurnOnPondIfWarm = (EditText) mView.findViewById(R.id.etTurnOnPondIfWarm);
+        if (etTurnOnPondIfWarm != null)
+            mAutoOnSettings.MinTemperature = Float.parseFloat(etTurnOnPondIfWarm.getText().toString());
+
+        CheckBox cbTurnOnPondIfTimeLessThan = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfTimeLessThan);
+        if (cbTurnOnPondIfTimeLessThan != null)
+            mAutoOnSettings.OnlyWhenEarly = cbTurnOnPondIfTimeLessThan.isChecked();
+        EditText etTurnOnPondIfTimeLessThanHour = (EditText) mView.findViewById(R.id.etTurnOnPondIfTimeLessThanHour);
+        if (etTurnOnPondIfTimeLessThanHour != null)
+            mAutoOnSettings.Hour = (byte) Integer.parseInt(etTurnOnPondIfTimeLessThanHour.getText().toString());
+        EditText etTurnOnPondIfTimeLessThanMinute = (EditText) mView.findViewById(R.id.etTurnOnPondIfTimeLessThanMinute);
+        if (etTurnOnPondIfTimeLessThanMinute != null)
+            mAutoOnSettings.Minute = (byte) Integer.parseInt(etTurnOnPondIfTimeLessThanMinute.getText().toString());
+
+        CheckBox cbTurnOnPondIfWeekdays = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfWeekdays);
+        if (cbTurnOnPondIfWeekdays != null)
+            mAutoOnSettings.OnlyCertainWeekdays = cbTurnOnPondIfWeekdays.isChecked();
+        CheckBox cbTurnOnPondOnSunday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnSunday);
+        if (cbTurnOnPondOnSunday != null)
+            mAutoOnSettings.WeekdayFlags = setBit(mAutoOnSettings.WeekdayFlags, 0, cbTurnOnPondOnSunday.isChecked());
+        CheckBox cbTurnOnPondOnMonday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnMonday);
+        if (cbTurnOnPondOnMonday != null)
+            mAutoOnSettings.WeekdayFlags = setBit(mAutoOnSettings.WeekdayFlags, 1, cbTurnOnPondOnMonday.isChecked());
+        CheckBox cbTurnOnPondOnTuesday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnTuesday);
+        if (cbTurnOnPondOnTuesday != null)
+            mAutoOnSettings.WeekdayFlags = setBit(mAutoOnSettings.WeekdayFlags, 2, cbTurnOnPondOnTuesday.isChecked());
+        CheckBox cbTurnOnPondOnWednesday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnWednesday);
+        if (cbTurnOnPondOnWednesday != null)
+            mAutoOnSettings.WeekdayFlags = setBit(mAutoOnSettings.WeekdayFlags, 3, cbTurnOnPondOnWednesday.isChecked());
+        CheckBox cbTurnOnPondOnThursday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnThursday);
+        if (cbTurnOnPondOnThursday != null)
+            mAutoOnSettings.WeekdayFlags = setBit(mAutoOnSettings.WeekdayFlags, 4, cbTurnOnPondOnThursday.isChecked());
+        CheckBox cbTurnOnPondOnFriday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnFriday);
+        if (cbTurnOnPondOnFriday != null)
+            mAutoOnSettings.WeekdayFlags = setBit(mAutoOnSettings.WeekdayFlags, 5, cbTurnOnPondOnFriday.isChecked());
+        CheckBox cbTurnOnPondOnSaturday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnSaturday);
+        if (cbTurnOnPondOnSaturday != null)
+            mAutoOnSettings.WeekdayFlags = setBit(mAutoOnSettings.WeekdayFlags, 6, cbTurnOnPondOnSaturday.isChecked());
     }
 
     private byte setBit(byte flags, int number, boolean checked) {
@@ -230,6 +226,66 @@ public class PondAutoSwitchSettingsDialog extends DialogFragment implements Dial
             return (byte) (flags | (1 << number));
         else
             return (byte) (flags & ~(1 << number));
+    }
+
+    @Override
+    public void onClick(View v) {
+        enableControls();
+    }
+
+    private void enableControls() {
+        CheckBox cbTurnOnPondAuto = (CheckBox) mView.findViewById(R.id.cbTurnOnPondAuto);
+        boolean mainChecked =  (cbTurnOnPondAuto != null) && cbTurnOnPondAuto.isChecked();
+
+
+        CheckBox cbTurnOnPondIfNoRain = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfNoRain);
+        if (cbTurnOnPondIfNoRain != null)
+            cbTurnOnPondIfNoRain.setEnabled(mainChecked);
+
+        CheckBox cbTurnOnPondIfWarm = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfWarm);
+        if (cbTurnOnPondIfWarm != null) {
+            cbTurnOnPondIfWarm.setEnabled(mainChecked);
+            EditText etTurnOnPondIfWarm = (EditText) mView.findViewById(R.id.etTurnOnPondIfWarm);
+            if (etTurnOnPondIfWarm != null)
+                etTurnOnPondIfWarm.setEnabled(mainChecked && cbTurnOnPondIfWarm.isChecked());
+        }
+
+        CheckBox cbTurnOnPondIfTimeLessThan = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfTimeLessThan);
+        if (cbTurnOnPondIfTimeLessThan != null) {
+            cbTurnOnPondIfTimeLessThan.setEnabled(mainChecked);
+            EditText etTurnOnPondIfTimeLessThanHour = (EditText) mView.findViewById(R.id.etTurnOnPondIfTimeLessThanHour);
+            if (etTurnOnPondIfTimeLessThanHour != null)
+                etTurnOnPondIfTimeLessThanHour.setEnabled(mainChecked && cbTurnOnPondIfTimeLessThan.isChecked());
+            EditText etTurnOnPondIfTimeLessThanMinute = (EditText) mView.findViewById(R.id.etTurnOnPondIfTimeLessThanMinute);
+            if (etTurnOnPondIfTimeLessThanMinute != null)
+                etTurnOnPondIfTimeLessThanMinute.setEnabled(mainChecked && cbTurnOnPondIfTimeLessThan.isChecked());
+        }
+
+        CheckBox cbTurnOnPondIfWeekdays = (CheckBox) mView.findViewById(R.id.cbTurnOnPondIfWeekdays);
+        if (cbTurnOnPondIfWeekdays != null) {
+            cbTurnOnPondIfWeekdays.setEnabled(mainChecked);
+            CheckBox cbTurnOnPondOnSunday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnSunday);
+            if (cbTurnOnPondOnSunday != null)
+                cbTurnOnPondOnSunday.setEnabled(mainChecked && cbTurnOnPondIfWeekdays.isChecked());
+            CheckBox cbTurnOnPondOnMonday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnMonday);
+            if (cbTurnOnPondOnMonday != null)
+                cbTurnOnPondOnMonday.setEnabled(mainChecked && cbTurnOnPondIfWeekdays.isChecked());
+            CheckBox cbTurnOnPondOnTuesday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnTuesday);
+            if (cbTurnOnPondOnTuesday != null)
+                cbTurnOnPondOnTuesday.setEnabled(mainChecked && cbTurnOnPondIfWeekdays.isChecked());
+            CheckBox cbTurnOnPondOnWednesday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnWednesday);
+            if (cbTurnOnPondOnWednesday != null)
+                cbTurnOnPondOnWednesday.setEnabled(mainChecked && cbTurnOnPondIfWeekdays.isChecked());
+            CheckBox cbTurnOnPondOnThursday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnThursday);
+            if (cbTurnOnPondOnThursday != null)
+                cbTurnOnPondOnThursday.setEnabled(mainChecked && cbTurnOnPondIfWeekdays.isChecked());
+            CheckBox cbTurnOnPondOnFriday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnFriday);
+            if (cbTurnOnPondOnFriday != null)
+                cbTurnOnPondOnFriday.setEnabled(mainChecked && cbTurnOnPondIfWeekdays.isChecked());
+            CheckBox cbTurnOnPondOnSaturday = (CheckBox) mView.findViewById(R.id.cbTurnOnPondOnSaturday);
+            if (cbTurnOnPondOnSaturday != null)
+                cbTurnOnPondOnSaturday.setEnabled(mainChecked && cbTurnOnPondIfWeekdays.isChecked());
+        }
     }
 
     /**
