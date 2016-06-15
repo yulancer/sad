@@ -514,6 +514,8 @@ public class MainActivity extends AppCompatActivity
     public void onSettingsChanged(PondAutoOnSettings settings) {
         mSadInfo.pondAutoOnSettings = settings;
         updatePondAutoSwitchSettings(settings);
+        SetPondAutoOnSettingsTask task = new SetPondAutoOnSettingsTask();
+        task.execute(settings);
     }
 
 
@@ -647,6 +649,16 @@ public class MainActivity extends AppCompatActivity
         protected Void doInBackground(Object... params) {
             DrainSchedule schedule = (DrainSchedule) params[0];
             mActivityActor.UpdateDrainSchedule(schedule);
+            return null;
+        }
+
+    }
+    class SetPondAutoOnSettingsTask extends BaseCommunicationTask {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            PondAutoOnSettings settings = (PondAutoOnSettings) params[0];
+            mActivityActor.UpdatePondAutoOnSettings(settings);
             return null;
         }
 

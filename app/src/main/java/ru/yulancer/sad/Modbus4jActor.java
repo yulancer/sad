@@ -8,6 +8,7 @@ import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.ip.IpParameters;
 import com.serotonin.modbus4j.locator.BaseLocator;
+import com.serotonin.modbus4j.locator.NumericLocator;
 import com.serotonin.modbus4j.msg.WriteCoilRequest;
 import com.serotonin.modbus4j.msg.WriteCoilResponse;
 import com.serotonin.modbus4j.msg.WriteCoilsRequest;
@@ -63,6 +64,8 @@ public class Modbus4jActor implements IModbusActor {
     public static final String POND_AUTO_SWITCH_HOUR_MINUTE = "PondAutoSwitchHourMinute";
     public static final String POND_AUTO_SWITCH_TEMPERATURE = "PondAutoSwitchTemperature";
 
+    public static final int POND_AUTO_ON_SETTINGS_REGISTER_START = 54;
+
     public static final ModbusRegisterData[] modbusRegisterData = new ModbusRegisterData[]{
             new ModbusRegisterData(STATUS_FLAGS, 1, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(STATUS_FLAGS2, 3, DataType.TWO_BYTE_INT_UNSIGNED),
@@ -88,9 +91,9 @@ public class Modbus4jActor implements IModbusActor {
             new ModbusRegisterData(LINE_BIT_STATUS34, 27, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(LINE_BIT_STATUS56, 28, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(LINE_BIT_STATUS78, 29, DataType.TWO_BYTE_INT_UNSIGNED),
-            new ModbusRegisterData(POND_AUTO_SWITCH_CONDITIONS_AND_WEEKDAYS, 54, DataType.TWO_BYTE_INT_UNSIGNED),
-            new ModbusRegisterData(POND_AUTO_SWITCH_HOUR_MINUTE, 55, DataType.TWO_BYTE_INT_UNSIGNED),
-            new ModbusRegisterData(POND_AUTO_SWITCH_TEMPERATURE, 56, DataType.FOUR_BYTE_FLOAT_SWAPPED),
+            new ModbusRegisterData(POND_AUTO_SWITCH_CONDITIONS_AND_WEEKDAYS, POND_AUTO_ON_SETTINGS_REGISTER_START, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(POND_AUTO_SWITCH_HOUR_MINUTE, POND_AUTO_ON_SETTINGS_REGISTER_START + 1, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(POND_AUTO_SWITCH_TEMPERATURE, POND_AUTO_ON_SETTINGS_REGISTER_START + 2, DataType.FOUR_BYTE_FLOAT_SWAPPED),
     };
 
     public static final String SCHEDULE_INDEX_AND_FLAGS = "ScheduleIndexAndFlags";
@@ -286,8 +289,6 @@ public class Modbus4jActor implements IModbusActor {
         batch.addLocator(mScheduleIndexAndFlags.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleIndexAndFlags.RegisterNumber, mScheduleIndexAndFlags.RegisterType));
 
         try {
-//            WriteCoilsRequest request = new WriteCoilsRequest(slaveId, COMMAND_OFFSET_SCHEDULES_GET_COUNT, new boolean[]{true});
-//            WriteCoilsResponse response = (WriteCoilsResponse) master.send(request);
             WriteCoilRequest request = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_GET_COUNT, true);
             WriteCoilResponse response = (WriteCoilResponse) master.send(request);
             master.init();
@@ -375,59 +376,6 @@ public class Modbus4jActor implements IModbusActor {
 
     @Override
     public void UpdateDrainSchedule(DrainSchedule schedule) {
-//        ModbusMaster master = CreateMaster();
-//        int slaveId = 1;
-//
-//        if (master.testSlaveNode(slaveId))
-//            try {
-//
-//                /// пишем данные в регистры Modbus
-//                /// пишем номер нужного расписания и флаги
-//                int indexAndFlags = schedule.Index;
-//                if (schedule.Enabled)
-//                    indexAndFlags = indexAndFlags | 256;
-//
-//                NumericLocator locator = (NumericLocator) BaseLocator.holdingRegister(slaveId, 0, DataType.TWO_BYTE_INT_UNSIGNED);
-//                WriteRegistersRequest writeRegisterRequestIndex = new WriteRegistersRequest(slaveId, mScheduleIndexAndFlags.RegisterNumber, new short[]{(short) indexAndFlags});
-//                WriteRegistersResponse writeRegisterResponseIndex = (WriteRegistersResponse) master.send(writeRegisterRequestIndex);
-//
-//                //пишем часы и минуты
-//                int HourMinute = (schedule.Minute << 8) + schedule.Hour;
-//                WriteRegistersRequest writeRegisterRequestHourMinute = new WriteRegistersRequest(slaveId, mScheduleHourMinute.RegisterNumber, new short[]{schedule.Hour, schedule.Minute});
-//                WriteRegistersResponse writeRegisterResponseHourMinute = (WriteRegistersResponse) master.send(writeRegisterRequestHourMinute);
-//
-//                //пишем флаги дней недели
-//                int weekDayFlags = schedule.WeekDaysBitFlags;
-//                WriteRegistersRequest writeRegisterRequestWeekDays = new WriteRegistersRequest(slaveId, mScheduleWeekDays.RegisterNumber, new short[]{schedule.WeekDaysBitFlags});
-//                WriteRegistersResponse writeRegisterResponseWeekDays = (WriteRegistersResponse) master.send(writeRegisterRequestWeekDays);
-//
-//                /// пишем литры
-//                WriteRegisterRequest writeRegisterRequestLiters1 = new WriteRegisterRequest(slaveId, mScheduleLiters1.RegisterNumber, schedule.LitersNeeded.get(0));
-//                WriteRegisterResponse writeRegisterResponseLiters1 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters1);
-//                WriteRegisterRequest writeRegisterRequestLiters2 = new WriteRegisterRequest(slaveId, mScheduleLiters2.RegisterNumber, schedule.LitersNeeded.get(1));
-//                WriteRegisterResponse writeRegisterResponseLiters2 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters2);
-//                WriteRegisterRequest writeRegisterRequestLiters3 = new WriteRegisterRequest(slaveId, mScheduleLiters3.RegisterNumber, schedule.LitersNeeded.get(2));
-//                WriteRegisterResponse writeRegisterResponseLiters3 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters3);
-//                WriteRegisterRequest writeRegisterRequestLiters4 = new WriteRegisterRequest(slaveId, mScheduleLiters4.RegisterNumber, schedule.LitersNeeded.get(3));
-//                WriteRegisterResponse writeRegisterResponseLiters4 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters4);
-//                WriteRegisterRequest writeRegisterRequestLiters5 = new WriteRegisterRequest(slaveId, mScheduleLiters5.RegisterNumber, schedule.LitersNeeded.get(4));
-//                WriteRegisterResponse writeRegisterResponseLiters5 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters5);
-//                WriteRegisterRequest writeRegisterRequestLiters6 = new WriteRegisterRequest(slaveId, mScheduleLiters6.RegisterNumber, schedule.LitersNeeded.get(5));
-//                WriteRegisterResponse writeRegisterResponseLiters6 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters6);
-//                WriteRegisterRequest writeRegisterRequestLiters7 = new WriteRegisterRequest(slaveId, mScheduleLiters7.RegisterNumber, schedule.LitersNeeded.get(6));
-//                WriteRegisterResponse writeRegisterResponseLiters7 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters7);
-//                WriteRegisterRequest writeRegisterRequestLiters8 = new WriteRegisterRequest(slaveId, mScheduleLiters8.RegisterNumber, schedule.LitersNeeded.get(7));
-//                WriteRegisterResponse writeRegisterResponseLiters8 = (WriteRegisterResponse) master.send(writeRegisterRequestLiters8);
-//
-//                /// посылаем команту на чтение данных в память контроллера
-//                WriteCoilRequest coilRequest = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_SET, true);
-//                WriteCoilResponse coilResponse = (WriteCoilResponse) master.send(coilRequest);
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                schedule = null;
-//            }
-
         int retries = 0;
         DrainSchedule result;
         do {
@@ -443,6 +391,70 @@ public class Modbus4jActor implements IModbusActor {
                 retries++;
             } while (!sendSuccess && retries < MAX_RETRIES);
 
+    }
+
+    @Override
+    public void UpdatePondAutoOnSettings(PondAutoOnSettings settings) {
+        int retries = 0;
+        boolean result;
+        do {
+            result = writePondAutoOnSettingsToModbus(settings);
+            retries++;
+        } while (!result && retries < MAX_RETRIES);
+
+    }
+
+    private byte setBit(byte flags, int number, boolean checked) {
+        if (checked)
+            return (byte) (flags | (1 << number));
+        else
+            return (byte) (flags & ~(1 << number));
+    }
+
+    private boolean writePondAutoOnSettingsToModbus(PondAutoOnSettings settings) {
+        ModbusMaster master = CreateMaster();
+        int slaveId = 1;
+        boolean sendSuccess = false;
+
+        ArrayList<Byte> scheduleBytes = new ArrayList<>();
+
+        //пишем условия и флаги дней недели
+        byte flags = 0;
+        flags = setBit(flags, 0, settings.AutoOnWhenDark);
+        flags = setBit(flags, 1, settings.OnlyWhenNoRain);
+        flags = setBit(flags, 2, settings.OnlyWhenWarm);
+        flags = setBit(flags, 3, settings.OnlyCertainWeekdays);
+        flags = setBit(flags, 4, settings.OnlyWhenEarly);
+        scheduleBytes.add(flags);
+        scheduleBytes.add(settings.WeekdayFlags);
+
+        //пишем часы и минуты
+        scheduleBytes.add(settings.Hour);
+        scheduleBytes.add(settings.Minute);
+
+        short[] data = toShortArray(scheduleBytes);
+        //пишем температуру
+        NumericLocator locator = (NumericLocator) BaseLocator.holdingRegister(slaveId, 0, DataType.FOUR_BYTE_FLOAT_SWAPPED);
+        short[] temperatureData = locator.valueToShorts(settings.MinTemperature);
+
+        // склеиваем вместе
+        short[] registerData = new short[data.length + temperatureData.length];
+        System.arraycopy(data, 0, registerData, 0, data.length);
+        System.arraycopy(temperatureData, 0, registerData, data.length, temperatureData.length);
+
+        try {
+            WriteRegistersRequest registersRequest =
+                    new WriteRegistersRequest(slaveId, POND_AUTO_ON_SETTINGS_REGISTER_START, registerData);
+            WriteRegistersResponse registersResponse = (WriteRegistersResponse) master.send(registersRequest);
+            sendSuccess = true;
+        } catch (ModbusTransportException e) {
+            e.printStackTrace();
+            sendSuccess = false;
+        } finally {
+            master.destroy();
+        }
+
+        return sendSuccess;
     }
 
     private boolean sendReadCommandToController() {

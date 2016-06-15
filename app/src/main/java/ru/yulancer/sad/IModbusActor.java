@@ -18,6 +18,8 @@ public interface IModbusActor {
 
     void UpdateDrainSchedule(DrainSchedule schedule);
 
+    void UpdatePondAutoOnSettings(PondAutoOnSettings settings);
+
     public static final byte ManualDrainOffset = 0;
     public static final byte GardenWaterOffset = 1;
     public static final byte SaunaWaterOffset = 2;
