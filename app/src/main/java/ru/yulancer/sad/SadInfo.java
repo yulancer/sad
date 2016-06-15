@@ -34,7 +34,11 @@ public class SadInfo implements Parcelable {
     public float AirTemperature;
     public float FrostTemperature;
 
+    public PondAutoOnSettings pondAutoOnSettings = new PondAutoOnSettings();
+
     public DrainLineInfo[] LineStatuses = new  DrainLineInfo[8];
+
+
 
     public SadInfo() {
         for (int i = 0; i < LineStatuses.length; i++        ){
@@ -61,6 +65,8 @@ public class SadInfo implements Parcelable {
         FrostTemperature = in.readFloat();
 
         LineStatuses = in.createTypedArray(CREATOR);
+
+        pondAutoOnSettings = PondAutoOnSettings.CREATOR.createFromParcel(in);
     }
 
     public static final Creator<DrainLineInfo> CREATOR = new Creator<DrainLineInfo>() {
@@ -100,6 +106,8 @@ public class SadInfo implements Parcelable {
         dest.writeFloat(FrostTemperature);
 
         dest.writeTypedArray(LineStatuses, 0);
+
+        dest.writeParcelable(pondAutoOnSettings, 0);
 
     }
 }

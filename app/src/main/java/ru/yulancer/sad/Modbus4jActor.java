@@ -59,6 +59,10 @@ public class Modbus4jActor implements IModbusActor {
     public static final String LINE_BIT_STATUS56 = "BitStatusLine56";
     public static final String LINE_BIT_STATUS78 = "BitStatusLine78";
 
+    public static final String POND_AUTO_SWITCH_CONDITIONS_AND_WEEKDAYS = "PondAutoSwitchConditionsAndWeekdays";
+    public static final String POND_AUTO_SWITCH_HOUR_MINUTE = "PondAutoSwitchHourMinute";
+    public static final String POND_AUTO_SWITCH_TEMPERATURE = "PondAutoSwitchTemperature";
+
     public static final ModbusRegisterData[] modbusRegisterData = new ModbusRegisterData[]{
             new ModbusRegisterData(STATUS_FLAGS, 1, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(STATUS_FLAGS2, 3, DataType.TWO_BYTE_INT_UNSIGNED),
@@ -84,6 +88,9 @@ public class Modbus4jActor implements IModbusActor {
             new ModbusRegisterData(LINE_BIT_STATUS34, 27, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(LINE_BIT_STATUS56, 28, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(LINE_BIT_STATUS78, 29, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(POND_AUTO_SWITCH_CONDITIONS_AND_WEEKDAYS, 54, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(POND_AUTO_SWITCH_HOUR_MINUTE, 55, DataType.TWO_BYTE_INT_UNSIGNED),
+            new ModbusRegisterData(POND_AUTO_SWITCH_TEMPERATURE, 56, DataType.FOUR_BYTE_FLOAT_SWAPPED),
     };
 
     public static final String SCHEDULE_INDEX_AND_FLAGS = "ScheduleIndexAndFlags";
@@ -205,6 +212,19 @@ public class Modbus4jActor implements IModbusActor {
             int lineBitStatus78 = results.getIntValue(LINE_BIT_STATUS78);
             updateLineInfo(lineBitStatus78, sadInfo.LineStatuses[6], sadInfo.LineStatuses[7]);
 
+            int pondFlagsAndDays = results.getIntValue(POND_AUTO_SWITCH_CONDITIONS_AND_WEEKDAYS);
+            sadInfo.pondAutoOnSettings.AutoOnWhenDark = (pondFlagsAndDays & 1) == 1;
+            sadInfo.pondAutoOnSettings.OnlyWhenNoRain = (pondFlagsAndDays & 2) == 2;
+            sadInfo.pondAutoOnSettings.OnlyWhenWarm = (pondFlagsAndDays & 4) == 4;
+            sadInfo.pondAutoOnSettings.OnlyCertainWeekdays = (pondFlagsAndDays & 8) == 8;
+            sadInfo.pondAutoOnSettings.OnlyWhenEarly = (pondFlagsAndDays & 16) == 16;
+            sadInfo.pondAutoOnSettings.WeekdayFlags = (byte) (pondFlagsAndDays >> 8);
+
+            int pondHourMinute = results.getIntValue(POND_AUTO_SWITCH_HOUR_MINUTE);
+            sadInfo.pondAutoOnSettings.Hour = (byte) pondHourMinute;
+            sadInfo.pondAutoOnSettings.Minute = (byte) (pondHourMinute >> 8);
+
+            sadInfo.pondAutoOnSettings.MinTemperature = results.getFloatValue(POND_AUTO_SWITCH_TEMPERATURE);
         }
 
         return sadInfo;

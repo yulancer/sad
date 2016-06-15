@@ -10,7 +10,6 @@ import java.util.Locale;
  * Created by matveev_yuri on 07.06.2016.
  */
 public class DrainSchedule implements Parcelable {
-    public static final String[] dayNames = {"вс", "пн", "вт", "ср", "чт", "пт", "сб" };
 
     public boolean Enabled;
     public byte Index;
@@ -46,13 +45,7 @@ public class DrainSchedule implements Parcelable {
     };
 
     public String getDisplayDays() {
-        String result = "";
-        for(int i = 0; i < 7; i++){
-            boolean dayIsSet = (WeekDaysBitFlags & (1 << i)) == (1 << i);
-            if (dayIsSet)
-                result = result + (result.length()  < 2 ? "" : ",") + dayNames[i];
-        }
-        return result;
+        return WeekdaysBitFlagsDecoder.getDisplayDays(WeekDaysBitFlags);
     }
     public String getDisplayTime() {
         return String.format(Locale.getDefault(), "%d:%d", Hour, Minute);

@@ -22,6 +22,10 @@ public class PondAutoOnSettings implements Parcelable {
 
     }
 
+    public String getDisplayDays() {
+        return WeekdaysBitFlagsDecoder.getDisplayDays(WeekdayFlags);
+    }
+
     protected PondAutoOnSettings(Parcel in) {
         AutoOnWhenDark = in.readByte() != 0;
         OnlyWhenNoRain = in.readByte() != 0;

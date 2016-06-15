@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -41,7 +42,6 @@ public class MainActivity extends AppCompatActivity
     private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
     //private IModbusActor mActivityActor = new Modbus4jActor("10.0.2.2", 502);
     private SadInfo mSadInfo = new SadInfo();
-    private PondAutoOnSettings mPondAutoOnSettings = new PondAutoOnSettings();
 
     private ArrayList<DrainLineControl> mDrainLineControls;
 
@@ -274,6 +274,7 @@ public class MainActivity extends AppCompatActivity
                 swAutoDrain.setChecked(mSadInfo.AutoDrainOn);
             }
 
+            updatePondAutoSwitchSettings(mSadInfo.pondAutoOnSettings);
             for (int i = 1; i <= 8; i++) {
                 DrainLineControl lineControl = findByLineNumber(i);
                 if (lineControl != null) {
@@ -311,6 +312,37 @@ public class MainActivity extends AppCompatActivity
             if (connectIcon != null)
                 connectIcon.setImageResource(R.drawable.ic_disconnect);
         }
+    }
+
+    private void updatePondAutoSwitchSettings(PondAutoOnSettings settings) {
+        CheckBox cbTurnOnPondAuto = (CheckBox) findViewById(R.id.cbTurnOnPondAuto);
+        if (cbTurnOnPondAuto != null)
+            cbTurnOnPondAuto.setChecked(settings.AutoOnWhenDark);
+
+        CheckBox cbTurnOnPondIfNoRain = (CheckBox) findViewById(R.id.cbTurnOnPondIfNoRain);
+        if (cbTurnOnPondIfNoRain != null)
+            cbTurnOnPondIfNoRain.setChecked(settings.OnlyWhenNoRain);
+
+        CheckBox cbTurnOnPondIfWarm = (CheckBox) findViewById(R.id.cbTurnOnPondIfWarm);
+        if (cbTurnOnPondIfWarm != null)
+            cbTurnOnPondIfWarm.setChecked(settings.OnlyWhenWarm);
+        TextView tvTurnOnPondIfWarm = (TextView) findViewById(R.id.tvTurnOnPondIfWarm);
+        if (tvTurnOnPondIfWarm != null)
+            tvTurnOnPondIfWarm.setText(String.format(Locale.getDefault(), " %.0f °C", settings.MinTemperature));
+
+        CheckBox cbTurnOnPondIfTimeLessThan = (CheckBox) findViewById(R.id.cbTurnOnPondIfTimeLessThan);
+        if (cbTurnOnPondIfTimeLessThan != null)
+            cbTurnOnPondIfTimeLessThan.setChecked(settings.OnlyWhenEarly);
+        TextView tvTurnOnPondIfTimeLessThan = (TextView) findViewById(R.id.tvTurnOnPondIfTimeLessThan);
+        if (tvTurnOnPondIfTimeLessThan != null)
+            tvTurnOnPondIfTimeLessThan.setText(String.format(Locale.getDefault(), " %d:%d", settings.Hour, settings.Minute));
+
+        CheckBox cbTurnOnPondIfWeekdays = (CheckBox) findViewById(R.id.cbTurnOnPondIfWeekdays);
+        if (cbTurnOnPondIfWeekdays != null)
+            cbTurnOnPondIfWeekdays.setChecked(settings.OnlyCertainWeekdays);
+        TextView tvTurnOnPondIfWeekdays = (TextView) findViewById(R.id.tvTurnOnPondIfWeekdays);
+        if (tvTurnOnPondIfWeekdays != null)
+            tvTurnOnPondIfWeekdays.setText(settings.getDisplayDays());
     }
 
     private void updateDrainLineControl(DrainLineControl lineControl, DrainLineInfo lineStatus) {
@@ -407,12 +439,10 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-        boolean switchNeeded = false;
 
         switch (v.getId()) {
             case R.id.ibScheduleRefresh:
                 loadSchedules();
-                switchNeeded = false;
                 break;
             case R.id.btnScheduleEdit:
                 int index = (int) v.getTag();
@@ -422,37 +452,13 @@ public class MainActivity extends AppCompatActivity
                 editPondAutoSettings();
                 break;
             default:
-                switchNeeded = false;
         }
-        if (switchNeeded) {
-            DrainSchedule ds = new DrainSchedule();
-            ds.Index = 1;
-            ds.Hour = 23;
-            ds.Minute = 59;
-            ds.Enabled = true;
-            ds.WeekDaysBitFlags = 15;
-            ds.LitersNeeded.add(100);
-            ds.LitersNeeded.add(200);
-            ds.LitersNeeded.add(300);
-            ds.LitersNeeded.add(400);
-            ds.LitersNeeded.add(0);
-            ds.LitersNeeded.add(666);
-            ds.LitersNeeded.add(777);
-            ds.LitersNeeded.add(888);
-
-            //SetScheduleTask task = new SetScheduleTask();
-            //task.execute(ds);
-            //GetScheduleTask task = new GetScheduleTask();
-            //task.execute(1);
-        }
-
-
     }
 
     private void editPondAutoSettings() {
         mTimer.cancel();
         FragmentManager fm = getSupportFragmentManager();
-        PondAutoSwitchSettingsDialog dialog = PondAutoSwitchSettingsDialog.newInstance(mPondAutoOnSettings);
+        PondAutoSwitchSettingsDialog dialog = PondAutoSwitchSettingsDialog.newInstance(mSadInfo.pondAutoOnSettings);
         dialog.show(fm, "edit");
     }
 
@@ -506,7 +512,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSettingsChanged(PondAutoOnSettings settings) {
-
+        mSadInfo.pondAutoOnSettings = settings;
+        updatePondAutoSwitchSettings(settings);
     }
 
 
