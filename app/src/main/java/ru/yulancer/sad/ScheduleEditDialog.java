@@ -85,7 +85,7 @@ public class ScheduleEditDialog extends DialogFragment implements DialogInterfac
             mListener = (OnScheduleChangedListener) context;
         } else {
             throw new RuntimeException(context.toString()
-                    + " must implement OnScheduleChangedListener");
+                    + " must implement OnSettingsChangedListener");
         }
     }
 

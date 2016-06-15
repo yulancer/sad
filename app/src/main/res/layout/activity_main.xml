@@ -64,14 +64,30 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical">
 
-
-                        <CheckBox
-                            android:id="@+id/cbTurnOnPondAuto"
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:checked="false"
-                            android:text="Включить пруд когда темно, если:"
-                            android:textAppearance="?android:attr/textAppearanceLarge" />
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <CheckBox
+                                android:id="@+id/cbTurnOnPondAuto"
+                                android:layout_width="0dp"
+                                android:layout_weight="1"
+                                android:layout_height="wrap_content"
+                                android:clickable="false"
+                                android:text="Включить пруд когда темно, если:"
+                                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+                            <ImageButton
+                                android:id="@+id/ibTurnOnPondAutoSettings"
+                                style="?android:attr/buttonStyleSmall"
+                                android:layout_width="32dip"
+                                android:layout_height="32dip"
+                                 android:background="@drawable/ic_action_edit"
+                                android:contentDescription="Edit"
+                                android:text="Edit" />
+                        </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -83,35 +99,29 @@
                                 android:id="@+id/cbTurnOnPondIfNoRain"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:checked="false"
+                                android:clickable="false"
                                 android:text="Нет дождя" />
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
 
                                 <CheckBox
                                     android:id="@+id/cbTurnOnPondIfWarm"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:checked="false"
+                                    android:clickable="false"
                                     android:text="Температура выше" />
 
-                                <EditText
-                                    android:id="@+id/etcbTurnOnPondIfWarm"
-                                    android:layout_width="50dip"
-                                    android:layout_height="wrap_content"
-                                    android:ems="10"
-                                    android:inputType="number"
-                                    android:maxLength="2"
-                                    android:text="15" />
-
                                 <TextView
-                                    android:id="@+id/textView"
+                                    android:id="@+id/tvTurnOnPondIfWarm"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="°C" />
+                                    android:text=" 15 °C"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"/>
+
                             </LinearLayout>
 
                             <LinearLayout
@@ -124,7 +134,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginEnd="5dp"
-                                    android:checked="false"
+                                    android:clickable="false"
                                     android:text="Только в" />
 
                                 <TextView
@@ -135,47 +145,28 @@
                                     android:text="пт,сб,вс"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
-                                <ImageButton
-                                    android:id="@+id/ibTurnOnPondIfWeekdays"
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:src="@drawable/ic_action_edit" />
                             </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="horizontal">
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
 
                                 <CheckBox
                                     android:id="@+id/cbTurnOnPondIfTimeLessThan"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
+                                    android:clickable="false"
                                     android:text="Время не позднее" />
 
-                                <EditText
-                                    android:id="@+id/etTurnOnPondIfTimeLessThanHour"
-                                    android:layout_width="40dip"
-                                    android:layout_height="wrap_content"
-                                    android:ems="10"
-                                    android:inputType="number"
-                                    android:maxLength="2"
-                                    android:text="23" />
-
                                 <TextView
+                                    android:id="@+id/tvTurnOnPondIfTimeLessThan"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text=":"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
+                                    android:text=" 23:59"
+                                    android:textAppearance="?android:attr/textAppearanceLarge"/>
 
-                                <EditText
-                                    android:id="@+id/etTurnOnPondIfTimeLessThanMinute"
-                                    android:layout_width="40dip"
-                                    android:layout_height="wrap_content"
-                                    android:ems="10"
-                                    android:inputType="number"
-                                    android:maxLength="2"
-                                    android:text="59" />
 
                             </LinearLayout>
 

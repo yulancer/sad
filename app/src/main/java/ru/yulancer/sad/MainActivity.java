@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity
         implements CompoundButton.OnCheckedChangeListener,
         View.OnClickListener,
         LitersNeededInputDialog.OnLitersNeededChangedListener,
-        ScheduleEditDialog.OnScheduleChangedListener {
+        ScheduleEditDialog.OnScheduleChangedListener,
+        PondAutoSwitchSettingsDialog.OnSettingsChangedListener {
 
     private Timer mTimer;
     private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity
         TabHost.TabSpec spec = tabs.newTabSpec("tagPond");
         spec.setContent(R.id.layoutPond);
         Drawable pondDrawable;
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             pondDrawable = this.getDrawable(R.drawable.ic_action_pond);
         } else {
             pondDrawable = this.getResources().getDrawable(R.drawable.ic_action_pond);
@@ -75,7 +76,7 @@ public class MainActivity extends AppCompatActivity
         spec = tabs.newTabSpec("tagDrain");
         spec.setContent(R.id.layoutDrain);
         Drawable drainDrawable;
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             drainDrawable = this.getDrawable(R.drawable.ic_action_drain);
         } else {
             drainDrawable = this.getResources().getDrawable(R.drawable.ic_action_drain);
@@ -86,7 +87,7 @@ public class MainActivity extends AppCompatActivity
         spec = tabs.newTabSpec("tagWater");
         spec.setContent(R.id.layoutWater);
         Drawable waterDrawable;
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             waterDrawable = this.getDrawable(R.drawable.ic_action_water);
         } else {
             waterDrawable = this.getResources().getDrawable(R.drawable.ic_action_water);
@@ -97,7 +98,7 @@ public class MainActivity extends AppCompatActivity
         spec = tabs.newTabSpec("tagSettings");
         spec.setContent(R.id.layoutSchedule);
         Drawable timerDrawable;
-        if(android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             timerDrawable = this.getDrawable(R.drawable.ic_action_timer);
         } else {
             timerDrawable = this.getResources().getDrawable(R.drawable.ic_action_timer);
@@ -137,6 +138,9 @@ public class MainActivity extends AppCompatActivity
         ImageButton ibScheduleRefresh = (ImageButton) findViewById(R.id.ibScheduleRefresh);
         if (ibScheduleRefresh != null)
             ibScheduleRefresh.setOnClickListener(this);
+        ImageButton ibTurnOnPondAutoSettings = (ImageButton) findViewById(R.id.ibTurnOnPondAutoSettings);
+        if (ibTurnOnPondAutoSettings != null)
+            ibTurnOnPondAutoSettings.setOnClickListener(this);
 
         recreateRefreshTimer();
     }
@@ -338,7 +342,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         TextView tvLitersDrained = (TextView) lineControl.findViewById(R.id.tvLitersDrained);
-        if (tvLitersDrained != null){
+        if (tvLitersDrained != null) {
             tvLitersDrained.setText(String.format(Locale.getDefault(), "Вылито %d", lineStatus.LitersDrained));
             if (tvLitersDrained.getVisibility() == View.VISIBLE) {
                 if (lineStatus.ValveOpen)  //спрячем работающую, но видимую
@@ -414,6 +418,9 @@ public class MainActivity extends AppCompatActivity
                 int index = (int) v.getTag();
                 editSchedule(index);
                 break;
+            case R.id.ibTurnOnPondAutoSettings:
+                editPondAutoSettings();
+                break;
             default:
                 switchNeeded = false;
         }
@@ -440,6 +447,13 @@ public class MainActivity extends AppCompatActivity
         }
 
 
+    }
+
+    private void editPondAutoSettings() {
+        mTimer.cancel();
+        FragmentManager fm = getSupportFragmentManager();
+        PondAutoSwitchSettingsDialog dialog = PondAutoSwitchSettingsDialog.newInstance(mPondAutoOnSettings);
+        dialog.show(fm, "edit");
     }
 
     private void editSchedule(int index) {
@@ -488,6 +502,11 @@ public class MainActivity extends AppCompatActivity
         // определяем список и присваиваем ему адаптер
         ListView lvSchedule = (ListView) findViewById(R.id.lvSchedule);
         lvSchedule.setAdapter(sAdapter);
+    }
+
+    @Override
+    public void onSettingsChanged(PondAutoOnSettings settings) {
+
     }
 
 
