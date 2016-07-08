@@ -25,6 +25,7 @@ public class SadInfo implements Parcelable {
     public boolean PhotoSensorDark;
     public boolean RainSensorWet;
     public boolean Frost;
+    public byte ReleOutputs;
 
     public byte ValveOpenStatuses;
 
