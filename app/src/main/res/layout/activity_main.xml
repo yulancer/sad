@@ -217,7 +217,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Обогрев 1"
+                                    android:text="Нагрев 1"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
                             </LinearLayout>
                         </LinearLayout>
@@ -249,7 +249,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Обогрев 2"
+                                    android:text="Нагрев 2"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
                             </LinearLayout>
                         </LinearLayout>
@@ -281,7 +281,7 @@
                                 <TextView
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Обогрев 3"
+                                    android:text="Нагрев 3"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
                             </LinearLayout>
                         </LinearLayout>
