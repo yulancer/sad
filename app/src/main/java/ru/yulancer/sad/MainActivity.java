@@ -62,7 +62,20 @@ public class MainActivity extends AppCompatActivity
         tabs.setup();
 
 
-        TabHost.TabSpec spec = tabs.newTabSpec("tagPond");
+        TabHost.TabSpec spec;
+
+        spec = tabs.newTabSpec("tagLight");
+        spec.setContent(R.id.layoutLight);
+        Drawable lightDrawable;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            lightDrawable = this.getDrawable(R.drawable.ic_action_icon_light);
+        } else {
+            lightDrawable = this.getResources().getDrawable(R.drawable.ic_action_icon_light);
+        }
+        spec.setIndicator("", lightDrawable);
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tagPond");
         spec.setContent(R.id.layoutPond);
         Drawable pondDrawable;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -131,6 +144,35 @@ public class MainActivity extends AppCompatActivity
             swAutoDrain.setOnCheckedChangeListener(this);
         }
 
+        Switch swPrLight = (Switch) findViewById(R.id.swPrLight);
+        if (swPrLight != null) {
+            swPrLight.setOnCheckedChangeListener(this);
+        }
+        Switch swPrMosquito = (Switch) findViewById(R.id.swPrMosquito);
+        if (swPrMosquito != null) {
+            swPrMosquito.setOnCheckedChangeListener(this);
+        }
+        Switch swPrLed = (Switch) findViewById(R.id.swPrLed);
+        if (swPrLed != null) {
+            swPrLed.setOnCheckedChangeListener(this);
+        }
+        Switch swPrPath = (Switch) findViewById(R.id.swPrPath);
+        if (swPrPath != null) {
+            swPrPath.setOnCheckedChangeListener(this);
+        }
+        Switch swPrHeat1 = (Switch) findViewById(R.id.swPrHeat1);
+        if (swPrHeat1 != null) {
+            swPrHeat1.setOnCheckedChangeListener(this);
+        }
+        Switch swPrHeat2 = (Switch) findViewById(R.id.swPrHeat2);
+        if (swPrHeat2 != null) {
+            swPrHeat2.setOnCheckedChangeListener(this);
+        }
+        Switch swPrHeat3 = (Switch) findViewById(R.id.swPrHeat3);
+        if (swPrHeat3 != null) {
+            swPrHeat3.setOnCheckedChangeListener(this);
+        }
+
         ViewGroup root = (ViewGroup) findViewById(R.id.layoutDrain);
         mDrainLineControls = drainLineControlList(root);
 
@@ -171,6 +213,34 @@ public class MainActivity extends AppCompatActivity
             case R.id.swAutoDrain:
                 offset = IModbusActor.ManualDrainOffset;
                 switchNeeded = isChecked != mSadInfo.AutoDrainOn;
+                break;
+            case R.id.swPrLight:
+                offset = IModbusActor.PrOffsetLight;
+                switchNeeded = isChecked != mSadInfo.PrLight;
+                break;
+            case R.id.swPrMosquito:
+                offset = IModbusActor.PrOffsetMosquito;
+                switchNeeded = isChecked != mSadInfo.PrMosquito;
+                break;
+            case R.id.swPrLed:
+                offset = IModbusActor.PrOffsetLed;
+                switchNeeded = isChecked != mSadInfo.PrLed;
+                break;
+            case R.id.swPrPath:
+                offset = IModbusActor.PrOffsetPath;
+                switchNeeded = isChecked != mSadInfo.PrPath;
+                break;
+            case R.id.swPrHeat1:
+                offset = IModbusActor.PrOffsetHeat1;
+                switchNeeded = isChecked != mSadInfo.PrHeat1;
+                break;
+            case R.id.swPrHeat2:
+                offset = IModbusActor.PrOffsetHeat2;
+                switchNeeded = isChecked != mSadInfo.PrHeat2;
+                break;
+            case R.id.swPrHeat3:
+                offset = IModbusActor.PrOffsetHeat3;
+                switchNeeded = isChecked != mSadInfo.PrHeat3;
                 break;
             default:
                 switchNeeded = false;
@@ -272,6 +342,35 @@ public class MainActivity extends AppCompatActivity
             Switch swAutoDrain = (Switch) findViewById(R.id.swAutoDrain);
             if (swAutoDrain != null) {
                 swAutoDrain.setChecked(mSadInfo.AutoDrainOn);
+            }
+
+            Switch swPrLight = (Switch) findViewById(R.id.swPrLight);
+            if (swPrLight != null) {
+                swPrLight.setChecked(mSadInfo.PrLight);
+            }
+            Switch swPrMosquito = (Switch) findViewById(R.id.swPrMosquito);
+            if (swPrMosquito != null) {
+                swPrMosquito.setChecked(mSadInfo.PrMosquito);
+            }
+            Switch swPrLed = (Switch) findViewById(R.id.swPrLed);
+            if (swPrLed != null) {
+                swPrLed.setChecked(mSadInfo.PrLed);
+            }
+            Switch swPrPath = (Switch) findViewById(R.id.swPrPath);
+            if (swPrPath != null) {
+                swPrPath.setChecked(mSadInfo.PrPath);
+            }
+            Switch swPrHeat1 = (Switch) findViewById(R.id.swPrHeat1);
+            if (swPrHeat1 != null) {
+                swPrHeat1.setChecked(mSadInfo.PrHeat1);
+            }
+            Switch swPrHeat2 = (Switch) findViewById(R.id.swPrHeat2);
+            if (swPrHeat2 != null) {
+                swPrHeat2.setChecked(mSadInfo.PrHeat2);
+            }
+            Switch swPrHeat3 = (Switch) findViewById(R.id.swPrHeat3);
+            if (swPrHeat3 != null) {
+                swPrHeat3.setChecked(mSadInfo.PrHeat3);
             }
 
             updatePondAutoSwitchSettings(mSadInfo.pondAutoOnSettings);
@@ -653,6 +752,7 @@ public class MainActivity extends AppCompatActivity
         }
 
     }
+
     class SetPondAutoOnSettingsTask extends BaseCommunicationTask {
 
         @Override

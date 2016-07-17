@@ -32,6 +32,14 @@ public class SadInfo implements Parcelable {
     public boolean ErrorNoPressureWhenDrain;
     public boolean AutoDrainOn;
 
+    public boolean PrLight;
+    public boolean PrMosquito;
+    public boolean PrLed;
+    public boolean PrPath;
+    public boolean PrHeat1;
+    public boolean PrHeat2;
+    public boolean PrHeat3;
+
     public float AirTemperature;
     public float FrostTemperature;
 
@@ -68,6 +76,14 @@ public class SadInfo implements Parcelable {
         LineStatuses = in.createTypedArray(CREATOR);
 
         pondAutoOnSettings = PondAutoOnSettings.CREATOR.createFromParcel(in);
+
+        PrLight = in.readByte() != 0;
+        PrMosquito = in.readByte() != 0;
+        PrLed = in.readByte() != 0;
+        PrPath = in.readByte() != 0;
+        PrHeat1 = in.readByte() != 0;
+        PrHeat2 = in.readByte() != 0;
+        PrHeat3 = in.readByte() != 0;
     }
 
     public static final Creator<DrainLineInfo> CREATOR = new Creator<DrainLineInfo>() {
@@ -110,5 +126,12 @@ public class SadInfo implements Parcelable {
 
         dest.writeParcelable(pondAutoOnSettings, 0);
 
+        dest.writeByte((byte) (PrLight ? 1 : 0));
+        dest.writeByte((byte) (PrMosquito ? 1 : 0));
+        dest.writeByte((byte) (PrLed ? 1 : 0));
+        dest.writeByte((byte) (PrPath ? 1 : 0));
+        dest.writeByte((byte) (PrHeat1 ? 1 : 0));
+        dest.writeByte((byte) (PrHeat2 ? 1 : 0));
+        dest.writeByte((byte) (PrHeat3 ? 1 : 0));
     }
 }

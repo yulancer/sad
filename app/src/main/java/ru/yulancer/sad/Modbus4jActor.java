@@ -64,6 +64,8 @@ public class Modbus4jActor implements IModbusActor {
     public static final String POND_AUTO_SWITCH_HOUR_MINUTE = "PondAutoSwitchHourMinute";
     public static final String POND_AUTO_SWITCH_TEMPERATURE = "PondAutoSwitchTemperature";
 
+    public static final String PR_BIT_STATUS = "PrStatus";
+
     public static final int POND_AUTO_ON_SETTINGS_REGISTER_START = 54;
 
     public static final ModbusRegisterData[] modbusRegisterData = new ModbusRegisterData[]{
@@ -94,6 +96,7 @@ public class Modbus4jActor implements IModbusActor {
             new ModbusRegisterData(POND_AUTO_SWITCH_CONDITIONS_AND_WEEKDAYS, POND_AUTO_ON_SETTINGS_REGISTER_START, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(POND_AUTO_SWITCH_HOUR_MINUTE, POND_AUTO_ON_SETTINGS_REGISTER_START + 1, DataType.TWO_BYTE_INT_UNSIGNED),
             new ModbusRegisterData(POND_AUTO_SWITCH_TEMPERATURE, POND_AUTO_ON_SETTINGS_REGISTER_START + 2, DataType.FOUR_BYTE_FLOAT_SWAPPED),
+            new ModbusRegisterData(PR_BIT_STATUS, 58, DataType.TWO_BYTE_INT_UNSIGNED),
     };
 
     public static final String SCHEDULE_INDEX_AND_FLAGS = "ScheduleIndexAndFlags";
@@ -228,6 +231,15 @@ public class Modbus4jActor implements IModbusActor {
             sadInfo.pondAutoOnSettings.Minute = (byte) (pondHourMinute >> 8);
 
             sadInfo.pondAutoOnSettings.MinTemperature = results.getFloatValue(POND_AUTO_SWITCH_TEMPERATURE);
+
+            flags = results.getIntValue(PR_BIT_STATUS);
+            sadInfo.PrLight = (flags & 1) == 1;
+            sadInfo.PrLed = (flags & 2) == 2;
+            sadInfo.PrMosquito = (flags & 4) == 4;
+            sadInfo.PrPath = (flags & 8) == 8;
+            sadInfo.PrHeat1 = (flags & 16) == 16;
+            sadInfo.PrHeat2 = (flags & 32) == 32;
+            sadInfo.PrHeat3 = (flags & 64) == 64;
         }
 
         return sadInfo;
