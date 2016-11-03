@@ -2,12 +2,6 @@ package ru.yulancer.sad;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by matveev_yuri on 10.03.2016.

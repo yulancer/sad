@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity
         spec.setIndicator("", waterDrawable);
         tabs.addTab(spec);
 
-        spec = tabs.newTabSpec("tagSettings");
+        spec = tabs.newTabSpec("tagSchedule");
         spec.setContent(R.id.layoutSchedule);
         Drawable timerDrawable;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -117,6 +117,17 @@ public class MainActivity extends AppCompatActivity
             timerDrawable = this.getResources().getDrawable(R.drawable.ic_action_timer);
         }
         spec.setIndicator("", timerDrawable);
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("tagSettings");
+        spec.setContent(R.id.layoutSettings);
+        Drawable settingsDrawable;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            settingsDrawable = this.getDrawable(R.drawable.ic_action_settings);
+        } else {
+            settingsDrawable = this.getResources().getDrawable(R.drawable.ic_action_settings);
+        }
+        spec.setIndicator("", settingsDrawable);
         tabs.addTab(spec);
 
         tabs.setCurrentTab(0);
@@ -137,6 +148,10 @@ public class MainActivity extends AppCompatActivity
         Switch swPond = (Switch) findViewById(R.id.swPond);
         if (swPond != null) {
             swPond.setOnCheckedChangeListener(this);
+        }
+        Switch swReboot = (Switch) findViewById(R.id.swReboot);
+        if (swReboot != null) {
+            swReboot.setOnCheckedChangeListener(this);
         }
 
         Switch swAutoDrain = (Switch) findViewById(R.id.swAutoDrain);
@@ -242,6 +257,10 @@ public class MainActivity extends AppCompatActivity
                 offset = IModbusActor.PrOffsetHeat3;
                 switchNeeded = isChecked != mSadInfo.PrHeat3;
                 break;
+            case R.id.swReboot:
+                offset = IModbusActor.RebootOffset;
+                switchNeeded = isChecked;
+                break;
             default:
                 switchNeeded = false;
         }
@@ -320,6 +339,10 @@ public class MainActivity extends AppCompatActivity
             Switch swPond = (Switch) findViewById(R.id.swPond);
             if (swPond != null) {
                 swPond.setChecked(mSadInfo.PondPowerOn);
+            }
+            Switch swReboot = (Switch) findViewById(R.id.swReboot);
+            if (swReboot != null) {
+                swReboot.setChecked(false);
             }
 
             CheckBox cbPressure = (CheckBox) findViewById(R.id.cbPressure);
