@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="com.infiniteautomation:modbus4j:3.0.3@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.infiniteautomation/modbus4j/3.0.3/526fe197bfbc448d64a65a369982552d7fbdc479/modbus4j-3.0.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
