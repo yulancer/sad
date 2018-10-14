@@ -123,9 +123,9 @@ public class MainActivity extends AppCompatActivity
         spec.setContent(R.id.layoutSettings);
         Drawable settingsDrawable;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            settingsDrawable = this.getDrawable(R.drawable.ic_action_settings);
+            settingsDrawable = this.getDrawable(R.drawable.ic_action_edit);
         } else {
-            settingsDrawable = this.getResources().getDrawable(R.drawable.ic_action_settings);
+            settingsDrawable = this.getResources().getDrawable(R.drawable.ic_action_edit);
         }
         spec.setIndicator("", settingsDrawable);
         tabs.addTab(spec);
