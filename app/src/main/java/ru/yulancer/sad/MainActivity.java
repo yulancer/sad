@@ -2,15 +2,11 @@ package ru.yulancer.sad;
 
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.annotation.DrawableRes;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -19,6 +15,9 @@ import android.widget.SimpleAdapter;
 import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -207,63 +206,49 @@ public class MainActivity extends AppCompatActivity
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         byte offset = -1;
         boolean switchNeeded = false;
+        int id = buttonView.getId();
 
-        switch (buttonView.getId()) {
-            case R.id.swPump:
-                offset = IModbusActor.PumpOffset;
-                switchNeeded = isChecked != mSadInfo.PumpPowerOn;
-                break;
-            case R.id.swPond:
-                offset = IModbusActor.PondOffset;
-                switchNeeded = isChecked != mSadInfo.PondPowerOn;
-                break;
-            case R.id.swGardenWater:
-                offset = IModbusActor.GardenWaterOffset;
-                switchNeeded = isChecked != mSadInfo.GardenWaterOn;
-                break;
-            case R.id.swSaunaWater:
-                offset = IModbusActor.SaunaWaterOffset;
-                switchNeeded = isChecked != mSadInfo.SaunaWaterOn;
-                break;
-            case R.id.swAutoDrain:
-                offset = IModbusActor.ManualDrainOffset;
-                switchNeeded = isChecked != mSadInfo.AutoDrainOn;
-                break;
-            case R.id.swPrLight:
-                offset = IModbusActor.PrOffsetLight;
-                switchNeeded = isChecked != mSadInfo.PrLight;
-                break;
-            case R.id.swPrMosquito:
-                offset = IModbusActor.PrOffsetMosquito;
-                switchNeeded = isChecked != mSadInfo.PrMosquito;
-                break;
-            case R.id.swPrLed:
-                offset = IModbusActor.PrOffsetLed;
-                switchNeeded = isChecked != mSadInfo.PrLed;
-                break;
-            case R.id.swPrPath:
-                offset = IModbusActor.PrOffsetPath;
-                switchNeeded = isChecked != mSadInfo.PrPath;
-                break;
-            case R.id.swPrHeat1:
-                offset = IModbusActor.PrOffsetHeat1;
-                switchNeeded = isChecked != mSadInfo.PrHeat1;
-                break;
-            case R.id.swPrHeat2:
-                offset = IModbusActor.PrOffsetHeat2;
-                switchNeeded = isChecked != mSadInfo.PrHeat2;
-                break;
-            case R.id.swPrHeat3:
-                offset = IModbusActor.PrOffsetHeat3;
-                switchNeeded = isChecked != mSadInfo.PrHeat3;
-                break;
-            case R.id.swReboot:
-                offset = IModbusActor.RebootOffset;
-                switchNeeded = isChecked;
-                break;
-            default:
-                switchNeeded = false;
+        if (id == R.id.swPump) {
+            offset = IModbusActor.PumpOffset;
+            switchNeeded = isChecked != mSadInfo.PumpPowerOn;
+        } else if (id == R.id.swPond) {
+            offset = IModbusActor.PondOffset;
+            switchNeeded = isChecked != mSadInfo.PondPowerOn;
+        } else if (id == R.id.swGardenWater) {
+            offset = IModbusActor.GardenWaterOffset;
+            switchNeeded = isChecked != mSadInfo.GardenWaterOn;
+        } else if (id == R.id.swSaunaWater) {
+            offset = IModbusActor.SaunaWaterOffset;
+            switchNeeded = isChecked != mSadInfo.SaunaWaterOn;
+        } else if (id == R.id.swAutoDrain) {
+            offset = IModbusActor.ManualDrainOffset;
+            switchNeeded = isChecked != mSadInfo.AutoDrainOn;
+        } else if (id == R.id.swPrLight) {
+            offset = IModbusActor.PrOffsetLight;
+            switchNeeded = isChecked != mSadInfo.PrLight;
+        } else if (id == R.id.swPrMosquito) {
+            offset = IModbusActor.PrOffsetMosquito;
+            switchNeeded = isChecked != mSadInfo.PrMosquito;
+        } else if (id == R.id.swPrLed) {
+            offset = IModbusActor.PrOffsetLed;
+            switchNeeded = isChecked != mSadInfo.PrLed;
+        } else if (id == R.id.swPrPath) {
+            offset = IModbusActor.PrOffsetPath;
+            switchNeeded = isChecked != mSadInfo.PrPath;
+        } else if (id == R.id.swPrHeat1) {
+            offset = IModbusActor.PrOffsetHeat1;
+            switchNeeded = isChecked != mSadInfo.PrHeat1;
+        } else if (id == R.id.swPrHeat2) {
+            offset = IModbusActor.PrOffsetHeat2;
+            switchNeeded = isChecked != mSadInfo.PrHeat2;
+        } else if (id == R.id.swPrHeat3) {
+            offset = IModbusActor.PrOffsetHeat3;
+            switchNeeded = isChecked != mSadInfo.PrHeat3;
+        } else if (id == R.id.swReboot) {
+            offset = IModbusActor.RebootOffset;
+            switchNeeded = isChecked;
         }
+
         if (switchNeeded) {
             StartStopSomethingTask task = new StartStopSomethingTask();
             task.execute(offset);
@@ -561,19 +546,14 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.ibScheduleRefresh:
-                loadSchedules();
-                break;
-            case R.id.btnScheduleEdit:
-                int index = (int) v.getTag();
-                editSchedule(index);
-                break;
-            case R.id.ibTurnOnPondAutoSettings:
-                editPondAutoSettings();
-                break;
-            default:
+        int id = v.getId();
+        if (id == R.id.ibScheduleRefresh) {
+            loadSchedules();
+        } else if (id == R.id.btnScheduleEdit) {
+            int index = (int) v.getTag();
+            editSchedule(index);
+        } else if (id == R.id.ibTurnOnPondAutoSettings) {
+            editPondAutoSettings();
         }
     }
 

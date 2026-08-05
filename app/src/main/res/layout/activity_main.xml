@@ -660,7 +660,7 @@
                 android:layout_height="wrap_content"
                 android:text="\??.? С"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/abc_input_method_navigation_guard"
+                android:textColor="@android:color/black"
                 android:textIsSelectable="true"
                 android:textSize="30dp"
                 android:textStyle="bold" />
