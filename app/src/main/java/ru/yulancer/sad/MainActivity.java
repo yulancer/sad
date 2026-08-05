@@ -68,15 +68,15 @@ public class MainActivity extends AppCompatActivity
         applyWindowInsets();
         setupTabs();
 
-        Switch swGardenWater = (Switch) findViewById(R.id.swGardenWater);
+        ToggleButton swGardenWater = (ToggleButton) findViewById(R.id.swGardenWater);
         if (swGardenWater != null) {
             swGardenWater.setOnCheckedChangeListener(this);
         }
-        Switch swSaunaWater = (Switch) findViewById(R.id.swSaunaWater);
+        ToggleButton swSaunaWater = (ToggleButton) findViewById(R.id.swSaunaWater);
         if (swSaunaWater != null) {
             swSaunaWater.setOnCheckedChangeListener(this);
         }
-        Switch swPump = (Switch) findViewById(R.id.swPump);
+        ToggleButton swPump = (ToggleButton) findViewById(R.id.swPump);
         if (swPump != null) {
             swPump.setOnCheckedChangeListener(this);
         }
@@ -303,6 +303,13 @@ public class MainActivity extends AppCompatActivity
             bar.setVisibility(on ? View.VISIBLE : View.GONE);
     }
 
+    private void updateStatusIcon(int viewId, boolean active) {
+        ImageView icon = (ImageView) findViewById(viewId);
+        if (icon != null) {
+            icon.setSelected(active);
+        }
+    }
+
     private void destroyRefreshTimer() {
         if (mTimer != null)
             mTimer.cancel();
@@ -321,15 +328,15 @@ public class MainActivity extends AppCompatActivity
         TextView tvException = (TextView) findViewById(R.id.tvException);
 
         if (mSadInfo.exception == null) {
-            Switch swGardenWater = (Switch) findViewById(R.id.swGardenWater);
+            ToggleButton swGardenWater = (ToggleButton) findViewById(R.id.swGardenWater);
             if (swGardenWater != null) {
                 swGardenWater.setChecked(mSadInfo.GardenWaterOn);
             }
-            Switch swSaunaWater = (Switch) findViewById(R.id.swSaunaWater);
+            ToggleButton swSaunaWater = (ToggleButton) findViewById(R.id.swSaunaWater);
             if (swSaunaWater != null) {
                 swSaunaWater.setChecked(mSadInfo.SaunaWaterOn);
             }
-            Switch swPump = (Switch) findViewById(R.id.swPump);
+            ToggleButton swPump = (ToggleButton) findViewById(R.id.swPump);
             if (swPump != null) {
                 swPump.setChecked(mSadInfo.PumpPowerOn);
             }
@@ -342,22 +349,10 @@ public class MainActivity extends AppCompatActivity
                 swReboot.setChecked(false);
             }
 
-            CheckBox cbPressure = (CheckBox) findViewById(R.id.cbPressure);
-            if (cbPressure != null) {
-                cbPressure.setChecked(mSadInfo.SadWaterPressureOK);
-            }
-            CheckBox cbIsNight = (CheckBox) findViewById(R.id.cbIsNight);
-            if (cbIsNight != null) {
-                cbIsNight.setChecked(mSadInfo.PhotoSensorDark);
-            }
-            CheckBox cbIsRain = (CheckBox) findViewById(R.id.cbIsRain);
-            if (cbIsRain != null) {
-                cbIsRain.setChecked(mSadInfo.RainSensorWet);
-            }
-            CheckBox cbIsFrost = (CheckBox) findViewById(R.id.cbIsFrost);
-            if (cbIsFrost != null) {
-                cbIsFrost.setChecked(mSadInfo.Frost);
-            }
+            updateStatusIcon(R.id.ivStatusPressure, mSadInfo.SadWaterPressureOK);
+            updateStatusIcon(R.id.ivStatusNight, mSadInfo.PhotoSensorDark);
+            updateStatusIcon(R.id.ivStatusRain, mSadInfo.RainSensorWet);
+            updateStatusIcon(R.id.ivStatusFrost, mSadInfo.Frost);
 
             Switch swAutoDrain = (Switch) findViewById(R.id.swAutoDrain);
             if (swAutoDrain != null) {

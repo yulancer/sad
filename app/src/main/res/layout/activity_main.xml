@@ -659,82 +659,313 @@
                         android:track="@drawable/custom_track" />
                 </LinearLayout>
 
-                <RelativeLayout
+                <ScrollView
                     android:id="@+id/layoutWater"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"
+                    android:background="@color/light_panel_bg"
+                    android:clipToPadding="false"
+                    android:fillViewport="true"
+                    android:layout_marginLeft="-16dp"
+                    android:layout_marginRight="-16dp"
+                    android:layout_marginTop="-16dp"
+                    android:layout_marginBottom="-16dp"
+                    android:padding="12dp"
                     android:visibility="gone">
 
-
-                    <Switch
-                        android:id="@+id/swPump"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentTop="true"
-                        android:checked="false"
-                        android:text="Насос" />
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp">
 
-                    <Switch
-                        android:id="@+id/swGardenWater"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentTop="true"
-                        android:checked="false"
-                        android:text="Вода в сад" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="8dp"
+                            android:text="СТАТУС"
+                            android:textAllCaps="true"
+                            android:textColor="@color/light_section_title"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
 
-                    <Switch
-                        android:id="@+id/swSaunaWater"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_below="@+id/swGardenWater"
-                        android:checked="false"
-                        android:text="Вода в баню" />
+                        <com.google.android.material.card.MaterialCardView
+                            style="@style/LightDeviceCard"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="6dp"
+                            app:cardBackgroundColor="@android:color/white"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="2dp">
 
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:orientation="horizontal"
+                                android:paddingStart="8dp"
+                                android:paddingTop="12dp"
+                                android:paddingEnd="8dp"
+                                android:paddingBottom="12dp">
 
-                    <CheckBox
-                        android:id="@+id/cbPressure"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@id/swSaunaWater"
-                        android:checked="false"
-                        android:clickable="false"
-                        android:text="Давление" />
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical">
 
-                    <CheckBox
-                        android:id="@+id/cbIsNight"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/cbPressure"
-                        android:checked="false"
-                        android:clickable="false"
-                        android:text="Темно" />
+                                    <ImageView
+                                        android:id="@+id/ivStatusPressure"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:background="@drawable/bg_status_icon"
+                                        android:contentDescription="Давление"
+                                        android:padding="10dp"
+                                        android:src="@drawable/ic_status_pressure"
+                                        android:tint="@color/status_icon_tint" />
 
-                    <CheckBox
-                        android:id="@+id/cbIsRain"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/cbIsNight"
-                        android:checked="false"
-                        android:clickable="false"
-                        android:text="Дождь" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="6dp"
+                                        android:text="Давление"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
 
-                    <CheckBox
-                        android:id="@+id/cbIsFrost"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_below="@+id/cbIsRain"
-                        android:checked="false"
-                        android:clickable="false"
-                        android:text="Мороз" />
-                </RelativeLayout>
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:id="@+id/ivStatusNight"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:background="@drawable/bg_status_icon"
+                                        android:contentDescription="Темно"
+                                        android:padding="10dp"
+                                        android:src="@drawable/ic_status_night"
+                                        android:tint="@color/status_icon_tint" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="6dp"
+                                        android:text="Темно"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:id="@+id/ivStatusRain"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:background="@drawable/bg_status_icon"
+                                        android:contentDescription="Дождь"
+                                        android:padding="10dp"
+                                        android:src="@drawable/ic_status_rain"
+                                        android:tint="@color/status_icon_tint" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="6dp"
+                                        android:text="Дождь"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical">
+
+                                    <ImageView
+                                        android:id="@+id/ivStatusFrost"
+                                        android:layout_width="48dp"
+                                        android:layout_height="48dp"
+                                        android:background="@drawable/bg_status_icon"
+                                        android:contentDescription="Мороз"
+                                        android:padding="10dp"
+                                        android:src="@drawable/ic_status_frost"
+                                        android:tint="@color/status_icon_tint" />
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="6dp"
+                                        android:text="Мороз"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/light_card_stroke" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="4dp"
+                            android:text="УПРАВЛЕНИЕ"
+                            android:textAllCaps="true"
+                            android:textColor="@color/light_section_title"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="6dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Насос"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="13sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="44dp"
+                                        android:layout_height="44dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_marginBottom="8dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_pump" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swPump"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="6dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Вода в сад"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="13sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="44dp"
+                                        android:layout_height="44dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_marginBottom="8dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_garden_water" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swGardenWater"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="6dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Вода в баню"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="13sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="44dp"
+                                        android:layout_height="44dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_marginBottom="8dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_sauna_water" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swSaunaWater"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+                        </LinearLayout>
+                    </LinearLayout>
+                </ScrollView>
 
 
         </FrameLayout>

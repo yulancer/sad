@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Water pump -->
+    <path
+        android:fillColor="#424242"
+        android:pathData="M7,3.5h10v2H7z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M8,5.5h8v4H8z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M5.5,9.5h13c1,0 1.8,0.8 1.8,1.8V13H3.7v-1.7c0,-1 0.8,-1.8 1.8,-1.8z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M5,13h14v2.2H5z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M6.5,15.2h2.2v5.3H6.5z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M15.3,15.2h2.2v5.3h-2.2z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M12,6.2c1.2,0 2.2,1 2.2,2.2S13.2,10.6 12,10.6 9.8,9.6 9.8,8.4 10.8,6.2 12,6.2z" />
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M12,7.2c0.66,0 1.2,0.54 1.2,1.2S12.66,9.6 12,9.6 10.8,9.06 10.8,8.4 11.34,7.2 12,7.2z" />
+</vector>
