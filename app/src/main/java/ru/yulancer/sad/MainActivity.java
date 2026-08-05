@@ -1,6 +1,5 @@
 package ru.yulancer.sad;
 
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -13,11 +12,17 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Switch;
-import android.widget.TabHost;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
+
+import com.google.android.material.tabs.TabLayout;
 
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -54,83 +59,13 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
         setContentView(R.layout.activity_main);
 
-        TabHost tabs = (TabHost) findViewById(R.id.tabhost);
-
-        tabs.setup();
-
-
-        TabHost.TabSpec spec;
-
-        spec = tabs.newTabSpec("tagLight");
-        spec.setContent(R.id.layoutLight);
-        Drawable lightDrawable;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            lightDrawable = this.getDrawable(R.drawable.ic_action_icon_light);
-        } else {
-            lightDrawable = this.getResources().getDrawable(R.drawable.ic_action_icon_light);
-        }
-        spec.setIndicator("", lightDrawable);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("tagPond");
-        spec.setContent(R.id.layoutPond);
-        Drawable pondDrawable;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            pondDrawable = this.getDrawable(R.drawable.ic_action_pond);
-        } else {
-            pondDrawable = this.getResources().getDrawable(R.drawable.ic_action_pond);
-        }
-        spec.setIndicator("", pondDrawable);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("tagDrain");
-        spec.setContent(R.id.layoutDrain);
-        Drawable drainDrawable;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            drainDrawable = this.getDrawable(R.drawable.ic_action_drain);
-        } else {
-            drainDrawable = this.getResources().getDrawable(R.drawable.ic_action_drain);
-        }
-        spec.setIndicator("", drainDrawable);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("tagWater");
-        spec.setContent(R.id.layoutWater);
-        Drawable waterDrawable;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            waterDrawable = this.getDrawable(R.drawable.ic_action_water);
-        } else {
-            waterDrawable = this.getResources().getDrawable(R.drawable.ic_action_water);
-        }
-        spec.setIndicator("", waterDrawable);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("tagSchedule");
-        spec.setContent(R.id.layoutSchedule);
-        Drawable timerDrawable;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            timerDrawable = this.getDrawable(R.drawable.ic_action_timer);
-        } else {
-            timerDrawable = this.getResources().getDrawable(R.drawable.ic_action_timer);
-        }
-        spec.setIndicator("", timerDrawable);
-        tabs.addTab(spec);
-
-        spec = tabs.newTabSpec("tagSettings");
-        spec.setContent(R.id.layoutSettings);
-        Drawable settingsDrawable;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            settingsDrawable = this.getDrawable(R.drawable.ic_action_edit);
-        } else {
-            settingsDrawable = this.getResources().getDrawable(R.drawable.ic_action_edit);
-        }
-        spec.setIndicator("", settingsDrawable);
-        tabs.addTab(spec);
-
-        tabs.setCurrentTab(0);
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        applyWindowInsets();
+        setupTabs();
 
         Switch swGardenWater = (Switch) findViewById(R.id.swGardenWater);
         if (swGardenWater != null) {
@@ -281,6 +216,78 @@ public class MainActivity extends AppCompatActivity
     //////////////////
     ///private
     /////////////////
+
+    private static final int[] TAB_ICONS = {
+            R.drawable.ic_action_icon_light,
+            R.drawable.ic_action_pond,
+            R.drawable.ic_action_drain,
+            R.drawable.ic_action_water,
+            R.drawable.ic_action_timer,
+            R.drawable.ic_action_edit
+    };
+
+    private static final int[] TAB_CONTENTS = {
+            R.id.layoutLight,
+            R.id.layoutPond,
+            R.id.layoutDrain,
+            R.id.layoutWater,
+            R.id.layoutSchedule,
+            R.id.layoutSettings
+    };
+
+    private void applyWindowInsets() {
+        final View appBarLayout = findViewById(R.id.appBarLayout);
+        final View contentContainer = findViewById(R.id.contentContainer);
+
+        ViewCompat.setOnApplyWindowInsetsListener(appBarLayout, (v, windowInsets) -> {
+            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(bars.left, bars.top, bars.right, 0);
+            return windowInsets;
+        });
+
+        ViewCompat.setOnApplyWindowInsetsListener(contentContainer, (v, windowInsets) -> {
+            Insets bars = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(
+                    getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin) + bars.left,
+                    getResources().getDimensionPixelSize(R.dimen.activity_vertical_margin),
+                    getResources().getDimensionPixelSize(R.dimen.activity_horizontal_margin) + bars.right,
+                    getResources().getDimensionPixelSize(R.dimen.activity_vertical_margin) + bars.bottom
+            );
+            return WindowInsetsCompat.CONSUMED;
+        });
+    }
+
+    private void setupTabs() {
+        TabLayout tabLayout = findViewById(R.id.tabLayout);
+        for (int iconRes : TAB_ICONS) {
+            tabLayout.addTab(tabLayout.newTab().setIcon(iconRes));
+        }
+
+        showTab(0);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                showTab(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+    }
+
+    private void showTab(int position) {
+        for (int i = 0; i < TAB_CONTENTS.length; i++) {
+            View content = findViewById(TAB_CONTENTS[i]);
+            if (content != null) {
+                content.setVisibility(i == position ? View.VISIBLE : View.GONE);
+            }
+        }
+    }
 
     private void switchProgress(boolean on) {
         ProgressBar bar = (ProgressBar) findViewById(R.id.progressBar);
