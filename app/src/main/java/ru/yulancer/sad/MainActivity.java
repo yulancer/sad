@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.SimpleAdapter;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -93,31 +94,31 @@ public class MainActivity extends AppCompatActivity
             swAutoDrain.setOnCheckedChangeListener(this);
         }
 
-        Switch swPrLight = (Switch) findViewById(R.id.swPrLight);
+        ToggleButton swPrLight = (ToggleButton) findViewById(R.id.swPrLight);
         if (swPrLight != null) {
             swPrLight.setOnCheckedChangeListener(this);
         }
-        Switch swPrMosquito = (Switch) findViewById(R.id.swPrMosquito);
+        ToggleButton swPrMosquito = (ToggleButton) findViewById(R.id.swPrMosquito);
         if (swPrMosquito != null) {
             swPrMosquito.setOnCheckedChangeListener(this);
         }
-        Switch swPrLed = (Switch) findViewById(R.id.swPrLed);
+        ToggleButton swPrLed = (ToggleButton) findViewById(R.id.swPrLed);
         if (swPrLed != null) {
             swPrLed.setOnCheckedChangeListener(this);
         }
-        Switch swPrPath = (Switch) findViewById(R.id.swPrPath);
+        ToggleButton swPrPath = (ToggleButton) findViewById(R.id.swPrPath);
         if (swPrPath != null) {
             swPrPath.setOnCheckedChangeListener(this);
         }
-        Switch swPrHeat1 = (Switch) findViewById(R.id.swPrHeat1);
+        ToggleButton swPrHeat1 = (ToggleButton) findViewById(R.id.swPrHeat1);
         if (swPrHeat1 != null) {
             swPrHeat1.setOnCheckedChangeListener(this);
         }
-        Switch swPrHeat2 = (Switch) findViewById(R.id.swPrHeat2);
+        ToggleButton swPrHeat2 = (ToggleButton) findViewById(R.id.swPrHeat2);
         if (swPrHeat2 != null) {
             swPrHeat2.setOnCheckedChangeListener(this);
         }
-        Switch swPrHeat3 = (Switch) findViewById(R.id.swPrHeat3);
+        ToggleButton swPrHeat3 = (ToggleButton) findViewById(R.id.swPrHeat3);
         if (swPrHeat3 != null) {
             swPrHeat3.setOnCheckedChangeListener(this);
         }
@@ -132,6 +133,10 @@ public class MainActivity extends AppCompatActivity
         ImageButton ibTurnOnPondAutoSettings = (ImageButton) findViewById(R.id.ibTurnOnPondAutoSettings);
         if (ibTurnOnPondAutoSettings != null)
             ibTurnOnPondAutoSettings.setOnClickListener(this);
+
+        ImageView ivConnectStatus = (ImageView) findViewById(R.id.ivConnectStatus);
+        if (ivConnectStatus != null)
+            ivConnectStatus.setOnClickListener(this);
 
         recreateRefreshTimer();
     }
@@ -359,31 +364,31 @@ public class MainActivity extends AppCompatActivity
                 swAutoDrain.setChecked(mSadInfo.AutoDrainOn);
             }
 
-            Switch swPrLight = (Switch) findViewById(R.id.swPrLight);
+            ToggleButton swPrLight = (ToggleButton) findViewById(R.id.swPrLight);
             if (swPrLight != null) {
                 swPrLight.setChecked(mSadInfo.PrLight);
             }
-            Switch swPrMosquito = (Switch) findViewById(R.id.swPrMosquito);
+            ToggleButton swPrMosquito = (ToggleButton) findViewById(R.id.swPrMosquito);
             if (swPrMosquito != null) {
                 swPrMosquito.setChecked(mSadInfo.PrMosquito);
             }
-            Switch swPrLed = (Switch) findViewById(R.id.swPrLed);
+            ToggleButton swPrLed = (ToggleButton) findViewById(R.id.swPrLed);
             if (swPrLed != null) {
                 swPrLed.setChecked(mSadInfo.PrLed);
             }
-            Switch swPrPath = (Switch) findViewById(R.id.swPrPath);
+            ToggleButton swPrPath = (ToggleButton) findViewById(R.id.swPrPath);
             if (swPrPath != null) {
                 swPrPath.setChecked(mSadInfo.PrPath);
             }
-            Switch swPrHeat1 = (Switch) findViewById(R.id.swPrHeat1);
+            ToggleButton swPrHeat1 = (ToggleButton) findViewById(R.id.swPrHeat1);
             if (swPrHeat1 != null) {
                 swPrHeat1.setChecked(mSadInfo.PrHeat1);
             }
-            Switch swPrHeat2 = (Switch) findViewById(R.id.swPrHeat2);
+            ToggleButton swPrHeat2 = (ToggleButton) findViewById(R.id.swPrHeat2);
             if (swPrHeat2 != null) {
                 swPrHeat2.setChecked(mSadInfo.PrHeat2);
             }
-            Switch swPrHeat3 = (Switch) findViewById(R.id.swPrHeat3);
+            ToggleButton swPrHeat3 = (ToggleButton) findViewById(R.id.swPrHeat3);
             if (swPrHeat3 != null) {
                 swPrHeat3.setChecked(mSadInfo.PrHeat3);
             }
@@ -561,7 +566,14 @@ public class MainActivity extends AppCompatActivity
             editSchedule(index);
         } else if (id == R.id.ibTurnOnPondAutoSettings) {
             editPondAutoSettings();
+        } else if (id == R.id.ivConnectStatus) {
+            refreshConnectionStatus();
         }
+    }
+
+    private void refreshConnectionStatus() {
+        RefreshConnectionTask task = new RefreshConnectionTask();
+        task.execute();
     }
 
     private void editPondAutoSettings() {
@@ -690,6 +702,21 @@ public class MainActivity extends AppCompatActivity
             byte offset = (byte) params[0];
             mActivityActor.SendSwitchSignal(offset);
             return null;
+        }
+    }
+
+    class RefreshConnectionTask extends BaseCommunicationTask {
+
+        @Override
+        protected Void doInBackground(Object... params) {
+            mSadInfo = mActivityActor.GetSadInfo();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void params) {
+            RefreshSadInfo();
+            super.onPostExecute(params);
         }
     }
 

@@ -3,4 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="light_panel_bg">#EEEEEE</color>
+    <color name="light_card_title">#212121</color>
+    <color name="light_card_stroke">#E0E0E0</color>
+    <color name="light_section_title">#616161</color>
 </resources>

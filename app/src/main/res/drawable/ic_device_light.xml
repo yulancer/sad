@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <!-- Pendant lamp -->
+    <path
+        android:fillColor="#424242"
+        android:pathData="M11,2h2v3h-2z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M8,7h8l1.5,3H6.5z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M7.5,11h9c0,2.5 -2,4.5 -4.5,4.5S7.5,13.5 7.5,11z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M11,16h2v2h-2z" />
+    <path
+        android:fillColor="#424242"
+        android:pathData="M9.5,18.5h5c0.55,0 1,0.45 1,1v0.5H8.5v-0.5c0,-0.55 0.45,-1 1,-1z" />
+</vector>

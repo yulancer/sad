@@ -85,265 +85,359 @@
 
                 </LinearLayout>
 
-                <LinearLayout
+                <ScrollView
                     android:id="@+id/layoutLight"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:paddingEnd="4dp"
-                    android:paddingTop="10dp">
+                    android:background="@color/light_panel_bg"
+                    android:clipToPadding="false"
+                    android:fillViewport="true"
+                    android:layout_marginLeft="-16dp"
+                    android:layout_marginRight="-16dp"
+                    android:layout_marginTop="-16dp"
+                    android:layout_marginBottom="-16dp"
+                    android:padding="12dp">
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:orientation="vertical">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:paddingBottom="8dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="8dp"
+                            android:text="УПРАВЛЕНИЕ И СТАТУС"
+                            android:textAllCaps="true"
+                            android:textColor="@color/light_section_title"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <LinearLayout
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_margin="6dp"
                                 android:layout_weight="1"
-                                android:gravity="end">
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
 
-                                <Switch
-                                    android:id="@+id/swPrLight"
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:text="" />
-                            </LinearLayout>
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
 
-                            <LinearLayout
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Свет"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="56dp"
+                                        android:layout_height="56dp"
+                                        android:layout_marginTop="12dp"
+                                        android:layout_marginBottom="12dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_light" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swPrLight"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_margin="6dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Свет"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
-                            </LinearLayout>
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Лента"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="56dp"
+                                        android:layout_height="56dp"
+                                        android:layout_marginTop="12dp"
+                                        android:layout_marginBottom="12dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_led" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swPrLed"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <LinearLayout
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_margin="6dp"
                                 android:layout_weight="1"
-                                android:gravity="end">
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
 
-                                <Switch
-                                    android:id="@+id/swPrLed"
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:text="" />
-                            </LinearLayout>
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
 
-                            <LinearLayout
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Подсветка"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="56dp"
+                                        android:layout_height="56dp"
+                                        android:layout_marginTop="12dp"
+                                        android:layout_marginBottom="12dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_mosquito" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swPrMosquito"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_margin="6dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Лента"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
-                            </LinearLayout>
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="12dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Навес"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="56dp"
+                                        android:layout_height="56dp"
+                                        android:layout_marginTop="12dp"
+                                        android:layout_marginBottom="12dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_path" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swPrPath"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
                         </LinearLayout>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="4dp"
+                            android:background="@color/light_card_stroke" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingStart="8dp"
+                            android:paddingTop="4dp"
+                            android:paddingEnd="8dp"
+                            android:paddingBottom="4dp"
+                            android:text="НАГРЕВ"
+                            android:textAllCaps="true"
+                            android:textColor="@color/light_section_title"
+                            android:textSize="13sp"
+                            android:textStyle="bold" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
                             android:orientation="horizontal">
 
-                            <LinearLayout
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:layout_margin="6dp"
                                 android:layout_weight="1"
-                                android:gravity="end">
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
 
-                                <Switch
-                                    android:id="@+id/swPrMosquito"
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:text="" />
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
 
-                            </LinearLayout>
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Нагрев 1"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="13sp"
+                                        android:textStyle="bold" />
 
-                            <LinearLayout
+                                    <ImageView
+                                        android:layout_width="44dp"
+                                        android:layout_height="44dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_marginBottom="8dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_heat" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swPrHeat1"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Комары"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
+                                android:layout_margin="6dp"
                                 android:layout_weight="1"
-                                android:gravity="end">
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
 
-                                <Switch
-                                    android:id="@+id/swPrPath"
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:text="" />
-                            </LinearLayout>
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
 
-                            <LinearLayout
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Нагрев 2"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="13sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="44dp"
+                                        android:layout_height="44dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_marginBottom="8dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_heat" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swPrHeat2"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <com.google.android.material.card.MaterialCardView
+                                style="@style/LightDeviceCard"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
-                                android:layout_weight="1">
+                                android:layout_margin="6dp"
+                                android:layout_weight="1"
+                                app:cardBackgroundColor="@android:color/white"
+                                app:cardCornerRadius="12dp"
+                                app:cardElevation="2dp">
 
-                                <TextView
-                                    android:layout_width="wrap_content"
+                                <LinearLayout
+                                    android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:text="Дорожка"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
-                            </LinearLayout>
+                                    android:gravity="center_horizontal"
+                                    android:orientation="vertical"
+                                    android:padding="10dp">
+
+                                    <TextView
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:text="Нагрев 3"
+                                        android:textColor="@color/light_card_title"
+                                        android:textSize="13sp"
+                                        android:textStyle="bold" />
+
+                                    <ImageView
+                                        android:layout_width="44dp"
+                                        android:layout_height="44dp"
+                                        android:layout_marginTop="8dp"
+                                        android:layout_marginBottom="8dp"
+                                        android:contentDescription="@null"
+                                        android:src="@drawable/ic_device_heat" />
+
+                                    <ToggleButton
+                                        android:id="@+id/swPrHeat3"
+                                        style="@style/LightDeviceToggle"
+                                        android:checked="false" />
+                                </LinearLayout>
+                            </com.google.android.material.card.MaterialCardView>
                         </LinearLayout>
-
-
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="end">
-
-                                <Switch
-                                    android:id="@+id/swPrHeat1"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:text="" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Нагрев 1"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="end">
-
-                                <Switch
-                                    android:id="@+id/swPrHeat2"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:text="" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Нагрев 2"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:gravity="end">
-
-                                <Switch
-                                    android:id="@+id/swPrHeat3"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:checked="false"
-                                    android:text="" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1">
-
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="Нагрев 3"
-                                    android:textAppearance="?android:attr/textAppearanceMedium" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-                    </LinearLayout>
-                </LinearLayout>
+                </ScrollView>
 
                 <LinearLayout
                     android:id="@+id/layoutPond"
@@ -717,7 +811,9 @@
                     android:layout_height="32dip"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
+                    android:clickable="true"
                     android:contentDescription="connect"
+                    android:focusable="true"
                     android:src="@drawable/ic_connect" />
 
                 <ProgressBar
