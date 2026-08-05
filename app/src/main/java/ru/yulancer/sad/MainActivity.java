@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MainActivity extends AppCompatActivity
         implements CompoundButton.OnCheckedChangeListener,
@@ -44,9 +45,10 @@ public class MainActivity extends AppCompatActivity
         PondAutoSwitchSettingsDialog.OnSettingsChangedListener {
 
     private Timer mTimer;
-    private IModbusActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
-    //private IModbusActor mActivityActor = new Modbus4jActor("10.0.2.2", 502);
+    private final Modbus4jActor mActivityActor = new Modbus4jActor("192.168.1.78", 502);
+    //private final Modbus4jActor mActivityActor = new Modbus4jActor("10.0.2.2", 502);
     private SadInfo mSadInfo = new SadInfo();
+    private final AtomicBoolean mManualCommunication = new AtomicBoolean(false);
 
     private ArrayList<DrainLineControl> mDrainLineControls;
 
@@ -141,6 +143,12 @@ public class MainActivity extends AppCompatActivity
         recreateRefreshTimer();
     }
 
+    @Override
+    protected void onDestroy() {
+        destroyRefreshTimer();
+        mActivityActor.close();
+        super.onDestroy();
+    }
 
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -201,7 +209,6 @@ public class MainActivity extends AppCompatActivity
     /////////////////
     public void ShowNeededLitersDialog(int lineNumber) {
         int litersNeeded = mSadInfo.LineStatuses[lineNumber - 1].LitersNeeded;
-        mTimer.cancel();
         FragmentManager fm = getSupportFragmentManager();
         LitersNeededInputDialog dialog = LitersNeededInputDialog.newInstance((byte) lineNumber, litersNeeded);
         dialog.show(fm, "start");
@@ -572,14 +579,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void editPondAutoSettings() {
-        mTimer.cancel();
         FragmentManager fm = getSupportFragmentManager();
         PondAutoSwitchSettingsDialog dialog = PondAutoSwitchSettingsDialog.newInstance(mSadInfo.pondAutoOnSettings);
         dialog.show(fm, "edit");
     }
 
     private void editSchedule(int index) {
-        mTimer.cancel();
         FragmentManager fm = getSupportFragmentManager();
         ScheduleEditDialog dialog = ScheduleEditDialog.newInstance(index, mScheduleArray.get(index - 1));
         dialog.show(fm, "edit");
@@ -652,23 +657,37 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         public void run() {
+            // Skip while a manual command/refresh owns the Modbus session
+            if (mManualCommunication.get()) {
+                return;
+            }
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    switchProgress(true);
+                    if (!mManualCommunication.get()) {
+                        switchProgress(true);
+                    }
                 }
             });
 
-            MainActivity.this.mSadInfo = mActivityActor.GetSadInfo();
+            if (mManualCommunication.get()) {
+                return;
+            }
+
+            final SadInfo info = mActivityActor.GetSadInfo();
+            if (mManualCommunication.get()) {
+                return;
+            }
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+                    if (mManualCommunication.get()) {
+                        return;
+                    }
+                    MainActivity.this.mSadInfo = info;
                     MainActivity.this.RefreshSadInfo();
-                }
-            });
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
                     switchProgress(false);
                 }
             });
@@ -679,6 +698,7 @@ public class MainActivity extends AppCompatActivity
     abstract class BaseCommunicationTask extends AsyncTask<Object, Void, Void> {
         @Override
         protected void onPreExecute() {
+            mManualCommunication.set(true);
             destroyRefreshTimer();
             switchProgress(true);
         }
@@ -686,6 +706,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void params) {
             switchProgress(false);
+            mManualCommunication.set(false);
             recreateRefreshTimer();
         }
     }

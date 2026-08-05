@@ -5,18 +5,12 @@ import com.serotonin.modbus4j.BatchResults;
 import com.serotonin.modbus4j.ModbusFactory;
 import com.serotonin.modbus4j.ModbusMaster;
 import com.serotonin.modbus4j.code.DataType;
-import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.serotonin.modbus4j.ip.IpParameters;
 import com.serotonin.modbus4j.locator.BaseLocator;
 import com.serotonin.modbus4j.locator.NumericLocator;
 import com.serotonin.modbus4j.msg.WriteCoilRequest;
-import com.serotonin.modbus4j.msg.WriteCoilResponse;
-import com.serotonin.modbus4j.msg.WriteCoilsRequest;
-import com.serotonin.modbus4j.msg.WriteCoilsResponse;
 import com.serotonin.modbus4j.msg.WriteRegisterRequest;
-import com.serotonin.modbus4j.msg.WriteRegisterResponse;
 import com.serotonin.modbus4j.msg.WriteRegistersRequest;
-import com.serotonin.modbus4j.msg.WriteRegistersResponse;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -30,6 +24,10 @@ public class Modbus4jActor implements IModbusActor {
     public static final int MAX_RETRIES = 3;
     public String mHost;
     public int mPort;
+
+    /** Many Modbus TCP slaves accept only one client connection at a time. */
+    private final Object mIoLock = new Object();
+    private ModbusMaster mMaster;
 
 
     public static final String STATUS_FLAGS = "StatusFlags";
@@ -133,24 +131,46 @@ public class Modbus4jActor implements IModbusActor {
     }
 
     private ModbusMaster CreateMaster() {
-
         IpParameters ipParameters = new IpParameters();
         ipParameters.setHost(mHost);
         ipParameters.setPort(mPort);
 
-
         ModbusFactory modbusFactory = new ModbusFactory();
-        ModbusMaster master = modbusFactory.createTcpMaster(ipParameters, false);
-        master.setTimeout(600);
-        master.setRetries(10);
+        // keepAlive=true: reuse one TCP session — required for single-connection slaves
+        ModbusMaster master = modbusFactory.createTcpMaster(ipParameters, true);
+        master.setTimeout(1000);
+        master.setRetries(2);
         return master;
+    }
+
+    private ModbusMaster ensureMaster() throws Exception {
+        if (mMaster == null) {
+            mMaster = CreateMaster();
+            mMaster.init();
+        }
+        return mMaster;
+    }
+
+    private void resetMaster() {
+        if (mMaster != null) {
+            try {
+                mMaster.destroy();
+            } catch (Exception ignored) {
+            }
+            mMaster = null;
+        }
+    }
+
+    /** Closes the shared Modbus TCP connection. Call from Activity.onDestroy. */
+    public void close() {
+        synchronized (mIoLock) {
+            resetMaster();
+        }
     }
 
     @Override
     public SadInfo GetSadInfo() {
         SadInfo sadInfo = new SadInfo();
-
-        ModbusMaster master = CreateMaster();
 
         BatchResults<String> results = null;
         BatchRead<String> batch = new BatchRead<>();
@@ -159,13 +179,19 @@ public class Modbus4jActor implements IModbusActor {
         for (ModbusRegisterData registerData : modbusRegisterData)
             batch.addLocator(registerData.RegisterId, BaseLocator.holdingRegister(slaveId, registerData.RegisterNumber, registerData.RegisterType));
 
-        try {
-            master.init();
-            results = master.send(batch);
-        } catch (Exception e) {
-            sadInfo.exception = e;
-        } finally {
-            master.destroy();
+        synchronized (mIoLock) {
+            try {
+                results = ensureMaster().send(batch);
+            } catch (Exception first) {
+                // Stale keep-alive sockets are common; reopen once and retry
+                resetMaster();
+                try {
+                    results = ensureMaster().send(batch);
+                } catch (Exception e) {
+                    sadInfo.exception = e;
+                    resetMaster();
+                }
+            }
         }
 
         if (results != null) {
@@ -256,17 +282,19 @@ public class Modbus4jActor implements IModbusActor {
 
     @Override
     public void SendSwitchSignal(byte offset) {
-        ModbusMaster master = CreateMaster();
-
-        int slaveId = 1;
-        if (master.testSlaveNode(slaveId))
+        synchronized (mIoLock) {
             try {
-                WriteCoilRequest request = new WriteCoilRequest(slaveId, offset, true);
-                WriteCoilResponse response = (WriteCoilResponse) master.send(request);
-            } catch (ModbusTransportException e) {
-                e.printStackTrace();
+                ensureMaster().send(new WriteCoilRequest(1, offset, true));
+            } catch (Exception first) {
+                resetMaster();
+                try {
+                    ensureMaster().send(new WriteCoilRequest(1, offset, true));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resetMaster();
+                }
             }
-        master.destroy();
+        }
     }
 
     @Override
@@ -274,25 +302,23 @@ public class Modbus4jActor implements IModbusActor {
         final int firstNeededLitersRegister = 30;
         int lineRegister = firstNeededLitersRegister + lineNumber - 1;
 
-        ModbusMaster master = CreateMaster();
-
-
-        int slaveId = 1;
-        if (master.testSlaveNode(slaveId))
+        synchronized (mIoLock) {
             try {
-                WriteRegisterRequest request = new WriteRegisterRequest(slaveId, lineRegister, neededLiters);
-                WriteRegisterResponse response = (WriteRegisterResponse) master.send(request);
-            } catch (ModbusTransportException e) {
-                e.printStackTrace();
+                ensureMaster().send(new WriteRegisterRequest(1, lineRegister, neededLiters));
+            } catch (Exception first) {
+                resetMaster();
+                try {
+                    ensureMaster().send(new WriteRegisterRequest(1, lineRegister, neededLiters));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    resetMaster();
+                }
             }
-        master.destroy();
-
+        }
     }
 
     @Override
     public int GetSchedulesCount() {
-        ModbusMaster master = CreateMaster();
-
         int slaveId = 1;
 
         BatchResults<String> results = null;
@@ -300,15 +326,16 @@ public class Modbus4jActor implements IModbusActor {
 
         batch.addLocator(mScheduleIndexAndFlags.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleIndexAndFlags.RegisterNumber, mScheduleIndexAndFlags.RegisterType));
 
-        try {
-            WriteCoilRequest request = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_GET_COUNT, true);
-            WriteCoilResponse response = (WriteCoilResponse) master.send(request);
-            master.init();
-            results = master.send(batch);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            master.destroy();
+        synchronized (mIoLock) {
+            try {
+                ModbusMaster master = ensureMaster();
+                WriteCoilRequest request = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_GET_COUNT, true);
+                master.send(request);
+                results = master.send(batch);
+            } catch (Exception e) {
+                e.printStackTrace();
+                resetMaster();
+            }
         }
 
         if (results != null) {
@@ -323,97 +350,97 @@ public class Modbus4jActor implements IModbusActor {
         DrainSchedule schedule = new DrainSchedule();
         schedule.Index = (byte) index;
 
-        ModbusMaster master = CreateMaster();
         int slaveId = 1;
 
+        synchronized (mIoLock) {
+            try {
+                ModbusMaster master = ensureMaster();
+                /// пишем номер нужного регистра
+                WriteRegisterRequest writeRegisterRequest = new WriteRegisterRequest(slaveId, mScheduleIndexAndFlags.RegisterNumber, index);
+                master.send(writeRegisterRequest);
 
-        try {
-            /// пишем номер нужного регистра
-            WriteRegisterRequest writeRegisterRequest = new WriteRegisterRequest(slaveId, mScheduleIndexAndFlags.RegisterNumber, index);
-            WriteRegisterResponse writeRegisterResponse = (WriteRegisterResponse) master.send(writeRegisterRequest);
+                /// посылаем команту на запись занных
+                WriteCoilRequest coilRequest = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_GET, true);
+                master.send(coilRequest);
 
-            /// посылаем команту на запись занных
-            WriteCoilRequest coilRequest = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_GET, true);
-            WriteCoilResponse coilResponse = (WriteCoilResponse) master.send(coilRequest);
+                /// читаем результаты
+                BatchResults<String> results;
+                BatchRead<String> batch = new BatchRead<>();
 
-            /// читаем результаты
-            BatchResults<String> results = null;
-            BatchRead<String> batch = new BatchRead<>();
+                batch.addLocator(mScheduleIndexAndFlags.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleIndexAndFlags.RegisterNumber, mScheduleIndexAndFlags.RegisterType));
+                batch.addLocator(mScheduleHourMinute.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleHourMinute.RegisterNumber, mScheduleHourMinute.RegisterType));
+                batch.addLocator(mScheduleWeekDays.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleWeekDays.RegisterNumber, mScheduleHourMinute.RegisterType));
 
-            batch.addLocator(mScheduleIndexAndFlags.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleIndexAndFlags.RegisterNumber, mScheduleIndexAndFlags.RegisterType));
-            batch.addLocator(mScheduleHourMinute.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleHourMinute.RegisterNumber, mScheduleHourMinute.RegisterType));
-            batch.addLocator(mScheduleWeekDays.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleWeekDays.RegisterNumber, mScheduleHourMinute.RegisterType));
+                batch.addLocator(mScheduleLiters1.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters1.RegisterNumber, mScheduleLiters1.RegisterType));
+                batch.addLocator(mScheduleLiters2.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters2.RegisterNumber, mScheduleLiters2.RegisterType));
+                batch.addLocator(mScheduleLiters3.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters3.RegisterNumber, mScheduleLiters3.RegisterType));
+                batch.addLocator(mScheduleLiters4.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters4.RegisterNumber, mScheduleLiters4.RegisterType));
+                batch.addLocator(mScheduleLiters5.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters5.RegisterNumber, mScheduleLiters5.RegisterType));
+                batch.addLocator(mScheduleLiters6.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters6.RegisterNumber, mScheduleLiters6.RegisterType));
+                batch.addLocator(mScheduleLiters7.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters7.RegisterNumber, mScheduleLiters7.RegisterType));
+                batch.addLocator(mScheduleLiters8.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters8.RegisterNumber, mScheduleLiters8.RegisterType));
 
-            batch.addLocator(mScheduleLiters1.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters1.RegisterNumber, mScheduleLiters1.RegisterType));
-            batch.addLocator(mScheduleLiters2.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters2.RegisterNumber, mScheduleLiters2.RegisterType));
-            batch.addLocator(mScheduleLiters3.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters3.RegisterNumber, mScheduleLiters3.RegisterType));
-            batch.addLocator(mScheduleLiters4.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters4.RegisterNumber, mScheduleLiters4.RegisterType));
-            batch.addLocator(mScheduleLiters5.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters5.RegisterNumber, mScheduleLiters5.RegisterType));
-            batch.addLocator(mScheduleLiters6.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters6.RegisterNumber, mScheduleLiters6.RegisterType));
-            batch.addLocator(mScheduleLiters7.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters7.RegisterNumber, mScheduleLiters7.RegisterType));
-            batch.addLocator(mScheduleLiters8.RegisterId, BaseLocator.holdingRegister(slaveId, mScheduleLiters8.RegisterNumber, mScheduleLiters8.RegisterType));
+                results = master.send(batch);
 
-            master.init();
-            results = master.send(batch);
+                if (results != null) {
+                    schedule.Enabled = ((results.getIntValue(SCHEDULE_INDEX_AND_FLAGS) >> 8) & 1) == 1;
+                    schedule.WeekDaysBitFlags = results.getIntValue(SCHEDULE_WEEK_DAYS).byteValue();
+                    Integer hm = results.getIntValue(SCHEDULE_HOUR_MINUTE);
+                    schedule.Minute = (byte) (hm >> 8);
+                    schedule.Hour = hm.byteValue();
 
-            if (results != null) {
-                schedule.Enabled = ((results.getIntValue(SCHEDULE_INDEX_AND_FLAGS) >> 8) & 1) == 1;
-                schedule.WeekDaysBitFlags = results.getIntValue(SCHEDULE_WEEK_DAYS).byteValue();
-                Integer hm = results.getIntValue(SCHEDULE_HOUR_MINUTE);
-                schedule.Minute = (byte) (hm >> 8);
-                schedule.Hour = hm.byteValue();
+                    schedule.LitersNeeded.clear();
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS1));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS2));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS3));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS4));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS5));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS6));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS7));
+                    schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS8));
 
-                schedule.LitersNeeded.clear();
-                schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS1));
-                schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS2));
-                schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS3));
-                schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS4));
-                schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS5));
-                schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS6));
-                schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS7));
-                schedule.LitersNeeded.add(results.getIntValue(SCHEDULE_LITERS8));
-
-                schedule.IOSuccess = true;
+                    schedule.IOSuccess = true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                schedule.ReceiveException = e;
+                resetMaster();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            schedule.ReceiveException = e;
-        } finally {
-            master.destroy();
         }
-
 
         return schedule;
     }
 
     @Override
     public void UpdateDrainSchedule(DrainSchedule schedule) {
-        int retries = 0;
-        DrainSchedule result;
-        do {
-            result = writeScheduleToModbus(schedule);
-            retries++;
-        } while (!result.IOSuccess && retries < MAX_RETRIES);
-
-        boolean sendSuccess;
-        retries = 0;
-        if (result.IOSuccess)
+        synchronized (mIoLock) {
+            int retries = 0;
+            DrainSchedule result;
             do {
-                sendSuccess = sendReadCommandToController();
+                result = writeScheduleToModbus(schedule);
                 retries++;
-            } while (!sendSuccess && retries < MAX_RETRIES);
+            } while (!result.IOSuccess && retries < MAX_RETRIES);
 
+            boolean sendSuccess;
+            retries = 0;
+            if (result.IOSuccess)
+                do {
+                    sendSuccess = sendReadCommandToController();
+                    retries++;
+                } while (!sendSuccess && retries < MAX_RETRIES);
+        }
     }
 
     @Override
     public void UpdatePondAutoOnSettings(PondAutoOnSettings settings) {
-        int retries = 0;
-        boolean result;
-        do {
-            result = writePondAutoOnSettingsToModbus(settings);
-            retries++;
-        } while (!result && retries < MAX_RETRIES);
-
+        synchronized (mIoLock) {
+            int retries = 0;
+            boolean result;
+            do {
+                result = writePondAutoOnSettingsToModbus(settings);
+                retries++;
+            } while (!result && retries < MAX_RETRIES);
+        }
     }
 
     private byte setBit(byte flags, int number, boolean checked) {
@@ -423,8 +450,8 @@ public class Modbus4jActor implements IModbusActor {
             return (byte) (flags & ~(1 << number));
     }
 
+    /** Caller must hold {@link #mIoLock}. */
     private boolean writePondAutoOnSettingsToModbus(PondAutoOnSettings settings) {
-        ModbusMaster master = CreateMaster();
         int slaveId = 1;
         boolean sendSuccess = false;
 
@@ -455,39 +482,39 @@ public class Modbus4jActor implements IModbusActor {
         System.arraycopy(temperatureData, 0, registerData, data.length, temperatureData.length);
 
         try {
+            ModbusMaster master = ensureMaster();
             WriteRegistersRequest registersRequest =
                     new WriteRegistersRequest(slaveId, POND_AUTO_ON_SETTINGS_REGISTER_START, registerData);
-            WriteRegistersResponse registersResponse = (WriteRegistersResponse) master.send(registersRequest);
+            master.send(registersRequest);
             sendSuccess = true;
-        } catch (ModbusTransportException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             sendSuccess = false;
-        } finally {
-            master.destroy();
+            resetMaster();
         }
 
         return sendSuccess;
     }
 
+    /** Caller must hold {@link #mIoLock}. */
     private boolean sendReadCommandToController() {
-        ModbusMaster master = CreateMaster();
         int slaveId = 1;
         boolean sendSuccess = false;
 
         /// посылаем команту на чтение данных в память контроллера
-        WriteCoilRequest coilRequest = null;
         try {
-            coilRequest = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_SET, true);
-            WriteCoilResponse coilResponse = (WriteCoilResponse) master.send(coilRequest);
+            ModbusMaster master = ensureMaster();
+            WriteCoilRequest coilRequest = new WriteCoilRequest(slaveId, COMMAND_OFFSET_SCHEDULES_SET, true);
+            master.send(coilRequest);
             sendSuccess = true;
-        } catch (ModbusTransportException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            master.destroy();
+            resetMaster();
         }
         return sendSuccess;
     }
 
+    /** Caller must hold {@link #mIoLock}. */
     private DrainSchedule writeScheduleToModbus(DrainSchedule schedule) {
         ArrayList<Byte> scheduleBytes = new ArrayList<>();
 
@@ -508,22 +535,20 @@ public class Modbus4jActor implements IModbusActor {
         scheduleBytes.add(schedule.WeekDaysBitFlags);
         scheduleBytes.add((byte) 0);
 
-        ModbusMaster master = CreateMaster();
         int slaveId = 1;
 
         try {
+            ModbusMaster master = ensureMaster();
             WriteRegistersRequest writeRegisterRequestHourMinute =
                     new WriteRegistersRequest(slaveId, mScheduleHourMinute.RegisterNumber, toShortArray(scheduleBytes));
-            WriteRegistersResponse writeRegisterResponseHourMinute = (WriteRegistersResponse) master.send(writeRegisterRequestHourMinute);
+            master.send(writeRegisterRequestHourMinute);
             schedule.IOSuccess = true;
-        } catch (ModbusTransportException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             schedule.IOSuccess = false;
             schedule.ReceiveException = e;
-        } finally {
-            master.destroy();
+            resetMaster();
         }
-
 
         return schedule;
     }
